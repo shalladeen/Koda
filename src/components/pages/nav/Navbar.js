@@ -1,5 +1,5 @@
 import React from 'react';
-import koda2 from './assets/images/koda_2.svg';
+import koda2 from './images/koda2.svg';
 import "./NavbarStyle.css";
 function Navbar(){
     return (
@@ -22,6 +22,9 @@ function Navbar(){
                      </li>
                 <li> 
                     <a href="index.html">Contact</a> 
+                    </li>
+                 <li> 
+                    <a href="index.html">Login/Sign Up</a> 
                     </li>
             </ul>
            </div>
