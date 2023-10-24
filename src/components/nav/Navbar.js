@@ -3,11 +3,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import koda2 from './images/koda2.svg';
 import Signup from '../pages/signup/Signup'
 import "./NavbarStyle.css";
-
-function Home() {
-    return <h2>Home Page Content</h2>;
-}
-
+import Home from '../pages/Home/Home';
 
 
 function Navbar() {

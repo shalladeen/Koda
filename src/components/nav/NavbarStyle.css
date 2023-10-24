@@ -1,28 +1,29 @@
-nav{
+nav {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
     background: white;
-    padding: 20px 80px;
-    /*box-shadow: 0 20px 20px gray;*/
-   
+    padding: 20px;
+    flex-direction: column;
+    /* Remove box-shadow or modify as needed */
 }
 
 #logo {
-height: 100px;
+    height: 100px;
 }
 
-#navbar{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-}
-
-#navbar li{
+#navbar {
     list-style: none;
-    padding: 0 20px;
-    position: relative;
+    padding: 0;
+    display: flex;
+    flex-direction: column; /* Change to column to display text vertically */
+    align-items: flex-start; /* Adjust alignment as needed */
+}
+
+#navbar li {
+    top: 0;
+    margin: 10px 0; /* Adjust vertical spacing as needed */
+    white-space: nowrap; /* Prevent text from wrapping */
 }
 
 #navbar li a {
@@ -33,6 +34,6 @@ height: 100px;
     transition: 0.3s ease-in-out;
 }
 
-#navbar li a:hover{
+#navbar li a:hover {
     color: gray;
 }
