@@ -56,7 +56,7 @@ function Signup() {
                 <form>
                     <h1>Sign In</h1>
                     <div className="social-icons">
-                        <a href="#" className="icons">
+                    <a href="#" className="icons">
                             <FontAwesomeIcon icon={faGooglePlusG} style={{ color: "#000000" }} />
                         </a>
                         <a href="#" className="icons">
@@ -80,12 +80,12 @@ function Signup() {
                 <div className="toggle">
                     <div className="toggle-panel toggle-left">
                         <h1>Welcome Back!</h1>
-                        <p>Login to use all of the site features</p>
+                        <p>Login here!</p>
                         <button className="hidden" id="login">Sign In</button>
                     </div>
                     <div className="toggle-panel toggle-right">
                         <h1>Hey There!</h1>
-                        <p>Register to use all of the site features</p>
+                        <p>Don't have an account? Register here!</p>
                         <button className="hidden" id="register">Sign Up</button>
                     </div>
                 </div>

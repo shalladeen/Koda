@@ -5,7 +5,12 @@ nav {
     background: white;
     padding: 20px;
     flex-direction: column;
-    /* Remove box-shadow or modify as needed */
+}
+
+.friends {
+    position: absolute;
+    top: 20px;
+    right: 20px; 
 }
 
 #logo {
@@ -16,8 +21,10 @@ nav {
     list-style: none;
     padding: 0;
     display: flex;
-    flex-direction: column; /* Change to column to display text vertically */
-    align-items: flex-start; /* Adjust alignment as needed */
+    flex-direction: column; 
+    align-items: flex-start; 
+    text-align: center;
+    padding-bottom: 1000px;
 }
 
 #navbar li {
@@ -37,3 +44,5 @@ nav {
 #navbar li a:hover {
     color: gray;
 }
+
+

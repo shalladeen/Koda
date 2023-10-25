@@ -33,14 +33,14 @@ const Todo = () =>{
     };
 
     return (
-        <div className ="container">
+        <div className ="newTask">
             <div className ="text-end">
                 <button className="add" onClick={handleAdd}>
                     Add New Task
                 </button>
             </div>
         
-            <div className ="container">
+            <div className ="newTask">
                 <div className ="row">
                     <div className="text-center">
                         <h2></h2>
