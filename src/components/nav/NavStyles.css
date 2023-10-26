@@ -10,27 +10,41 @@ nav {
 .friends {
     position: absolute;
     top: 20px;
-    right: 20px; 
+    right: 0;
+    padding-right: 20px;
+    font-size: 30px;
+}
+
+.Icon{
+    padding-left: 20px;
 }
 
 #logo {
+    top: 0;
     height: 100px;
+    margin-right: 20px; 
 }
+
 
 #navbar {
     list-style: none;
     padding: 0;
     display: flex;
     flex-direction: column; 
-    align-items: flex-start; 
-    text-align: center;
-    padding-bottom: 1000px;
+    align-items: flex-start;
+    margin-bottom: 900px; 
+    
 }
 
 #navbar li {
-    top: 0;
-    margin: 10px 0; /* Adjust vertical spacing as needed */
-    white-space: nowrap; /* Prevent text from wrapping */
+    display: flex;
+    align-items: center; 
+    margin: 10px 0; 
+    white-space: nowrap; 
+}
+
+#navbar li .navIcon {
+    padding-right: 20px; 
 }
 
 #navbar li a {
@@ -44,5 +58,3 @@ nav {
 #navbar li a:hover {
     color: gray;
 }
-
-

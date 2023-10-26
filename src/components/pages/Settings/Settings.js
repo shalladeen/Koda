@@ -1,16 +1,16 @@
 import React from "react";
-import '../Friends/FriendStyle.css';
 
 
-function Friends() {
+
+function Settings() {
     return (
 
         <div className="centered-text">
        
-        <h1>Friends Content</h1>
+        <h1>Settings</h1>
         </div>
     )
 }
 
 
-export default Friends;
+export default Settings;
