@@ -2,30 +2,32 @@ import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGooglePlusG, faFacebook, faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import './SignupStyles.css';
+import Navbar from '../../nav/Navbar';
 
 
 
 function Signup() {
     useEffect(() => {
-        const container = document.getElementById('container');
+        const signupcontainer = document.getElementById('signupcontainer');
         const registerBtn = document.getElementById('register');
         const loginBtn = document.getElementById('login');
 
-        if (container && registerBtn && loginBtn) {
+        if (signupcontainer && registerBtn && loginBtn) {
             registerBtn.addEventListener('click', () => {
-                container.classList.add("active");
+                signupcontainer.classList.add("active");
             });
 
             loginBtn.addEventListener('click', () => {
-                container.classList.remove("active");
+                signupcontainer.classList.remove("active");
             });
         }
     }, []); // The empty dependency array ensures this runs only once after mounting
 
     return (
-       
+     
 
-        <div className="container" id="container">
+        <div className="signupcontainer" id="signupcontainer">
+              
              
             <div className="form-container sign-up">
                 <form>

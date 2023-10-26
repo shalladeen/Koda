@@ -4,6 +4,19 @@
     box-sizing: border-box;
 }
 
+body {
+    background-color: #c9d6ff;
+    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 nav {
     align-items: center;
     display: flex;
@@ -19,48 +32,40 @@ nav {
     padding: 20px 0;
 }
 
-body {
-    background-color: #c9d6ff;
-    background: linear-gradient(to right, #e2e2e2, #c9d6ff);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    height: 100vh;
-}
 
-.container {
+#signupcontainer { /*not changing anything atm */
     background-color: #fff;
     border-radius: 30px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
-    position: relative;
-    overflow: hidden;
     width: 768px;
-    max-width: 100%;
+    max-width: 60%;
     max-height: 800px;
     margin-top: 100px;
     margin-left: 100px;
+    margin-top: 10vh;
+    border-radius: 150px 0 0 100px;
+    
 }
 
-.container p {
+.signupcontainer p { /* text in the toggle */
     font-size: 14px;
     line-height: 20px;
     letter-spacing: 0.3px;
     margin: 20px 0;
 }
 
-.container span {
+.signupcontainer span {
     font-size: 12px;
 }
 
-.container a {
+.signupcontainer a {
     color: #333;
     font-size: 13px;
     text-decoration: none;
     margin: 15px 0 10px;
 }
 
-.container button {
+.signupcontainer button { /*button in both signup and signin*/
     background-color: #512da8;
     color: #fff;
     font-size: 12px;
@@ -74,52 +79,59 @@ body {
     cursor: pointer;
 }
 
-.container button.hidden {
+.signupcontainer button.hidden {
     background-color: transparent;
     border-color: #fff;
 }
 
-.container form {
+.signupcontainer form { /* the forms*/
     background-color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     padding: 0 40px;
+    width: 90%;
     height: 100%;
+    border-radius: 60px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+   
 }
 
-.container input {
+.signupcontainer input {
     background-color: #eee;
     border: none;
     margin: 8px 0;
     padding: 10px 15px;
     font-size: 13px;
     border-radius: 8px;
-    width: 100%;
+    width: 50%;
     outline: none;
 }
 
-.container span {
+.signupcontainer span {
     margin-bottom: 30px;
 }
 
 .form-container {
     position: absolute;
-    top: 0;
-    height: 100%;
+    top: 25%;
+    height: 50%;
+    right: 25%;
     transition: all 0.6s ease-in-out;
+    
 }
 
-.sign-in {
-    left: 0;
+.sign-in { /*the text*/
+    left: 25%;
     width: 50%;
     z-index: 2;
     opacity: 1; 
+    
 }
 
-.container.active .sign-in {
-    transform: translateX(0);
+.signupcontainer.active .sign-in {
+    transform: translateX(50%);
 }
 
 .sign-up {
@@ -127,9 +139,10 @@ body {
     width: 50%;
     opacity: 0;
     z-index: 1;
+    
 }
 
-.container.active .sign-up {
+.signupcontainer.active .sign-up {
     transform: translateX(50%); 
     opacity: 1;
     z-index: 5;
@@ -162,21 +175,25 @@ body {
     height: 40px;
 }
 
-.toggle-container {
+.toggle-container { /*it's the toggle container...*/
     position: absolute;
-    top: 0;
-    left: 50%;
-    width: 50%;
-    height: 100%;
+    top: 25%;
+    margin-left: 14%;
+    margin-right: 30%;
+    left: 45%;
+    width: 35%;
+    right: 20%;
+    height: 50%;
     overflow: hidden;
     transition: all 0.6s ease-in-out;
-    border-radius: 150px 0 0 100px;
+    border-radius: 60px  ;
     z-index: 1000;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
 }
 
-.container.active .toggle-container {
+.signupcontainer.active .toggle-container {
     transform: translateX(-100%);
-    border-radius: 0 150px 100px 0;
+    border-radius: 60px ;
 }
 
 .toggle {
@@ -192,7 +209,7 @@ body {
     transition: all 0.6s ease-in-out;
 }
 
-.container.active .toggle {
+.signupcontainer.active .toggle {
     transform: translate(50%);
 }
 
@@ -215,7 +232,7 @@ body {
     transform: translateX(-200%);
 }
 
-.container.active .toggle-left {
+.signupcontainer.active .toggle-left {
     transform: translateX(0);
 }
 
@@ -224,6 +241,6 @@ body {
     transform: translateX(0);
 }
 
-.container.active .toggle-right {
+.signupcontainer.active .toggle-right {
     transform: translateX(200%);
 }

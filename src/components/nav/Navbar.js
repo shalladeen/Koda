@@ -40,11 +40,7 @@ function Navbar() {
                             Settings
                         </Link>
                     </li>
-                    <li>
-                        <Link>
-                            <FontAwesomeIcon icon={faCirclePlus} style={{ color: "#000000" }} className="addTodo" />
-                        </Link>
-                    </li>
+                    
                 </ul>
             </div>
             </nav>
