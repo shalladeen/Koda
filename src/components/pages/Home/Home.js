@@ -1,9 +1,13 @@
 import React from "react";
-import Todo from "../../Todo/Todo";
+import Todo from "../../Widgets/Todo/Todo";
 import '../Home/HomeStyle.css';
 function Home() {
     return (
+
+        <div>
+            
         <Todo/>
+        </div>
     )
 }
 

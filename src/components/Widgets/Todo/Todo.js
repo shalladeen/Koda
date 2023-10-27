@@ -1,20 +1,20 @@
-import React, { useState } from "react";
-import '../Todo/TodoStyle.css';
+import React, { useState, useEffect } from "react";
+import './TodoStyle.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import Task from "../Tasks/Task";
 
 const Todo = () => {
     const [inputTitle, setinputTitle] = useState("");
     const [inputDesc, setinputDesc] = useState("");
-    const [items, setitems] = useState([
-        {
-            id: "001",
-            name: "Default task",
-            desc: "Default Description",
-            status: false,
-        }
-    ]);
+    const [items, setitems] = useState([]);
     const [showAddTask, setShowAddTask] = useState(false);
+
+    useEffect(() => {
+        // Retrieve tasks from local storage when the component mounts
+        const initialTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        setitems(initialTasks);
+    }, []);
 
     const handleAdd = () => {
         // Create a new task object
@@ -27,6 +27,9 @@ const Todo = () => {
 
         // Update the state to add the new task
         setitems([...items, newTask]);
+
+        // Save the updated tasks to local storage
+        localStorage.setItem('tasks', JSON.stringify([...items, newTask]));
 
         // Clear the input fields
         setinputTitle("");
@@ -65,6 +68,7 @@ const Todo = () => {
                     </form>
                 </div>
             </div>
+            <Task items={items} />
         </div>
     );
 }
