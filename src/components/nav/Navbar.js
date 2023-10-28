@@ -4,7 +4,7 @@ import '../nav/NavStyles.css';
 import { Link } from 'react-router-dom';
 import koda2 from './images/koda2.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserGroup, faRightToBracket, faGear, faStopwatch, faGripVertical, faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { faUserGroup, faRightToBracket, faGear, faStopwatch, faGripVertical, faNotesMedical } from '@fortawesome/free-solid-svg-icons';
 
 function Navbar() {
     return (
@@ -20,6 +20,12 @@ function Navbar() {
                         <Link to="/">
                             <FontAwesomeIcon icon={faGripVertical} style={{ color: "#000000" }} className="navIcon" />
                             Dashboard
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/Notes" className="notes">
+                        <FontAwesomeIcon icon={faNotesMedical} style={{color: "#000000",}} className="navIcon"/>
+                            Notes
                         </Link>
                     </li>
                     <li>

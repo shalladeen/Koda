@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Navbar from './components/nav/Navbar';
 import Home from './components/pages/Home/Home';
+import Notes from './components/pages/Notes/Notes';
 import Friends from './components/pages/Friends/Friends';
 import Signup from './components/pages/signup/Signup';
 import Settings from './components/pages/Settings/Settings';
@@ -17,6 +18,7 @@ function App() {
         <div className="App">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/Notes" element={<Notes />} />
             <Route path="/TimeTracker" element={<TimeTracker />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/Friends" element={<Friends />} />
