@@ -5,9 +5,10 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    left: -300%;
     padding-bottom: 20px;
     position: relative;
+    max-width: 300px;
+    left: -300%;
 }
 
 .tasklist-container {
@@ -24,17 +25,24 @@
 }
 
 .tasklist {
-    list-style-position: inside;
     padding: 20px;
     top: 0;
     padding-bottom: 20px;
+   
+    
 }
 
 .items {
+    list-style-position: inside;
     margin-top: 30px;
     padding: 10px;
     border-style: gray;
+    flex-wrap: wrap;
     cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 250px;
 }
 
 .items:hover {
@@ -60,16 +68,17 @@
     
 }
 .edit-form {
+    
     background: linear-gradient(to right, #5c6bc0, #512da8);
     height: 350px;
-    width: 250px;
+    width: 300px;
     text-align: center;
     padding: 20px;
     border-radius: 50px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
     position: absolute;
     top: 0;
-    right: -70%; 
+    right: -90%; 
     z-index: -1; 
     opacity: 0;
     transform: translateX(0);
@@ -86,8 +95,9 @@
 .edit-form-description{
     margin-bottom: 20px;
     border-radius: 60px;
-    width: 200px;
-    padding-top: 10px;
+    height: 50px;
+    width: 260px;
+    padding: 10px;
     text-align: center;
 }
 
@@ -100,7 +110,7 @@
 .edit-button{
     height: 30px;
     border-radius: 40px;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 20px;
 }
 
@@ -128,6 +138,6 @@
 }
 
 @media (max-width:480px) {
-    
+
 }
 
