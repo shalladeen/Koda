@@ -4,9 +4,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding-right: 300px;
+    justify-content: flex-start;
+    left: -300%;
     padding-bottom: 20px;
+    position: relative;
 }
 
 .tasklist-container {
@@ -122,4 +123,11 @@
     text-align: center;
 }
 
+@media (max-width:768px) {
+
+}
+
+@media (max-width:480px) {
+    
+}
 

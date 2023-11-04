@@ -49,14 +49,19 @@ function Task({ items: taskItems }) {
     };
 
     const handleDeleteTask = (taskId) => {
-        const updatedItems = items.filter(item => item.id !== taskId);
-
-        // Update the state with the deleted task using setItems
-        setItems(updatedItems);
-
-        // Save the updated tasks in local storage
-        saveTasksToLocalStorage(updatedItems);
+        const shouldDelete = window.confirm("Are you sure you want to delete this task?");
+        
+        if (shouldDelete) {
+            const updatedItems = items.filter(item => item.id !== taskId);
+    
+            // Update the state with the deleted task using setItems
+            setItems(updatedItems);
+    
+            // Save the updated tasks in local storage
+            saveTasksToLocalStorage(updatedItems);
+        }
     };
+    
 
     return (
         <div className="taskpage">
