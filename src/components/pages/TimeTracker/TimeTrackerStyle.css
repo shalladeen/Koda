@@ -1,0 +1,11 @@
+:root{
+    --background: #f9fdff;
+    --main: #5c8bf0;
+    --accent: #072d5a;
+    --widget-background: #eef4f7;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}

@@ -1,0 +1,76 @@
+:root{
+    --background: #f9fdff;
+    --main: #5c8bf0;
+    --accent: #072d5a;
+    --widget-background: #eef4f7;
+}
+
+#logo {
+height: 100px;
+}
+
+#navbar{
+    background-color: var(--background);
+    position: fixed;
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    height: 100vh;
+}
+
+#navbar li{
+    list-style: none;
+    padding: 20px 30px;
+    position: relative;
+    width: 100%;
+    margin: 10px 0;
+}
+
+#navbar li a {
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--main);
+    transition: 0.3s ease-in-out;
+}
+
+#navbar li {
+    display: flex;
+    align-items: center;
+   
+   
+}
+
+#navbar li .navIcon {
+    color: var(--main);
+    padding-right: 10px;
+}
+
+#navbar li a:hover {
+    color: var(--accent);
+}
+
+.outside-icons{
+    display: flex;
+    position: absolute;
+    top: 20px;
+    right: 0;
+    padding: 20px;
+    font-size: 20px;
+    justify-content: space-between;
+}
+
+.friends {
+    padding-right: 10px;
+}
+
+
+
+/* media queries */
+@media (max-width: 800px){
+    #navbar {
+        width: 40%;
+    }
+}

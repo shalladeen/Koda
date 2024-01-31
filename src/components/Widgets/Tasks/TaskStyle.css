@@ -8,20 +8,18 @@
     padding-bottom: 20px;
     position: relative;
     max-width: 300px;
-    left: -300%;
+    margin: 0 30px;
+  
 }
 
 .tasklist-container {
     background-color: white;
     padding-top: 20px;
-    max-width: 350px;
-    width: 110%;
+    width: 200%;
     height: 600px;
     border-radius: 50px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
-    margin-top: 20px;
     position: relative;
-    
 }
 
 .tasklist {

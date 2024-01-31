@@ -1,9 +1,32 @@
+:root{
+    --background: #f9fdff;
+    --main: #5c8bf0;
+    --accent: #072d5a;
+    --widget-background: #eef4f7;
+}
+
+.navbar-placeholder {
+    height: 100px; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: -1; 
+}
+
+.home-components{
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    height: 100vh;
+}
+
 .newTask {
-    background-color: #fff;
+    background-color: var(--widget-background);
     border-radius: 30px;
     position: relative;
     overflow: hidden;
-    width: 600px; 
+    width: 500px; 
     margin-left: 50px;
     margin-top: 20px;
     margin-bottom: 20px;

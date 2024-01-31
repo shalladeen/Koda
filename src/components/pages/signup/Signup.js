@@ -2,9 +2,7 @@ import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGooglePlusG, faFacebook, faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import './SignupStyles.css';
-import Navbar from '../../nav/Navbar';
-
-
+import '../../nav/NavbarStyle.css';
 
 function Signup() {
     useEffect(() => {
@@ -25,7 +23,8 @@ function Signup() {
 
     return (
      
-
+        <div className="signup-page">
+            
         <div className="signupcontainer" id="signupcontainer">
               
              
@@ -93,6 +92,7 @@ function Signup() {
                 </div>
             </div>
         </div>
+    </div>
     );
 }
 
