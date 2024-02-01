@@ -1,25 +1,21 @@
 
 .calendar-container {
-    width: 600px; 
+    width: 700px;
     height: 500px;
     padding: 20px;
-   
   }
 
-  .fc {
-    font-size: 14px; 
-    line-height: 1.5; 
-    height: 100%;
-    padding: 10px;
+  .rbc-toolbar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px; /* Add some spacing at the bottom of the toolbar */
+  }
+  
+  .rbc-btn-group {
+    margin-right: 5px; /* Add spacing between buttons */
+  }
+  
+  .rbc-btn {
+    font-size: 14px; /* Adjust button font size if needed */
     
-  }
-  
-  /* Add more spacing at the bottom of the toolbar */
-  .fc-toolbar {
-    margin-bottom: 10px; 
-  }
-  
-  /* add spacing between buttons */
-  .fc-toolbar-chunk {
-    margin-right: 10px; 
   }

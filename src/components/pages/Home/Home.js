@@ -7,30 +7,15 @@ import '../Home/HomeStyle.css';
 
 function Home() {
 
-    const [selectedDate, setSelectedDate] = useState(new Date());
-
-    const [events, setEvents] = useState([
-        { id: 1, title: 'Meeting', start: new Date('2024-02-01T10:00:00') },
-        { id: 2, title: 'Conference', start: new Date('2024-02-15T14:00:00') },
-        // Add more events as needed
-      ]);
-    
-      const handleDateClick = (date) => {
-        // Add a new event on the clicked date
-        const newEvent = {
-          id: events.length + 1,
-          title: 'New Event',
-          start: date,
-        };
-    
-        setEvents((prevEvents) => [...prevEvents, newEvent]);
-      };
-    
-      const handleDeleteEvent = (eventId) => {
-        // Delete the event with the given ID
-        setEvents((prevEvents) => prevEvents.filter((event) => event.id !== eventId));
-      };
-
+  const myEventsList = [
+    {
+      id: 1,
+      title: 'Event 1',
+      start: new Date(2024, 1, 10, 10, 0),
+      end: new Date(2022, 1, 10, 12, 0),
+    },
+    // Add more events as needed
+  ];
     return (
 
         <div className="main-page">
@@ -48,10 +33,10 @@ function Home() {
                 </div>
                 <div className = "main-calendar">
                 <div className="home-calendar">
-                <MyCalendarWidget onDateClick={handleDateClick} events={events}/>
+                <MyCalendarWidget myEventsList={myEventsList} />
                  </div>
                  <div className="home-events">
-                 <EventsWidget events={events} selectedDate={selectedDate} />
+                 <EventsWidget/>
                  </div>
                  </div>
             </div>

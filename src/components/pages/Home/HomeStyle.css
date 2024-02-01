@@ -24,7 +24,13 @@
     margin-bottom: 100px;
 }
 .home-events{
-    padding-right: 100px;
+    margin-top: 40px;
+    width: 80%;
+     margin: 50px;
+     padding: 30px;
+     background-color: var(--widget-background);
+     border-radius: 30px;
+     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-placeholder {
