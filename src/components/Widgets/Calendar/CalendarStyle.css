@@ -1,0 +1,25 @@
+
+.calendar-container {
+    width: 600px; 
+    height: 500px;
+    padding: 20px;
+   
+  }
+
+  .fc {
+    font-size: 14px; 
+    line-height: 1.5; 
+    height: 100%;
+    padding: 10px;
+    
+  }
+  
+  /* Add more spacing at the bottom of the toolbar */
+  .fc-toolbar {
+    margin-bottom: 10px; 
+  }
+  
+  /* add spacing between buttons */
+  .fc-toolbar-chunk {
+    margin-right: 10px; 
+  }

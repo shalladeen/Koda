@@ -1,4 +1,9 @@
-
+:root{
+    --background: #f9fdff;
+    --main: #5c8bf0;
+    --accent: #072d5a;
+    --widget-background: #eef4f7;
+}
 /* Styles for the task component */
 .taskpage {
     display: flex;
@@ -7,17 +12,18 @@
     justify-content: flex-start;
     padding-bottom: 20px;
     position: relative;
-    max-width: 300px;
+    max-width: 200px;
     margin: 0 30px;
   
 }
 
 .tasklist-container {
-    background-color: white;
+    background-color: var(--widget-background);
     padding-top: 20px;
     width: 200%;
     height: 600px;
     border-radius: 50px;
+    max-width: 300px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
     position: relative;
 }
@@ -34,13 +40,16 @@
     list-style-position: inside;
     margin-top: 30px;
     padding: 10px;
-    border-style: gray;
+    border-style: black;
     flex-wrap: wrap;
     cursor: pointer;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
     max-width: 250px;
+    border-radius: 30px;
+    border-color: black;
+    border-width: 20px;
 }
 
 .items:hover {
@@ -66,8 +75,7 @@
     
 }
 .edit-form {
-    
-    background: linear-gradient(to right, #5c6bc0, #512da8);
+    background: var(--main);
     height: 350px;
     width: 300px;
     text-align: center;
@@ -119,7 +127,6 @@
 }
 
 .items.active +.edit-form {
-    background-color: blue;
     z-index: 1;
     opacity: 100%;
     transform: translateX(50px);

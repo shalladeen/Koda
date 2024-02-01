@@ -5,6 +5,28 @@
     --widget-background: #eef4f7;
 }
 
+.main-page{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--background);
+    height: 100vh;
+}
+
+.main-widgets {
+    display: flex;
+    justify-content: space-between;
+    width: 50%; 
+    margin-top: 20px; 
+}
+
+.home-calendar {
+    margin-bottom: 100px;
+}
+.home-events{
+    padding-right: 100px;
+}
+
 .navbar-placeholder {
     height: 100px; 
     position: fixed;
@@ -12,13 +34,28 @@
     left: 0;
     right: 0;
     z-index: -1; 
+    height: 100px;
+    width: 100%;
+  
 }
 
-.home-components{
-    justify-content: center;
+
+.home-greeting {
+    width: 80%; 
+    margin: 50px;
+    padding: 30px;
+    background-color: var(--widget-background);
+    border-radius: 30px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.home-tasks{
+    margin-top: 40px;
     display: flex;
     align-items: center;
-    height: 100vh;
+    width: 60%;
 }
 
 .newTask {
@@ -40,17 +77,6 @@
     text-align: center;
 }
 
-.label,
-.taskD {
-    margin: 10px 0;
-}
 
-.greeting {
-    text-align: center;
-    position: absolute;
-    top: 0;
-    color: black;
-    padding: 20px;
-    margin-top: 30px;
-    margin-left: 50px;
-}
+
+

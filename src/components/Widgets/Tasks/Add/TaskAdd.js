@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import './TodoStyle.css';
+import './TaskAddStyle.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
-import Task from "../Tasks/Task";
+import Task from "../Task";
 
-const Todo = () => {
+const TaskAdd = () => {
     const [inputTitle, setinputTitle] = useState("");
     const [inputDesc, setinputDesc] = useState("");
     const [items, setitems] = useState([]);
@@ -45,7 +45,9 @@ const Todo = () => {
             <div className="addButton">
                 <button className="add" onClick={toggleAddTask}>
                     <FontAwesomeIcon icon={faCirclePlus} style={{ color: "#000000" }} className="addTodo" />
+                    <h4>Add a task</h4>
                 </button>
+                
             </div>
             <div className={`addContainer ${showAddTask ? "active" : ""}`}>
                 <div className="row">
@@ -73,4 +75,4 @@ const Todo = () => {
     );
 }
 
-export default Todo;
+export default TaskAdd;

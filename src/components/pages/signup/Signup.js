@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGooglePlusG, faFacebook, faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import './SignupStyles.css';
-import '../../nav/NavbarStyle.css';
 
 function Signup() {
     useEffect(() => {

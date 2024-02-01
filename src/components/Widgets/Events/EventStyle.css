@@ -1,0 +1,9 @@
+.events-widget{
+    margin-top: 40px;
+   width: 100%;
+    margin: 50px;
+    padding: 30px;
+    background-color: var(--widget-background);
+    border-radius: 30px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}

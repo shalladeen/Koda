@@ -1,18 +1,11 @@
-
-
-#signupcontainer { /*not changing anything atm */
-    background-color: #fff;
-    border-radius: 30px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
-    width: 768px;
-    max-width: 60%;
-    max-height: 800px;
-    margin-top: 100px;
-    margin-left: 100px;
-    margin-top: 10vh;
-    border-radius: 150px 0 0 100px;
-    
+:root{
+    --background: #f9fdff;
+    --main: #5c8bf0;
+    --accent: #072d5a;
+    --widget-background: #eef4f7;
 }
+
+
 
 .signupcontainer p { /* text in the toggle */
     font-size: 14px;
@@ -33,8 +26,8 @@
 }
 
 .signupcontainer button { /*button in both signup and signin*/
-    background-color: #512da8;
-    color: #fff;
+    background-color: var(--accent);
+    color: var(--widget-background);
     font-size: 12px;
     padding: 10px 45px;
     border: 1px solid transparent;
@@ -48,11 +41,11 @@
 
 .signupcontainer button.hidden {
     background-color: transparent;
-    border-color: #fff;
+    border-color: var(--widget-background);
 }
 
 .signupcontainer form { /* the forms*/
-    background-color: #fff;
+    background-color: var(--widget-background);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -66,7 +59,7 @@
 }
 
 .signupcontainer input {
-    background-color: #eee;
+    background-color: var(--background);
     border: none;
     margin: 8px 0;
     padding: 10px 15px;
@@ -132,7 +125,7 @@
 }
 
 .social-icons a {
-    border: 1px solid #ccc;
+    border: 1px solid var(--accent);
     border-radius: 20%;
     display: inline-flex;
     justify-content: center;
@@ -164,9 +157,8 @@
 }
 
 .toggle {
-    background-color: #512da8;
     height: 100%;
-    background: linear-gradient(to right, #5c6bc0, #512da8);
+    background: var(--main);
     color: #fff;
     position: relative;
     left: -100%;

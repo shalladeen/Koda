@@ -1,3 +1,10 @@
+:root{
+  --background: #f9fdff;
+  --main: #5c8bf0;
+  --accent: #072d5a;
+  --widget-background: #eef4f7;
+}
+
 .add {
   background-color: transparent;
   border-radius: 30px;
@@ -6,14 +13,21 @@
   border: none;
   cursor: pointer;
   position: fixed;
-  bottom: 10px;
-  left: 0;
   z-index: 2;
   font-size: 20px;
+  bottom: 27%;
+  left: 24%;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
 }
+
+
+
 
 .addTodo {
   font-size: 40px;
+  margin-right: 10px;
 }
 
 .add:hover {
@@ -26,10 +40,10 @@
 }
 
 .addContainer {
-  background-color: #fff;
+  background-color: var(--widget-background);
   border-radius: 30px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
-  position: fixed;
+  position: relative;
   overflow: hidden;
   margin-left: 25%;
   width: 70%;
@@ -59,7 +73,7 @@
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
-  background-color: white;
+  background-color: var(--widget-background);
 }
 
 .label {
@@ -78,7 +92,7 @@ input {
 
 .save {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: var(--main);
   color: #fff;
   border: none;
   cursor: pointer;
@@ -86,5 +100,5 @@ input {
 }
 
 .save:hover {
-  background-color: #0056b3;
+  background-color: var(--accent);
 }

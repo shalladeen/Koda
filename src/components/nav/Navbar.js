@@ -34,28 +34,27 @@ function Navbar() {
                         </Link>
                     </li>
                     <li>
+                        <Link to="/Friends" className="friendIcon">
+                            <FontAwesomeIcon icon={faUserGroup} style={{ color: "#000000" }} />
+                            Friends
+                        </Link>
+                    </li>
+                    <li>
                         <Link to="/Settings" className="settings">
                             <FontAwesomeIcon icon={faGear} style={{ color: "#000000" }} className="navIcon" />
                             Settings
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/signup" className="signup">
+                            <FontAwesomeIcon icon={faRightToBracket} style={{ color: "#000000" }} className="navIcon" />  
+                            Login/Signup
                         </Link>
                     </li>
                     
                     </ul>
                 </div>
             </nav>
-            <div className="outside-icons">
-            <div className="friends">
-                <Link to="/Friends" className="friendIcon">
-                    <FontAwesomeIcon icon={faUserGroup} style={{ color: "#003899" }} />
-                </Link>
-            </div>
-            <div className="signup-nav">
-                 <Link to="/signup" className="signup">
-                    <FontAwesomeIcon icon={faRightToBracket} style={{ color: "#000000" }} className="navIcon" />
-                    
-                </Link>
-            </div>
-            </div>
         </div>
         
     );
