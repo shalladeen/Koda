@@ -1,53 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '../Calendar/CalendarStyle.css';
+import AddEventPopup from './EventPopup/AddEventPopup';
+
 const localizer = momentLocalizer(moment);
 
-const CustomToolbar = (toolbar) => {
-  const goToBack = () => {
-    toolbar.onNavigate('PREV');
+const MyCalendarWidget = () => {
+  const [events, setEvents] = useState([]);
+
+  const handleAddEvent = ({ title, start, end }) => {
+    const newEvent = {
+      id: events.length + 1,
+      title,
+      start: new Date(),
+      end: new Date(),
+    };
+    setEvents([...events, newEvent]);
   };
 
-  const goToNext = () => {
-    toolbar.onNavigate('NEXT');
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleSelectSlot = ({ start, end }) => {
+    setShowPopup(true);
   };
 
-  const goToToday = () => {
-    toolbar.onNavigate('TODAY');
+  const handleClosePopup = () => {
+    setShowPopup(false);
   };
-
-  const handleViewChange = (view) => {
-    toolbar.onView(view);
-  };
-
-  return (
-    <div className="rbc-toolbar">
-      <button onClick={goToBack}>&lt;</button>
-      <button onClick={goToToday}>Today</button>
-      <button onClick={goToNext}>&gt;</button>
-      <span className="rbc-toolbar-label">{toolbar.label}</span>
-      <div className="rbc-btn-group">
-        <button onClick={() => handleViewChange('day')}>Day</button>
-        <button onClick={() => handleViewChange('week')}>Week</button>
-        <button onClick={() => handleViewChange('month')}>Month</button>
-        <button onClick={() => handleViewChange('agenda')}>Agenda</button>
-      </div>
-    </div>
-  );
-};
-
-function MyCalendarWidget() {
-  const events = [
-    {
-      id: 1,
-      title: 'Event 1',
-      start: new Date(2022, 1, 10, 10, 0),
-      end: new Date(2022, 1, 10, 12, 0),
-    },
-    // Add more events as needed
-  ];
 
   return (
     <div className="calendar-container">
@@ -57,12 +38,14 @@ function MyCalendarWidget() {
         views={['month', 'week', 'day', 'agenda']}
         startAccessor="start"
         endAccessor="end"
-        components={{
-          toolbar: CustomToolbar,
-        }}
+        selectable={true}
+        onSelectSlot={handleSelectSlot}
       />
+      {showPopup && (
+        <AddEventPopup onSubmit={handleAddEvent} onClose={handleClosePopup} />
+      )}
     </div>
   );
-}
+};
 
 export default MyCalendarWidget;

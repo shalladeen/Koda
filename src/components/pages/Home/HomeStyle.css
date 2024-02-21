@@ -16,8 +16,7 @@
 .main-widgets {
     display: flex;
     justify-content: space-between;
-    width: 50%; 
-    margin-top: 20px; 
+    width: 80%; 
 }
 
 .home-calendar {
@@ -59,9 +58,7 @@
 
 .home-tasks{
     margin-top: 40px;
-    display: flex;
     align-items: center;
-    width: 60%;
 }
 
 .newTask {

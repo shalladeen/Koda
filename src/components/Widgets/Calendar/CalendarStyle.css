@@ -8,7 +8,7 @@
   .rbc-toolbar {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px; /* Add some spacing at the bottom of the toolbar */
+    margin-bottom: 10px; 
   }
   
   .rbc-btn-group {
@@ -16,6 +16,6 @@
   }
   
   .rbc-btn {
-    font-size: 14px; /* Adjust button font size if needed */
+    font-size: 14px; 
     
   }

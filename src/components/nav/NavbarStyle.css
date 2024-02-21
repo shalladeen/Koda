@@ -43,12 +43,17 @@ height: 100px;
    
 }
 
+#navbar li.active .navIcon {
+    border: 4px solid var(--accent); 
+    border-radius: 3px;
+}
+
 #navbar li .navIcon {
     color: var(--main);
     padding-right: 10px;
 }
 
-#navbar li a:hover {
+#navbar li .navIcon:hover {
     color: var(--accent);
 }
 

@@ -9,14 +9,13 @@
   background-color: transparent;
   border-radius: 30px;
   padding: 10px 20px;
+  margin-top: 20px;
   color: black;
   border: none;
   cursor: pointer;
   position: fixed;
   z-index: 2;
   font-size: 20px;
-  bottom: 27%;
-  left: 24%;
   justify-content: space-between;
   display: flex;
   align-items: center;
@@ -31,7 +30,7 @@
 }
 
 .add:hover {
-  transform: scale(1.1);
+  transform: scale(1.01);
 }
 
 .text-end {
