@@ -6,16 +6,15 @@
   }
 
   .rbc-toolbar {
-    display: flex;
+   flex-wrap: nowrap;
     justify-content: space-between;
     margin-bottom: 10px; 
   }
-  
+
   .rbc-btn-group {
-    margin-right: 5px; /* Add spacing between buttons */
+    margin-right: 2px;
   }
-  
+
   .rbc-btn {
-    font-size: 14px; 
-    
+    font-size: 34px; 
   }
