@@ -1,4 +1,4 @@
-:root{
+:root {
     --background: #f9fdff;
     --main: #5c8bf0;
     --accent: #072d5a;
@@ -6,26 +6,31 @@
 }
 
 #logo {
-height: 100px;
+    height: 100px;
 }
 
-#navbar{
+.navbar {
     background-color: var(--background);
     position: fixed;
-    flex-direction: column;
+    top: 0; /* Ensure navbar starts at the top of the page */
+    left: 0; /* Align navbar to the left side of the page */
     display: flex;
     align-items: center;
     justify-content: flex-start;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    height: 100vh;
+    height: 100%;
+    
+    z-index: 1000; /* Ensure navbar is above other content */
 }
 
-#navbar li{
+#navbar li {
     list-style: none;
     padding: 20px 30px;
     position: relative;
-    width: 100%;
+    width: 100%; /* Take the full width of the navbar */
     margin: 10px 0;
+    display: flex;
+    align-items: center;
 }
 
 #navbar li a {
@@ -36,15 +41,8 @@ height: 100px;
     transition: 0.3s ease-in-out;
 }
 
-#navbar li {
-    display: flex;
-    align-items: center;
-   
-   
-}
-
 #navbar li.active .navIcon {
-    border: 4px solid var(--accent); 
+    border: 4px solid var(--accent);
     border-radius: 3px;
 }
 
@@ -57,9 +55,9 @@ height: 100px;
     color: var(--accent);
 }
 
-/* media queries */
-@media (max-width: 800px){
+/* Adjust the navbar width on smaller screens to take less space */
+@media (max-width: 800px) {
     #navbar {
-        width: 40%;
+        width: 60%; /* Adjust this value as needed for smaller screens */
     }
 }

@@ -19,7 +19,6 @@
 
 .tasklist-container {
     background-color: var(--widget-background);
-    padding-top: 20px;
     width: 1000px;
     height: 300px;
     border-radius: 50px;

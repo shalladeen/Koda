@@ -1,6 +1,9 @@
 import React from 'react';
+
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import './App.css';
+
+import { ChakraProvider } from '@chakra-ui/react';
+
 import Navbar from './components/nav/Navbar';
 import Home from './components/pages/Home/Home';
 import Notes from './components/pages/Notes/Notes';
@@ -11,21 +14,23 @@ import TimeTracker from './components/pages/TimeTracker/TimeTracker';
 
 function App() {
   return (
-    <BrowserRouter>
-      <div>
-        <Navbar />
-        <div className="App">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/Notes" element={<Notes />} />
-            <Route path="/TimeTracker" element={<TimeTracker />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/Friends" element={<Friends />} />
-            <Route path="/Settings" element={<Settings />} />
-          </Routes>
+    <ChakraProvider>
+      <BrowserRouter>
+        <div>
+          <Navbar />
+          <div className="App">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/Notes" element={<Notes />} />
+              <Route path="/TimeTracker" element={<TimeTracker />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/Friends" element={<Friends />} />
+              <Route path="/Settings" element={<Settings />} />
+            </Routes>
+          </div>
         </div>
-      </div>
-    </BrowserRouter>
+      </BrowserRouter>
+    </ChakraProvider>
   );
 }
 
