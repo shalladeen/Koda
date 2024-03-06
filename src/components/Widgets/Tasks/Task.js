@@ -1,101 +1,143 @@
-import React, { useState, useEffect } from "react";
-import '..//Tasks/TaskStyle.css';
+import React, { useState, useEffect } from 'react';
+import {
+  Box, Button, Input, Textarea, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter,
+  ModalBody, ModalCloseButton, FormControl, FormLabel, Heading, IconButton
+} from '@chakra-ui/react';
+import { MdMoreVert } from 'react-icons/md';
 
-function Task({ items: taskItems }) {
-    const [selectedTask, setSelectedTask] = useState(null);
-    const [editedTaskName, setEditedTaskName] = useState("");
-    const [editedTaskDesc, setEditedTaskDesc] = useState("");
-    const [items, setItems] = useState([]);
-
-    // Function to save tasks to local storage
-    const saveTasksToLocalStorage = (tasks) => {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
-
-    // Function to retrieve tasks from local storage
-    const getTasksFromLocalStorage = () => {
-        const storedTasks = localStorage.getItem('tasks');
-        return storedTasks ? JSON.parse(storedTasks) : [];
-    }
-
-    // Load tasks from local storage when the component mounts
+function Task() {
+    const [tasks, setTasks] = useState([]);
+    const [currentTask, setCurrentTask] = useState(null);
+    const [newTaskTitle, setNewTaskTitle] = useState('');
+    const [newTaskDesc, setNewTaskDesc] = useState('');
+    const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
+    const [isEditOpen, setIsEditOpen] = useState(false);
+  
     useEffect(() => {
-        const savedTasks = getTasksFromLocalStorage();
-        setItems(savedTasks);
+      const savedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+      setTasks(savedTasks);
     }, []);
-
-    const handleEditTask = (taskId) => {
-        setSelectedTask(taskId);
-        const selectedTask = items.find(item => item.id === taskId);
-        setEditedTaskName(selectedTask.name);
-        setEditedTaskDesc(selectedTask.desc);
+  
+    const addTask = (e) => {
+      e.preventDefault();
+      if (!newTaskTitle || !newTaskDesc) return;
+  
+      const taskToAdd = {
+        id: Date.now(),
+        name: newTaskTitle,
+        desc: newTaskDesc,
+      };
+  
+      const updatedTasks = [...tasks, taskToAdd];
+      setTasks(updatedTasks);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+      onAddClose(); 
+      setNewTaskTitle('');
+      setNewTaskDesc('');
+    };
+  
+    const openEditModal = (task) => {
+      setCurrentTask(task);
+      setNewTaskTitle(task.name);
+      setNewTaskDesc(task.desc);
+      setIsEditOpen(true);
+    };
+  
+    const handleEditTask = (e) => {
+      e.preventDefault();
+      const updatedTasks = tasks.map((task) =>
+        task.id === currentTask.id ? { ...task, name: newTaskTitle, desc: newTaskDesc } : task
+      );
+      setTasks(updatedTasks);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+      setIsEditOpen(false); 
+      setCurrentTask(null); 
+      setNewTaskTitle(''); 
+      setNewTaskDesc('');
     };
 
-    const handleSaveChanges = () => {
-        const updatedItems = items.map(item => {
-            if (item.id === selectedTask) {
-                return { ...item, name: editedTaskName, desc: editedTaskDesc };
-            }
-            return item;
-        });
-
-        // Update the state with the edited task using setItems
-        setItems(updatedItems);
-
-        // Save the updated tasks in local storage
-        saveTasksToLocalStorage(updatedItems);
-
-        setSelectedTask(null);
+    
+    const closeEditModal = () => {
+      setIsEditOpen(false);
+      setCurrentTask(null);
+      setNewTaskTitle('');
+      setNewTaskDesc('');
     };
 
-    const handleDeleteTask = (taskId) => {
-        const shouldDelete = window.confirm("Are you sure you want to delete this task?");
-        
-        if (shouldDelete) {
-            const updatedItems = items.filter(item => item.id !== taskId);
-    
-            // Update the state with the deleted task using setItems
-            setItems(updatedItems);
-    
-            // Save the updated tasks in local storage
-            saveTasksToLocalStorage(updatedItems);
-        }
-    };
-    
+  return (
+    <Box p={5}>
+      <Heading as="h2" size="xl" textAlign="center" my={5}>My Tasks</Heading>
+      <Button onClick={onAddOpen} colorScheme="teal" mb={4}>Add Task</Button>
 
-    return (
-        <div className="taskpage">
-            <h1 className="tasktitle">My Tasks</h1>
-            <div className="tasklist-container">
-                {items.map((item) => (
-                    <div key={item.id} className="task-container">
-                        <div
-                            className={`items ${item.id === selectedTask ? "active" : ""}`}
-                            onClick={() => handleEditTask(item.id)}
-                        >
-                            {item.name}: {item.desc}
-                        </div>
-                        <div className={`edit-form ${item.id === selectedTask ? "active" : ""}`}>
-                            <h1 className="edit-task-title">Edit Task</h1>
-                            <input className="edit-form-input"
-                                type="text"
-                                value={editedTaskName}
-                                onChange={(e) => setEditedTaskName(e.target.value)}
-                            />
-                            <textarea className="edit-form-description"
-                                value={editedTaskDesc}
-                                onChange={(e) => setEditedTaskDesc(e.target.value)}
-                            />
-                            <div className="edit-buttons">
-                            <button onClick={handleSaveChanges} className="edit-button">Save Changes</button>
-                            <button onClick={() => handleDeleteTask(item.id)} className="delete-button">Delete</button>
-                            </div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+      {/* Add Task Modal */}
+      <Modal isOpen={isAddOpen} onClose={onAddClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add a New Task</ModalHeader>
+          <ModalCloseButton />
+          <form onSubmit={addTask}>
+            <ModalBody>
+              <FormControl isRequired>
+                <FormLabel>Title</FormLabel>
+                <Input value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} placeholder="Enter task title" />
+              </FormControl>
+              <FormControl mt={4} isRequired>
+                <FormLabel>Description</FormLabel>
+                <Textarea value={newTaskDesc} onChange={(e) => setNewTaskDesc(e.target.value)} placeholder="Enter task description" />
+              </FormControl>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} type="submit">Save</Button>
+              <Button onClick={onAddClose}>Cancel</Button>
+            </ModalFooter>
+          </form>
+        </ModalContent>
+      </Modal>
+
+      {/* Edit Task Modal */}
+      <Modal isOpen={isEditOpen} onClose={closeEditModal}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit Task</ModalHeader>
+          <ModalCloseButton />
+          <form onSubmit={handleEditTask}>
+            <ModalBody>
+              {/* Form fields identical to Add Task, but used for editing */}
+              <FormControl isRequired>
+                <FormLabel>Title</FormLabel>
+                <Input value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} placeholder="Enter task title" />
+              </FormControl>
+              <FormControl mt={4} isRequired>
+                <FormLabel>Description</FormLabel>
+                <Textarea value={newTaskDesc} onChange={(e) => setNewTaskDesc(e.target.value)} placeholder="Enter task description" />
+              </FormControl>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} type="submit">Save Changes</Button>
+              <Button onClick={closeEditModal}>Cancel</Button>
+            </ModalFooter>
+          </form>
+        </ModalContent>
+      </Modal>
+      
+
+     <Box maxH="350px" overflowY="auto" mt={4} width="700px" maxWidth="700px">
+        {tasks.map((task) => (
+          <Box key={task.id} p={5} shadow="md" borderWidth="1px" my={2} display="flex" justifyContent="space-between" alignItems="center">
+            <Box>
+              <Box as="span" fontWeight="bold">{task.name}</Box>: <Box as="span"  wordWrap="break-word">{task.desc}</Box>
+            </Box>
+            <IconButton
+              icon={<MdMoreVert />}
+              onClick={() => openEditModal(task)}
+              colorScheme="teal"
+              aria-label="Edit task"
+              size="sm"
+            />
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
 }
-
 export default Task;

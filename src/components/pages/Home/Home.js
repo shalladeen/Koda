@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import TaskAdd from "../../Widgets/Tasks/Add/TaskAdd";
+import Task from "../../Widgets/Tasks/Task";
 import MyCalendarWidget from "../../Widgets/Calendar/CalendarWidget";
 import WelcomeGreeting from "../../Widgets/Greeting/Greeting";
 import '../Home/HomeStyle.css';
@@ -30,7 +30,7 @@ function Home() {
             {/*Todo list and calendar together*/}
             <div className = "main-widgets">
                 <div className="home-tasks">
-                    <TaskAdd/>
+                   <Task/>
                 </div>
                 <div className = "main-calendar">
                 <div className="home-calendar">
