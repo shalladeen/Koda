@@ -1,13 +1,12 @@
 import React from "react";
-import '../TimeTracker/TimeTrackerStyle.css';
+import { Flex, Text } from "@chakra-ui/react";
 
 function TimeTracker() {
     return (
 
-        <div className="centered-text">
-            
-        <h1>Time Tracker</h1>
-        </div>
+        <Flex height="100vh" align="center" justify="center">
+            <Text fontSize="2xl">Tracker</Text>
+        </Flex>
     )
 }
 

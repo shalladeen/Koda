@@ -1,15 +1,12 @@
 import React from "react";
-import '../../nav/NavbarStyle.css';
+import { Flex, Text } from "@chakra-ui/react";
 
 function Notes() {
     return (
-
-        <div className="centered-text">
-       
-        <h1>Notes</h1>
-        </div>
-    )
+        <Flex height="100vh" align="center" justify="center">
+            <Text fontSize="2xl">Notes</Text>
+        </Flex>
+    );
 }
-
 
 export default Notes;

@@ -1,15 +1,13 @@
 import React from "react";
-import '../Friends/FriendStyle.css';
-import Navbar from "../../nav/Navbar";
+import { Flex, Text } from "@chakra-ui/react";
 
 
 function Friends() {
     return (
         
-        <div className="centered-text">
-       
-        <h1>Friends Content</h1>
-        </div>
+        <Flex height="100vh" align="center" justify="center">
+            <Text fontSize="2xl">Friends</Text>
+        </Flex>
     )
 }
 

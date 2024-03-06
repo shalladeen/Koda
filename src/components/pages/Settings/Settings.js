@@ -1,14 +1,13 @@
 import React from "react";
-
+import { Flex, Text } from "@chakra-ui/react";
 
 
 function Settings() {
     return (
 
-        <div className="centered-text">
-       
-        <h1>Settings</h1>
-        </div>
+        <Flex height="100vh" align="center" justify="center">
+            <Text fontSize="2xl">Settings</Text>
+        </Flex>
     )
 }
 

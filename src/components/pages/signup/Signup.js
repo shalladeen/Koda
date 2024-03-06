@@ -1,97 +1,69 @@
-import React, { useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGooglePlusG, faFacebook, faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
-import './SignupStyles.css';
+import React, { useState } from 'react';
+import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Link, Flex, IconButton, useColorMode, VStack, HStack, useColorModeValue } from '@chakra-ui/react';
+import { FaGoogle, FaFacebook, FaGithub, FaLinkedin, FaMoon, FaSun } from 'react-icons/fa';
 
 function Signup() {
-    useEffect(() => {
-        const signupcontainer = document.getElementById('signupcontainer');
-        const registerBtn = document.getElementById('register');
-        const loginBtn = document.getElementById('login');
+    const [isSignUpActive, setIsSignUpActive] = useState(true);
+    const { colorMode, toggleColorMode } = useColorMode();
+    const formBackground = useColorModeValue('gray.50', 'gray.700');
 
-        if (signupcontainer && registerBtn && loginBtn) {
-            registerBtn.addEventListener('click', () => {
-                signupcontainer.classList.add("active");
-            });
-
-            loginBtn.addEventListener('click', () => {
-                signupcontainer.classList.remove("active");
-            });
-        }
-    }, []); // The empty dependency array ensures this runs only once after mounting
+    const toggleForm = () => setIsSignUpActive(!isSignUpActive);
 
     return (
-     
-        <div className="signup-page">
-            
-        <div className="signupcontainer" id="signupcontainer">
-              
-             
-            <div className="form-container sign-up">
-                <form>
-                    <h1>Create An Account</h1>
-                    <div className="social-icons">
-                        <a href="#" className="icons">
-                            <FontAwesomeIcon icon={faGooglePlusG} style={{ color: "#000000" }} />
-                        </a>
-                        <a href="#" className="icons">
-                            <FontAwesomeIcon icon={faFacebook} style={{ color: "#000000" }} />
-                        </a>
-                        <a href="#" className="icons">
-                            <FontAwesomeIcon icon={faGithub} style={{ color: "#000000" }} />
-                        </a>
-                        <a href="#" className="icons">
-                            <FontAwesomeIcon icon={faLinkedin} style={{ color: "#000000" }} />
-                        </a>
-                    </div>
-                    <span>or use your email for registration</span>
-                    <input type="text" placeholder="Name" />
-                    <input type="email" placeholder="Email" />
-                    <input type="password" placeholder="Password" />
-                    <button>Sign Up</button>
-                </form>
-            </div>
-
-            <div className="form-container sign-in">
-                <form>
-                    <h1>Sign In</h1>
-                    <div className="social-icons">
-                    <a href="#" className="icons">
-                            <FontAwesomeIcon icon={faGooglePlusG} style={{ color: "#000000" }} />
-                        </a>
-                        <a href="#" className="icons">
-                            <FontAwesomeIcon icon={faFacebook} style={{ color: "#000000" }} />
-                        </a>
-                        <a href="#" className="icons">
-                            <FontAwesomeIcon icon={faGithub} style={{ color: "#000000" }} />
-                        </a>
-                        <a href="#" className="icons">
-                            <FontAwesomeIcon icon={faLinkedin} style={{ color: "#000000" }} />
-                        </a>
-                    </div>
-                    <span>or use your email to login</span>
-                    <input type="email" placeholder="Email" />
-                    <input type="password" placeholder="Password" />
-                    <a href="#">Forget Your Password?</a>
-                    <button>Sign In</button>
-                </form>
-            </div>
-            <div className="toggle-container">
-                <div className="toggle">
-                    <div className="toggle-panel toggle-left">
-                        <h1>Welcome Back!</h1>
-                        <p>Login here!</p>
-                        <button className="hidden" id="login">Sign In</button>
-                    </div>
-                    <div className="toggle-panel toggle-right">
-                        <h1>Hey There!</h1>
-                        <p>Don't have an account? Register here!</p>
-                        <button className="hidden" id="register">Sign Up</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        <Flex direction="column" align="center" justify="center" h="100vh" p={4}>
+            <VStack spacing={8} bg={formBackground} p={6} borderRadius="xl" boxShadow="lg" w="500px">
+                {isSignUpActive ? (
+                    <>
+                        <Text fontSize="2xl" fontWeight="bold">Create An Account</Text>
+                        {/* Social Icons */}
+                        <HStack spacing={2}>
+                            <IconButton aria-label="Google" icon={<FaGoogle />} />
+                            <IconButton aria-label="Facebook" icon={<FaFacebook />} />
+                            <IconButton aria-label="GitHub" icon={<FaGithub />} />
+                            <IconButton aria-label="LinkedIn" icon={<FaLinkedin />} />
+                        </HStack>
+                        <Text>or use your email for registration</Text>
+                        <FormControl>
+                            <FormLabel>Name</FormLabel>
+                            <Input placeholder="Name" />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Email</FormLabel>
+                            <Input placeholder="Email" />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Password</FormLabel>
+                            <Input type="password" placeholder="Password" />
+                        </FormControl>
+                        <Button colorScheme="blue">Sign Up</Button>
+                        <Button variant="link" onClick={toggleForm}>Already have an account? Sign In</Button>
+                    </>
+                ) : (
+                    <>
+                        <Text fontSize="2xl" fontWeight="bold">Sign In</Text>
+                        {/* Social Icons */}
+                        <HStack spacing={2}>
+                            <IconButton aria-label="Google" icon={<FaGoogle />} />
+                            <IconButton aria-label="Facebook" icon={<FaFacebook />} />
+                            <IconButton aria-label="GitHub" icon={<FaGithub />} />
+                            <IconButton aria-label="LinkedIn" icon={<FaLinkedin />} />
+                        </HStack>
+                        <Text>or use your email to login</Text>
+                        <FormControl>
+                            <FormLabel>Email</FormLabel>
+                            <Input placeholder="Email" />
+                        </FormControl>
+                        <FormControl>
+                            <FormLabel>Password</FormLabel>
+                            <Input type="password" placeholder="Password" />
+                        </FormControl>
+                        <Link colorScheme="blue">Forget Your Password?</Link>
+                        <Button colorScheme="blue">Sign In</Button>
+                        <Button variant="link" onClick={toggleForm}>Don't have an account? Sign Up</Button>
+                    </>
+                )}
+            </VStack>
+        </Flex>
     );
 }
 

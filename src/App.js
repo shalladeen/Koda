@@ -2,7 +2,7 @@ import React from 'react';
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 
 import Navbar from './components/nav/Navbar';
 import Home from './components/pages/Home/Home';
@@ -15,6 +15,7 @@ import TimeTracker from './components/pages/TimeTracker/TimeTracker';
 function App() {
   return (
     <ChakraProvider>
+      <ColorModeScript />
       <BrowserRouter>
         <div>
           <Navbar />

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { Flex, Box, IconButton, Image, useColorModeValue } from '@chakra-ui/react';
+import { Flex, Box, IconButton, Image, useColorModeValue, useColorMode } from '@chakra-ui/react';
+import { FaMoon, FaSun } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUserGroup,
@@ -10,11 +11,12 @@ import {
   faGripVertical,
   faNotesMedical,
 } from '@fortawesome/free-solid-svg-icons';
-import koda2 from './images/koda2.svg'; // Ensure this path is correct
-import './NavbarStyle.css'; // Ensure this path is correct
+import koda2 from './images/koda2.svg'; 
+import './NavbarStyle.css'; 
 
 function Navbar() {
   const location = useLocation();
+  const { colorMode, toggleColorMode } = useColorMode();
   const bg = useColorModeValue('#f9fdff', 'gray.800');
 
   const NavLink = ({ to, icon }) => {
@@ -61,6 +63,17 @@ function Navbar() {
         <NavLink to="/Settings" icon={faGear} />
         <NavLink to="/signup" icon={faRightToBracket} />
       </Flex>
+
+
+      <IconButton
+        aria-label="Toggle dark mode"
+        icon={colorMode === 'light' ? <FaMoon /> : <FaSun />}
+        onClick={toggleColorMode}
+        position="absolute"
+        bottom="4"
+        right="4"
+        isRound={true}
+      />
     </Flex>
   );
 }
