@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Navbar from "../../nav/Navbar";
 import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Link, Flex, IconButton, useColorMode, VStack, HStack, useColorModeValue } from '@chakra-ui/react';
 import { FaGoogle, FaFacebook, FaGithub, FaLinkedin, FaMoon, FaSun } from 'react-icons/fa';
 
@@ -11,6 +12,7 @@ function Signup() {
 
     return (
         <Flex direction="column" align="center" justify="center" h="100vh" p={4}>
+              <Navbar />
             <VStack spacing={8} bg={formBackground} p={6} borderRadius="xl" boxShadow="lg" w="500px">
                 {isSignUpActive ? (
                     <>

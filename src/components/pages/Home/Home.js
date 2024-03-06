@@ -1,32 +1,60 @@
-import React from "react";
-import { Box, Flex, useColorModeValue } from "@chakra-ui/react";
+import React, { useState } from "react";
+import { Box, Flex, useColorModeValue, IconButton } from "@chakra-ui/react";
+import { FaUserCircle } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import Task from "../../Widgets/Tasks/Task";
 import MyCalendarWidget from "../../Widgets/Calendar/CalendarWidget";
 import WelcomeGreeting from "../../Widgets/Greeting/Greeting";
+import Navbar from "../../nav/Navbar"; 
 
 function Home() {
     const bgColor = useColorModeValue('#f9fdff', 'gray.800');
-    const widgetBgColor = useColorModeValue('#eef4f7', 'gray.700');
+    const buttonBg = useColorModeValue('blue.500', 'blue.200');
+    const textColor = useColorModeValue('white', 'gray.800');
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
+
+    const handleProfileClick = () => {
+      if (isLoggedIn) {
+        navigate('/settings'); 
+      } else {
+        navigate('/signup');
+      }
+    };
 
     return (
-        <Flex className="main-page" direction="column" alignItems="center" bg={bgColor} height="100vh">
-            {/* Placeholder for navbar */}
-            <Box className="navbar-placeholder" h="100px" pos="fixed" top="0" left="0" right="0" zIndex="-1" />
+      // Main container
+      <Flex direction="row" bg={bgColor} height="100vh">
 
-            <Box className="home-greeting" w="80%" m="50px" p="30px" bg={widgetBgColor} borderRadius="30px" boxShadow="0px 2px 5px rgba(0, 0, 0, 0.1)">
-                <WelcomeGreeting />
-            </Box>
+        {/* Navbar */}
+        <Navbar />
 
-            {/* Todo list and calendar together */}
-            <Flex className="main-widgets" justifyContent="space-between" w="80%">
-                <Box className="home-tasks">
-                    <Task />
-                </Box>
-                <Box className="home-calendar" mb="100px">
-                    <MyCalendarWidget />
-                </Box>
-            </Flex>
+        {/* Main content */}
+        <Flex direction="column" alignItems="center" p={5} w="full">
+          {/* Adjust this Flex to control the alignment & spacing of your content */}
+          <Flex width="80%" alignItems="center" mt={10}>
+              <WelcomeGreeting isLoggedIn={isLoggedIn} />
+              <IconButton
+                  aria-label="Profile"
+                  icon={<FaUserCircle />}
+                  isRound={true}
+                  size="lg"
+                  ml="auto" // Automatically margins to the left, pushing the icon to the right
+                  bg={buttonBg}
+                  color={textColor}
+                  onClick={handleProfileClick}
+                  _hover={{ bg: useColorModeValue('blue.600', 'blue.300') }}
+              />
+          </Flex>
+
+          {/* Todo list and calendar together */}
+          <Flex justifyContent="space-between" w="80%" mt={4}>
+              <Task />
+              <MyCalendarWidget />
+          </Flex>
         </Flex>
+      </Flex>
     );
 }
 

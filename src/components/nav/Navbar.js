@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { Flex, Box, IconButton, Image, useColorModeValue, useColorMode } from '@chakra-ui/react';
+import { Flex, Box, IconButton, Image, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -11,8 +11,7 @@ import {
   faGripVertical,
   faNotesMedical,
 } from '@fortawesome/free-solid-svg-icons';
-import koda2 from './images/koda2.svg'; 
-import './NavbarStyle.css'; 
+import koda2 from './images/koda2.svg';
 
 function Navbar() {
   const location = useLocation();
@@ -34,25 +33,29 @@ function Navbar() {
         colorScheme={colorScheme}
         size="lg"
         isRound={true}
-        my={2} 
+        my={2}
       />
     );
   };
 
   return (
     <Flex
-      className="navbar"
       direction="column"
       align="center"
       justify="flex-start"
       bg={bg}
       height="100vh"
-      p={{ base: 4, md: 6 }} 
-      width={{ base: "75px", md: "150px" }} 
+      p={{ base: 4, md: 6 }}
+      width={{ base: "75px", md: "150px" }}
+      position="fixed"
+      top="0"
+      left="0"
+      boxShadow="0px 2px 5px rgba(0, 0, 0, 0.1)"
+      zIndex="banner"
     >
-      <Box className="logo-image" my={4}> 
+      <Box my={4}>
         <RouterLink to="/">
-          <Image src={koda2} alt="logo" boxSize={{ base: "75px", md: "100px" }} /> 
+          <Image src={koda2} alt="logo" boxSize={{ base: "75px", md: "100px" }} />
         </RouterLink>
       </Box>
       <Flex direction="column" as="nav" align="center" justify="center" gap={4}>
@@ -61,10 +64,7 @@ function Navbar() {
         <NavLink to="/TimeTracker" icon={faStopwatch} />
         <NavLink to="/Friends" icon={faUserGroup} />
         <NavLink to="/Settings" icon={faGear} />
-        <NavLink to="/signup" icon={faRightToBracket} />
       </Flex>
-
-
       <IconButton
         aria-label="Toggle dark mode"
         icon={colorMode === 'light' ? <FaMoon /> : <FaSun />}

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Box, Button, Input, Textarea, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter,
+import { Flex, Checkbox, Text, Box, Button, Input, Textarea, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter,
   ModalBody, ModalCloseButton, FormControl, FormLabel, Heading, IconButton
 } from '@chakra-ui/react';
-import { MdMoreVert } from 'react-icons/md';
+import { MdMoreVert, MdDelete } from 'react-icons/md';
 
 function Task() {
     const [tasks, setTasks] = useState([]);
@@ -20,12 +19,13 @@ function Task() {
   
     const addTask = (e) => {
       e.preventDefault();
-      if (!newTaskTitle || !newTaskDesc) return;
+      if (!newTaskTitle) return;
   
       const taskToAdd = {
         id: Date.now(),
         name: newTaskTitle,
         desc: newTaskDesc,
+        completed: false,
       };
   
       const updatedTasks = [...tasks, taskToAdd];
@@ -56,6 +56,20 @@ function Task() {
       setNewTaskDesc('');
     };
 
+    const deleteTask = (taskId) => {
+      const updatedTasks = tasks.filter(task => task.id !== taskId);
+      setTasks(updatedTasks);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+      if (isEditOpen) setIsEditOpen(false); // Close edit modal if open
+  };
+
+   const toggleTaskCompletion = (taskId) => {
+        const updatedTasks = tasks.map(task => 
+            task.id === taskId ? { ...task, completed: !task.completed } : task
+        );
+        setTasks(updatedTasks);
+        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    };
     
     const closeEditModal = () => {
       setIsEditOpen(false);
@@ -81,7 +95,7 @@ function Task() {
                 <FormLabel>Title</FormLabel>
                 <Input value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} placeholder="Enter task title" />
               </FormControl>
-              <FormControl mt={4} isRequired>
+              <FormControl mt={4} >
                 <FormLabel>Description</FormLabel>
                 <Textarea value={newTaskDesc} onChange={(e) => setNewTaskDesc(e.target.value)} placeholder="Enter task description" />
               </FormControl>
@@ -107,7 +121,7 @@ function Task() {
                 <FormLabel>Title</FormLabel>
                 <Input value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} placeholder="Enter task title" />
               </FormControl>
-              <FormControl mt={4} isRequired>
+              <FormControl mt={4}>
                 <FormLabel>Description</FormLabel>
                 <Textarea value={newTaskDesc} onChange={(e) => setNewTaskDesc(e.target.value)} placeholder="Enter task description" />
               </FormControl>
@@ -121,23 +135,20 @@ function Task() {
       </Modal>
       
 
-     <Box maxH="350px" overflowY="auto" mt={4} width="700px" maxWidth="700px">
-        {tasks.map((task) => (
-          <Box key={task.id} p={5} shadow="md" borderWidth="1px" my={2} display="flex" justifyContent="space-between" alignItems="center">
-            <Box>
-              <Box as="span" fontWeight="bold">{task.name}</Box>: <Box as="span"  wordWrap="break-word">{task.desc}</Box>
+      <Box maxH="350px" overflowY="auto" mt={4} width="700px" maxWidth="700px">
+                {tasks.map((task) => (
+                    <Flex key={task.id} p={5} shadow="md" borderWidth="1px" my={2} alignItems="center">
+                        <Checkbox isChecked={task.completed} onChange={() => toggleTaskCompletion(task.id)} mr={2} />
+                        <Box flex="1">
+                            <Text as={task.completed ? "s" : "span"} fontWeight="bold">{task.name} </Text>
+                            <Text as={task.completed ? "s" : "span"}> {task.desc}</Text>
+                        </Box>
+                        <IconButton icon={<MdMoreVert />} onClick={() => openEditModal(task)} aria-label="Edit task" size="sm" mr={2} />
+                        <IconButton icon={<MdDelete />} onClick={() => deleteTask(task.id)} colorScheme="red" aria-label="Delete task" size="sm" />
+                    </Flex>
+                ))}
             </Box>
-            <IconButton
-              icon={<MdMoreVert />}
-              onClick={() => openEditModal(task)}
-              colorScheme="teal"
-              aria-label="Edit task"
-              size="sm"
-            />
-          </Box>
-        ))}
-      </Box>
-    </Box>
-  );
+        </Box>
+    );
 }
 export default Task;

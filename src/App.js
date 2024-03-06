@@ -18,7 +18,7 @@ function App() {
       <ColorModeScript />
       <BrowserRouter>
         <div>
-          <Navbar />
+          
           <div className="App">
             <Routes>
               <Route path="/" element={<Home />} />
