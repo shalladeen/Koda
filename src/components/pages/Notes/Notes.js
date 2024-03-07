@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Flex, Button, VStack, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, 
-  ModalBody, ModalFooter, Input, Textarea, Box, Text, Select, Heading, Wrap, Tag,} from "@chakra-ui/react";
+  ModalBody, ModalFooter, Input, Textarea, Box, Text, Select, Heading, Wrap, Tag, Menu, MenuButton, MenuList, MenuItem, ButtonGroup} from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom"; 
+import NotePage from "./NotePage";
 import Navbar from "../../nav/Navbar";
 
 function Notes() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [notes, setNotes] = useState([]);
+  const navigate = useNavigate();
   const [editNoteId, setEditNoteId] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -53,6 +56,10 @@ function Notes() {
     onOpen();
   };
 
+  const handleDocumentNoteClick = () => {
+    navigate("/notepage");
+  };
+
   const resetForm = () => {
     setEditNoteId(null);
     setTitle("");
@@ -64,9 +71,15 @@ function Notes() {
     <Flex direction="column" align="center" m={4}>
       <Navbar />
       <Heading mb={6}>My Notes</Heading>
-      <Button onClick={openModalForNewNote} colorScheme="teal" my={4}>
-        Create Note
-      </Button>
+      <Menu>
+        <MenuButton as={Button} colorScheme="teal" my={4}>
+          Create Note
+        </MenuButton>
+        <MenuList>
+          <MenuItem onClick={openModalForNewNote}>Quick Note</MenuItem>
+          <MenuItem onClick={handleDocumentNoteClick}>Document Note</MenuItem>
+        </MenuList>
+      </Menu>
       <Wrap justify="center">
         {notes.map((note) => (
           <Box
@@ -78,12 +91,20 @@ function Notes() {
             m="2"
             bg="gray.50"
           >
-            <Text fontWeight="bold" mb={2}>{note.title}</Text>
+            <Text fontWeight="bold" mb={2}>
+              {note.title}
+            </Text>
             <Text mb={2}>{note.content}</Text>
             {note.tag && <Tag colorScheme={getTagColor(note.tag)}>{note.tag}</Tag>}
             <Flex justify="space-between" mt={4}>
-              <Button size="sm" onClick={() => handleEditNote(note)}>Edit</Button>
-              <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
+              <ButtonGroup>
+                <Button size="sm" onClick={() => handleEditNote(note)}>
+                  Edit
+                </Button>
+                <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>
+                  Delete
+                </Button>
+              </ButtonGroup>
             </Flex>
           </Box>
         ))}
