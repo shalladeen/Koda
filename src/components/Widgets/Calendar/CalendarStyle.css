@@ -1,6 +1,16 @@
+:root {
+    --fc-today-bg-light: #E0F2FE;
+    --fc-today-bg-dark: #CADBE9; 
+  }
+/* CSS file or <style> tag */
+.fc-timeGridWeek-view, .fc-timeGridDay-view {
+    max-height: 550px; /* Adjust the height as needed */
+    overflow: auto; /* Enable scrolling */
+  }
+  
 .fc-event:hover {
     cursor: pointer;
-    background-color: #f0f0f0; /* Adjust color for hover state */
+    background-color: #f0f0f0; 
   }
   
   .fc-day:hover {
@@ -9,14 +19,22 @@
   }
 
   .fc .fc-view-harness {
-    width: 90%;
+    width: 100%;
     max-width: 1200px;
     margin: auto;
   }
+
+  .fc .fc-day-today {
+    background-color: #CAF0F8;
+    border-color: #CAF0F8; 
+  }
+  
+  
   
   @media (max-width: 768px) {
     .fc .fc-view-harness {
       width: 100%;
     }
   }
+
   

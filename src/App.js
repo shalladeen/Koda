@@ -4,7 +4,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 
-import Navbar from './components/nav/Navbar';
 import Home from './components/pages/Home/Home';
 import Notes from './components/pages/Notes/Notes';
 import Friends from './components/pages/Friends/Friends';
@@ -18,7 +17,6 @@ function App() {
       <ColorModeScript />
       <BrowserRouter>
         <div>
-          
           <div className="App">
             <Routes>
               <Route path="/" element={<Home />} />

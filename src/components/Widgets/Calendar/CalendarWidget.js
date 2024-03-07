@@ -28,13 +28,32 @@ const MyFullCalendar = () => {
     localStorage.setItem('fullCalendarEvents', JSON.stringify(events));
   }, [events]);
 
+  useEffect(() => {
+    const storedEvents = localStorage.getItem('fullCalendarEvents');
+    if (storedEvents) {
+      setEvents(JSON.parse(storedEvents));
+    }
+  }, []);
+  
+
   const handleDateSelect = (selectInfo) => {
-    setSelectedDate(selectInfo.start);
-    setAllDay(selectInfo.allDay);
+    const { start, end, allDay } = selectInfo;
+
+    setSelectedDate(start);
+    setAllDay(allDay);
+
+    if (!allDay) {
+        setStartTime(moment(start).format("HH:mm"));
+        setEndTime(moment(end).format("HH:mm"));
+    } else {
+        setStartTime('09:00');
+        setEndTime('17:00');
+    }
+
     setCurrentEvent(null);
-    setEventTitle('');
-    onOpen();
-  };
+    setEventTitle(''); 
+    onOpen(); 
+};
 
   const handleEventClick = (clickInfo) => {
     setCurrentEvent({
@@ -55,8 +74,6 @@ const MyFullCalendar = () => {
 
 const handleEventDrop = (info) => {
   const { event } = info;
-
-  // Find the event in your state and update its start and end dates
   const updatedEvents = events.map((evt) => {
     if (evt.id === event.id) {
       return { ...evt, start: event.start, end: event.end };
@@ -65,7 +82,6 @@ const handleEventDrop = (info) => {
   });
 
   setEvents(updatedEvents);
-  // Optionally, save the updated events list to localStorage or backend
   localStorage.setItem('fullCalendarEvents', JSON.stringify(updatedEvents));
 };
 
@@ -134,6 +150,7 @@ const handleEventEdit = (event) => {
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
           }}
           selectable={true}
+          editable={true}
           selectMirror={true}
           dayMaxEvents={true}
           weekends={true}
@@ -141,7 +158,17 @@ const handleEventEdit = (event) => {
           select={handleDateSelect}
           eventClick={handleEventClick}
           eventDrop={handleEventDrop}
+          viewDidMount={({ view }) => {
+            if (view.type === 'timeGridWeek' || view.type === 'timeGridDay') {
+              document.querySelector('.fc').style.maxHeight = '550px';
+              document.querySelector('.fc').style.overflow = 'auto';
+            } else {
+              document.querySelector('.fc').style.maxHeight = '';
+              document.querySelector('.fc').style.overflow = '';
+            }
+          }}
           height="auto"
+         
         />
           <Box borderWidth="1px" borderRadius="lg" p={5} mt={4} boxShadow="base">
           <Text fontSize="xl" fontWeight="bold">Today's Events:</Text>
@@ -199,7 +226,7 @@ const handleEventEdit = (event) => {
             <ModalFooter>
               <Button colorScheme="blue" mr={3} onClick={saveEvent}>Save</Button>
               {currentEvent && <Button colorScheme="red" onClick={deleteEvent}>Delete</Button>}
-              <Button colorScheme="blue" onClick={onClose}>Cancel</Button>
+              <Button colorScheme="gray" onClick={onClose}>Cancel</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
