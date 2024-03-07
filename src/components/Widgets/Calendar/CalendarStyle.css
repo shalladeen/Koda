@@ -4,17 +4,25 @@
   }
 /* CSS file or <style> tag */
 .fc-timeGridWeek-view, .fc-timeGridDay-view {
-    max-height: 550px; /* Adjust the height as needed */
-    overflow: auto; /* Enable scrolling */
+    max-height: 700px;
+    overflow: auto;
   }
 
   .fc .fc-daygrid-day.fc-day-today{
   background-color: #E0F2FE;
 }
 
-.fc-timeGridWeek-view .fc-day-today{
-    background-color: #E0F2FE;
+/* Customize the background color for 'today' */
+.fc .fc-day-today {
+  background-color: #E0F2FE !important; /* Light blue */
 }
+
+/* Custom view handling for week and day views */
+.fc-timeGridWeek-view, .fc-timeGridDay-view {
+  max-height: 700px; /* Example max height */
+  overflow: auto; /* Allows scrolling within the view */
+}
+
   
 .fc-event:hover {
     cursor: pointer;
@@ -32,10 +40,7 @@
     margin: auto;
   }
 
-  .fc .fc-day-today {
-    background-color: #CAF0F8;
-    border-color: #CAF0F8; 
-  }
+
   
   
   

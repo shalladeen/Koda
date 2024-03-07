@@ -19,42 +19,37 @@ const MyFullCalendar = () => {
   const [endTime, setEndTime] = useState('17:00');
   const { colorMode } = useColorMode();
 
-  useEffect(() => {
-    const savedEvents = localStorage.getItem('fullCalendarEvents');
-    setEvents(savedEvents ? JSON.parse(savedEvents) : []);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('fullCalendarEvents', JSON.stringify(events));
-  }, [events]);
-
+  // LOAD EVENTS FROM LOCALSTORAGE
   useEffect(() => {
     const storedEvents = localStorage.getItem('fullCalendarEvents');
-    if (storedEvents) {
-      setEvents(JSON.parse(storedEvents));
-    }
+    const parsedEvents = storedEvents ? JSON.parse(storedEvents).map(event => ({
+      ...event,
+      start: new Date(event.start),
+      end: event.end ? new Date(event.end) : null
+    })) : [];
+    setEvents(parsedEvents);
   }, []);
-  
 
+///////// DATE SELECT //////////////////////
   const handleDateSelect = (selectInfo) => {
     const { start, end, allDay } = selectInfo;
-
-    setSelectedDate(start);
-    setAllDay(allDay);
-
+    
+    setSelectedDate(selectInfo.startStr); 
+    setAllDay(selectInfo.allDay);
+    setEventTitle(""); 
+    setCurrentEvent(null); 
+    
     if (!allDay) {
-        setStartTime(moment(start).format("HH:mm"));
-        setEndTime(moment(end).format("HH:mm"));
-    } else {
-        setStartTime('09:00');
-        setEndTime('17:00');
-    }
+      setStartTime(moment(start).format("HH:mm"));
+      setEndTime(moment(end).format("HH:mm"));
+  } else {
+      setStartTime('09:00');
+      setEndTime('17:00');
+  }
+    onOpen();
+  };
 
-    setCurrentEvent(null);
-    setEventTitle(''); 
-    onOpen(); 
-};
-
+//////// EVENT CLICK ///////////////////
   const handleEventClick = (clickInfo) => {
     setCurrentEvent({
         id: clickInfo.event.id,
@@ -72,6 +67,7 @@ const MyFullCalendar = () => {
     onOpen();
 };
 
+//////////// DRAG AND DROP ///////////////////
 const handleEventDrop = (info) => {
   const { event } = info;
   const updatedEvents = events.map((evt) => {
@@ -85,6 +81,7 @@ const handleEventDrop = (info) => {
   localStorage.setItem('fullCalendarEvents', JSON.stringify(updatedEvents));
 };
 
+////////// EDITING EVENT ////////////////////
 const handleEventEdit = (event) => {
   setCurrentEvent(event); 
   setEventTitle(event.title);
@@ -97,44 +94,66 @@ const handleEventEdit = (event) => {
   onOpen();
 };
 
-  const saveEvent = () => {
-    const startDateTime = allDay ? 
-        selectedDate : 
-        moment(selectedDate).set({
-            hours: moment(startTime, "HH:mm").hours(),
-            minutes: moment(startTime, "HH:mm").minutes(),
-        }).toDate();
-
-    const endDateTime = allDay ? 
-        moment(selectedDate).add(1, 'day').toDate() :
-        moment(selectedDate).set({
-            hours: moment(endTime, "HH:mm").hours(),
-            minutes: moment(endTime, "HH:mm").minutes(),
-        }).toDate();
-
-    let newEvent = {
-        id: currentEvent ? currentEvent.id : Date.now().toString(),
+/////////// SAVE EVENT ////////////////////
+const saveEvent = () => {
+  let updatedEvents;
+  if (currentEvent) {
+    updatedEvents = events.map(event =>
+      event.id === currentEvent.id ? {
+        ...event,
         title: eventTitle,
-        start: startDateTime,
-        end: endDateTime,
-        allDay,
+        start: selectedDate,
+        end: endTime,
+        allDay: allDay,
+      } : event
+    );
+  } else {
+    const newEvent = {
+      id: Date.now().toString(), 
+      title: eventTitle,
+      start: allDay ? selectedDate : moment(selectedDate).set({
+        hours: moment(startTime, "HH:mm").hours(),
+        minutes: moment(startTime, "HH:mm").minutes(),
+      }).toDate(),
+      end: allDay ? moment(selectedDate).add(1, 'day').toDate() : moment(selectedDate).set({
+        hours: moment(endTime, "HH:mm").hours(),
+        minutes: moment(endTime, "HH:mm").minutes(),
+      }).toDate(),
+      allDay,
     };
+    updatedEvents = [...events, newEvent];
+  }
 
-    if (currentEvent) {
-        setEvents(events.map(event => event.id === currentEvent.id ? newEvent : event));
-    } else {
-        setEvents([...events, newEvent]);
-    }
+  setEvents(updatedEvents);
 
-    onClose();
+  const eventsForStorage = updatedEvents.map(event => ({
+    ...event,
+    start: event.start instanceof Date ? event.start.toISOString() : event.start,
+    end: event.end instanceof Date ? event.end.toISOString() : event.end,
+  }));
+  localStorage.setItem('fullCalendarEvents', JSON.stringify(eventsForStorage));
+
+  onClose(); 
 };
 
-  const deleteEvent = () => {
-    const filteredEvents = events.filter(event => currentEvent.id !== event.id);
-    setEvents(filteredEvents);
-    onClose();
-  };
+////// DELETE EVENT /////////////////
+const deleteEvent = () => {
+  if (!currentEvent) return;
+  const updatedEvents = events.filter(event => event.id !== currentEvent.id);
 
+  setEvents(updatedEvents);
+
+  const eventsForStorage = updatedEvents.map(event => ({
+    ...event,
+    start: event.start instanceof Date ? event.start.toISOString() : event.start,
+    end: event.end instanceof Date ? event.end.toISOString() : event.end
+  }));
+  localStorage.setItem('fullCalendarEvents', JSON.stringify(eventsForStorage));
+
+  onClose();
+};
+
+///// TODAYS EVENTS ///////////
   const todaysEvents = events.filter((event) => moment().isSame(event.start, 'day'));
 
 

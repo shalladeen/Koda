@@ -24,15 +24,12 @@ function Home() {
     };
 
     return (
-      // Main container
       <Flex direction="row" bg={bgColor} height="100vh">
 
-        {/* Navbar */}
         <Navbar />
 
         {/* Main content */}
         <Flex direction="column" alignItems="center" p={5} w="full">
-          {/* Adjust this Flex to control the alignment & spacing of your content */}
           <Flex width="80%" alignItems="center" mt={10}>
               <WelcomeGreeting isLoggedIn={isLoggedIn} />
               <IconButton
@@ -40,7 +37,7 @@ function Home() {
                   icon={<FaUserCircle />}
                   isRound={true}
                   size="lg"
-                  ml="auto" // Automatically margins to the left, pushing the icon to the right
+                  ml="auto"
                   bg={buttonBg}
                   color={textColor}
                   onClick={handleProfileClick}
