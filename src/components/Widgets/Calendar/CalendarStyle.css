@@ -1,0 +1,22 @@
+.fc-event:hover {
+    cursor: pointer;
+    background-color: #f0f0f0; /* Adjust color for hover state */
+  }
+  
+  .fc-day:hover {
+    cursor: pointer;
+    background-color: #fff
+  }
+
+  .fc .fc-view-harness {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  @media (max-width: 768px) {
+    .fc .fc-view-harness {
+      width: 100%;
+    }
+  }
+  
