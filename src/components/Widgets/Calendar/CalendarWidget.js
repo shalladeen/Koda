@@ -235,8 +235,6 @@ const handleAddUpcomingEvent = () => {
               <IconButton
                 aria-label="Add event"
                 icon={<AddIcon />}
-                colorScheme="blue"
-                _hover={{bg: "blue.300"}}
                 size="sm"
                 onClick={() => handleAddTodayEvent()}
               />
@@ -302,7 +300,7 @@ const handleAddUpcomingEvent = () => {
               </Box>
             ))
           ) : (
-            <Text>No upcoming events.</Text>
+            <Text>No events tomorrow.</Text>
           )}
         </VStack>
         </Box>
