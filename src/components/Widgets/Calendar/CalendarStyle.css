@@ -7,6 +7,14 @@
     max-height: 550px; /* Adjust the height as needed */
     overflow: auto; /* Enable scrolling */
   }
+
+  .fc .fc-daygrid-day.fc-day-today{
+  background-color: #E0F2FE;
+}
+
+.fc-timeGridWeek-view .fc-day-today{
+    background-color: #E0F2FE;
+}
   
 .fc-event:hover {
     cursor: pointer;
