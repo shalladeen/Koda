@@ -135,19 +135,23 @@ function Task() {
       </Modal>
       
 
-      <Box maxH="350px" overflowY="auto" mt={4} width="700px" maxWidth="700px">
-                {tasks.map((task) => (
-                    <Flex key={task.id} p={5} shadow="md" borderWidth="1px" my={2} alignItems="center">
-                        <Checkbox isChecked={task.completed} onChange={() => toggleTaskCompletion(task.id)} mr={2} />
-                        <Box flex="1">
-                            <Text as={task.completed ? "s" : "span"} fontWeight="bold">{task.name} </Text>
-                            <Text as={task.completed ? "s" : "span"}> {task.desc}</Text>
-                        </Box>
-                        <IconButton icon={<MdMoreVert />} onClick={() => openEditModal(task)} aria-label="Edit task" size="sm" mr={2} />
-                        <IconButton icon={<MdDelete />} onClick={() => deleteTask(task.id)} colorScheme="red" aria-label="Delete task" size="sm" />
-                    </Flex>
-                ))}
-            </Box>
+      {tasks.length > 0 ? (
+                <Box maxH="350px" overflowY="auto" mt={4} width="700px" maxWidth="700px">
+                    {tasks.map((task) => (
+                        <Flex key={task.id} p={5} shadow="md" borderWidth="1px" my={2} alignItems="center">
+                            <Checkbox isChecked={task.completed} onChange={() => toggleTaskCompletion(task.id)} mr={2} />
+                            <Box flex="1">
+                                <Text as={task.completed ? "s" : "span"} fontWeight="bold">{task.name} </Text>
+                                <Text as={task.completed ? "s" : "span"}> {task.desc}</Text>
+                            </Box>
+                            <IconButton icon={<MdMoreVert />} onClick={() => openEditModal(task)} aria-label="Edit task" size="sm" mr={2} />
+                            <IconButton icon={<MdDelete />} onClick={() => deleteTask(task.id)} colorScheme="red" aria-label="Delete task" size="sm" />
+                        </Flex>
+                    ))}
+                </Box>
+            ) : (
+                <Text textAlign="center" mt={5}>There are currently no tasks.</Text>
+            )}
         </Box>
     );
 }

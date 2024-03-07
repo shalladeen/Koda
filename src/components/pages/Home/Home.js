@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Flex, useColorModeValue, IconButton } from "@chakra-ui/react";
+import { Box, Flex, useColorModeValue, IconButton, Text } from "@chakra-ui/react";
 import { FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Task from "../../Widgets/Tasks/Task";
@@ -24,20 +24,19 @@ function Home() {
     };
 
     return (
-      <Flex direction="row" bg={bgColor} height="100vh">
-
+      <Flex direction={["column", "row"]} bg={bgColor} height="100vh">
         <Navbar />
 
         {/* Main content */}
-        <Flex direction="column" alignItems="center" p={5} w="full">
-          <Flex width="80%" alignItems="center" mt={10}>
+        <Flex direction="column" alignItems="center" p={[2, 5]} w="full">
+          <Flex width="full" direction={["column", "row"]} alignItems="center" mt={[2, 10]} px={[4, 0]}>
               <WelcomeGreeting isLoggedIn={isLoggedIn} />
               <IconButton
                   aria-label="Profile"
                   icon={<FaUserCircle />}
                   isRound={true}
                   size="lg"
-                  ml="auto"
+                  ml={[0, "auto"]} mt={[2, 0]} // Adjust margin top for mobile
                   bg={buttonBg}
                   color={textColor}
                   onClick={handleProfileClick}
@@ -46,9 +45,13 @@ function Home() {
           </Flex>
 
           {/* Todo list and calendar together */}
-          <Flex justifyContent="space-between" w="80%" mt={4}>
-              <Task />
-              <MyCalendarWidget />
+          <Flex direction={["column", "row"]} justifyContent="space-between" w="full" mt={[2, 4]} px={[4, 0]}>
+              <Box mb={[4, 0]} w={["full", "45%"]}>
+                <Task />
+              </Box>
+              <Box w={["full", "45%"]}>
+                <MyCalendarWidget />
+              </Box>
           </Flex>
         </Flex>
       </Flex>

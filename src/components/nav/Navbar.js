@@ -1,11 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { Flex, Box, IconButton, Image, useColorMode, useColorModeValue } from '@chakra-ui/react';
-import { FaMoon, FaSun } from 'react-icons/fa';
+import {
+  Flex,
+  Box,
+  IconButton,
+  Image,
+  useColorMode,
+  useColorModeValue,
+  Drawer,
+  DrawerBody,
+  DrawerOverlay,
+  DrawerContent,
+  Button,
+  VStack,
+  Text,
+} from '@chakra-ui/react';
+import { FaMoon, FaSun, FaBars } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUserGroup,
-  faRightToBracket,
   faGear,
   faStopwatch,
   faGripVertical,
@@ -16,65 +29,73 @@ import koda2 from './images/koda2.svg';
 function Navbar() {
   const location = useLocation();
   const { colorMode, toggleColorMode } = useColorMode();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const bg = useColorModeValue('#f9fdff', 'gray.800');
 
-  const NavLink = ({ to, icon }) => {
+  const NavLink = ({ to, icon, label }) => {
     const isActive = location.pathname === to;
-    const variant = isActive ? 'solid' : 'ghost';
-    const colorScheme = isActive ? 'blue' : 'gray';
+    const iconElement = <FontAwesomeIcon icon={icon} size="lg" />;
+    const textColor = isActive ? 'blue.500' : 'gray.500';
 
     return (
-      <IconButton
+      <Button
         as={RouterLink}
         to={to}
-        aria-label={icon.iconName}
-        icon={<FontAwesomeIcon icon={icon} />}
-        variant={variant}
-        colorScheme={colorScheme}
-        size="lg"
-        isRound={true}
-        my={2}
-      />
+        leftIcon={iconElement}
+        justifyContent="start"
+        onClick={() => setIsDrawerOpen(false)}
+        variant="ghost"
+        colorScheme={isActive ? 'blue' : 'gray'}
+        width="full"
+      >
+        <Text fontSize="md">{label}</Text>
+      </Button>
     );
   };
 
   return (
-    <Flex
-      direction="column"
-      align="center"
-      justify="flex-start"
-      bg={bg}
-      height="100vh"
-      p={{ base: 4, md: 6 }}
-      width={{ base: "75px", md: "150px" }}
-      position="fixed"
-      top="0"
-      left="0"
-      boxShadow="0px 2px 5px rgba(0, 0, 0, 0.1)"
-      zIndex="banner"
-    >
-      <Box my={4}>
-        <RouterLink to="/">
-          <Image src={koda2} alt="logo" boxSize={{ base: "75px", md: "100px" }} />
-        </RouterLink>
-      </Box>
-      <Flex direction="column" as="nav" align="center" justify="center" gap={4}>
-        <NavLink to="/" icon={faGripVertical} />
-        <NavLink to="/Notes" icon={faNotesMedical} />
-        <NavLink to="/TimeTracker" icon={faStopwatch} />
-        <NavLink to="/Friends" icon={faUserGroup} />
-        <NavLink to="/Settings" icon={faGear} />
-      </Flex>
+    <>
       <IconButton
-        aria-label="Toggle dark mode"
-        icon={colorMode === 'light' ? <FaMoon /> : <FaSun />}
-        onClick={toggleColorMode}
-        position="absolute"
-        bottom="4"
-        right="4"
-        isRound={true}
+        icon={<FaBars />}
+        onClick={() => setIsDrawerOpen(true)}
+        position="fixed"
+        top="1rem"
+        left="1rem"
+        zIndex="overlay"
+        aria-label="Open menu"
       />
-    </Flex>
+      <Drawer isOpen={isDrawerOpen} placement="left" onClose={() => setIsDrawerOpen(false)} size="sm">
+        <DrawerOverlay />
+        <DrawerContent>
+          <Flex direction="column" h="full" bg={bg}>
+            <Box p="4" borderBottomWidth="1px">
+              <RouterLink to="/" onClick={() => setIsDrawerOpen(false)}>
+                <Image src={koda2} alt="logo" boxSize="50px" mx="auto" />
+              </RouterLink>
+            </Box>
+            <DrawerBody p={0}>
+              <VStack align="start" spacing={4}>
+                <NavLink to="/" icon={faGripVertical} label="Home" />
+                <NavLink to="/Notes" icon={faNotesMedical} label="Notes" />
+                <NavLink to="/TimeTracker" icon={faStopwatch} label="Time Tracker" />
+                <NavLink to="/Friends" icon={faUserGroup} label="Friends" />
+                <NavLink to="/Settings" icon={faGear} label="Settings" />
+              </VStack>
+            </DrawerBody>
+            <Box p="4" mt="auto">
+              <IconButton
+                aria-label="Toggle dark mode"
+                icon={colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                onClick={toggleColorMode}
+                isRound={true}
+                size="lg"
+                alignSelf="end"
+              />
+            </Box>
+          </Flex>
+        </DrawerContent>
+      </Drawer>
+    </>
   );
 }
 
