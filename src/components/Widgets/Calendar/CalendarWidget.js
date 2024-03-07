@@ -53,6 +53,18 @@ const MyFullCalendar = () => {
     onOpen();
 };
 
+const handleEventEdit = (event) => {
+  setCurrentEvent(event); 
+  setEventTitle(event.title);
+  setSelectedDate(event.start);
+  setAllDay(event.allDay);
+  if (!event.allDay) {
+    setStartTime(moment(event.start).format("HH:mm"));
+    setEndTime(moment(event.end).format("HH:mm"));
+  }
+  onOpen();
+};
+
   const saveEvent = () => {
     const startDateTime = allDay ? 
         selectedDate : 
@@ -114,26 +126,35 @@ const MyFullCalendar = () => {
           eventClick={handleEventClick}
           height="auto"
         />
-          <Box borderWidth="1px" borderRadius="lg" p={4} mt={4} boxShadow="base">
+          <Box borderWidth="1px" borderRadius="lg" p={5} mt={4} boxShadow="base">
           <Text fontSize="xl" fontWeight="bold">Today's Events:</Text>
-          <VStack spacing={4}>
-          {todaysEvents.length > 0 ? (
-            todaysEvents.map((event) => (
-              <Flex key={event.id} justify="space-between" align="center" w="100%">
-                <Text>{event.title}</Text>
-                <Text fontSize="sm">
-                      {event.allDay ? 
-                          "All day" : 
-                           `${moment(event.start).format("HH:mm")} - ${moment(event.end).format("HH:mm")}`}
-                </Text>
-             </Flex>
-            ))
-        ) : (
-            <Text>No events today.</Text>
-      )}
-          </VStack>
+          <VStack spacing={4} mt={5} maxHeight="160px" overflow="auto">
+            {todaysEvents.length > 0 ? (
+              todaysEvents.map((event) => (
+                <Box
+                  key={event.id}
+                  p={2}
+                  w="100%"
+                  borderWidth="1px"
+                  borderRadius="lg"
+                  _hover={{ bg: "gray.100", cursor: "pointer" }}
+                  onClick={() => handleEventEdit(event)}
+                >
+                  <Flex justify="space-between" align="center">
+                    <Text fontWeight="bold">{event.title}</Text>
+                    <Text fontSize="sm">
+                      {event.allDay
+                        ? "All day"
+                        : `${moment(event.start).format("HH:mm")} - ${moment(event.end).format("HH:mm")}`}
+                    </Text>
+                  </Flex>
+                </Box>
+              ))
+            ) : (
+              <Text>No events today.</Text>
+            )}
+    </VStack>
         </Box>
-      
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
@@ -161,7 +182,7 @@ const MyFullCalendar = () => {
             <ModalFooter>
               <Button colorScheme="blue" mr={3} onClick={saveEvent}>Save</Button>
               {currentEvent && <Button colorScheme="red" onClick={deleteEvent}>Delete</Button>}
-              <Button onClick={onClose}>Cancel</Button>
+              <Button colorScheme="blue" onClick={onClose}>Cancel</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
