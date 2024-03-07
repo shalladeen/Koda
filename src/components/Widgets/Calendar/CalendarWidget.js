@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../Calendar/CalendarStyle.css';
+import { IconButton } from '@chakra-ui/react';
+import { AddIcon } from '@chakra-ui/icons';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -156,6 +158,43 @@ const deleteEvent = () => {
 ///// TODAYS EVENTS ///////////
   const todaysEvents = events.filter((event) => moment().isSame(event.start, 'day'));
 
+  //// ADDING EVENTS FROM TODAYS EVENTS //////
+  const handleAddTodayEvent = () => {
+ 
+  const today = new Date();
+  setSelectedDate(today);
+  setAllDay(true); 
+  setEventTitle(""); 
+  setCurrentEvent(null); 
+
+  if (!allDay) {
+    setStartTime(moment(today).format("HH:mm"));
+    setEndTime(moment(today).add(1, 'hours').format("HH:mm")); 
+  }
+
+  onOpen();
+};
+
+/////// UPCOMING EVENTS //////////
+const nextDay = moment().add(1, 'days');
+
+const upcomingEvents = events.filter(event =>
+  moment(event.start).isSame(nextDay, 'day')
+);
+
+const handleAddUpcomingEvent = () => {
+  const tomorrow = moment().add(1, 'day').startOf('day'); 
+  const tomorrowEnd = moment().add(1, 'day').endOf('day'); 
+
+  setSelectedDate(tomorrow.toDate());
+  setAllDay(true); 
+  setEventTitle(""); 
+  setCurrentEvent(null);
+
+  onOpen();
+};
+
+
 
   return (
     <ChakraProvider>
@@ -187,10 +226,21 @@ const deleteEvent = () => {
             }
           }}
           height="auto"
-         
         />
+
+        {/* Today's Events Banner */}
           <Box borderWidth="1px" borderRadius="lg" p={5} mt={4} boxShadow="base">
-          <Text fontSize="xl" fontWeight="bold">Today's Events:</Text>
+          <Flex justifyContent="space-between" alignItems="center">
+            <Text fontSize="xl" fontWeight="bold">Today's Events:</Text>
+              <IconButton
+                aria-label="Add event"
+                icon={<AddIcon />}
+                colorScheme="blue"
+                _hover={{bg: "blue.300"}}
+                size="sm"
+                onClick={() => handleAddTodayEvent()}
+              />
+          </Flex>
           <VStack spacing={4} mt={5} maxHeight="160px" overflow="auto">
             {todaysEvents.length > 0 ? (
               todaysEvents.map((event) => (
@@ -216,7 +266,45 @@ const deleteEvent = () => {
             ) : (
               <Text>No events today.</Text>
             )}
-    </VStack>
+      </VStack>
+        </Box>
+         {/* Upcoming Events Banner */}
+      <Box borderWidth="1px" borderRadius="lg" p={5} mt={4} boxShadow="base">
+        <Flex justifyContent="space-between" alignItems="center">
+          <Text fontSize="xl" fontWeight="bold">Upcoming Events:</Text>
+          <IconButton
+            aria-label="Add event for next day"
+            icon={<AddIcon />}
+            size="sm"
+            onClick={() => handleAddUpcomingEvent()}
+          />
+        </Flex>
+        <VStack spacing={4} mt={5} maxHeight="160px" overflow="auto">
+          {upcomingEvents.length > 0 ? (
+            upcomingEvents.map((event) => (
+              <Box
+                key={event.id}
+                p={2}
+                w="100%"
+                borderWidth="1px"
+                borderRadius="lg"
+                _hover={{ bg: "gray.100", cursor: "pointer" }}
+                onClick={() => handleEventEdit(event)}
+              >
+                <Flex justify="space-between" align="center">
+                  <Text fontWeight="bold">{event.title}</Text>
+                  <Text fontSize="sm">
+                    {event.allDay
+                      ? "All day"
+                      : `${moment(event.start).format("HH:mm")} - ${moment(event.end).format("HH:mm")}`}
+                  </Text>
+                </Flex>
+              </Box>
+            ))
+          ) : (
+            <Text>No upcoming events.</Text>
+          )}
+        </VStack>
         </Box>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
@@ -245,7 +333,7 @@ const deleteEvent = () => {
             <ModalFooter>
               <Button colorScheme="blue" mr={3} onClick={saveEvent}>Save</Button>
               {currentEvent && <Button colorScheme="red" onClick={deleteEvent}>Delete</Button>}
-              <Button colorScheme="gray" onClick={onClose}>Cancel</Button>
+              <Button color="white" bg="gray" onClick={onClose}>Cancel</Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

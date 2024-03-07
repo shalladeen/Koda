@@ -60,7 +60,7 @@ function Task() {
       const updatedTasks = tasks.filter(task => task.id !== taskId);
       setTasks(updatedTasks);
       localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-      if (isEditOpen) setIsEditOpen(false); // Close edit modal if open
+      if (isEditOpen) setIsEditOpen(false);
   };
 
    const toggleTaskCompletion = (taskId) => {
