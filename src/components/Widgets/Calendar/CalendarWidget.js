@@ -53,6 +53,22 @@ const MyFullCalendar = () => {
     onOpen();
 };
 
+const handleEventDrop = (info) => {
+  const { event } = info;
+
+  // Find the event in your state and update its start and end dates
+  const updatedEvents = events.map((evt) => {
+    if (evt.id === event.id) {
+      return { ...evt, start: event.start, end: event.end };
+    }
+    return evt;
+  });
+
+  setEvents(updatedEvents);
+  // Optionally, save the updated events list to localStorage or backend
+  localStorage.setItem('fullCalendarEvents', JSON.stringify(updatedEvents));
+};
+
 const handleEventEdit = (event) => {
   setCurrentEvent(event); 
   setEventTitle(event.title);
@@ -124,6 +140,7 @@ const handleEventEdit = (event) => {
           events={events}
           select={handleDateSelect}
           eventClick={handleEventClick}
+          eventDrop={handleEventDrop}
           height="auto"
         />
           <Box borderWidth="1px" borderRadius="lg" p={5} mt={4} boxShadow="base">
