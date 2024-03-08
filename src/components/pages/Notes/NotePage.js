@@ -1,13 +1,25 @@
 import React, { useState } from "react";
 import { Flex, Input, Textarea, Button } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom"; 
 import Navbar from "../../nav/Navbar";
 
 function NotePage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const navigate = useNavigate();
 
   const handleSave = () => {
-    // Add logic to save the note
+    const notes = JSON.parse(localStorage.getItem("notes")) || [];
+    const newNote = {
+      id: Date.now(),
+      title,
+      content,
+    };
+
+    const updatedNotes = [...notes, newNote];
+    localStorage.setItem("notes", JSON.stringify(updatedNotes));
+
+    navigate("/"); 
   };
 
   return (

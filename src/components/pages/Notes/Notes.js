@@ -22,18 +22,16 @@ function Notes() {
   const handleSaveNote = () => {
     let updatedNotes;
     if (editNoteId) {
-      updatedNotes = notes.map(note => note.id === editNoteId ? { ...note, title, content } : note);
+      updatedNotes = notes.map(note => note.id === editNoteId ? { ...note, title, content, tag } : note);
     } else {
-      const newNote = { id: Date.now(), title, content };
+      const newNote = { id: Date.now(), title, content, tag };
       updatedNotes = [...notes, newNote];
     }
-
+  
     setNotes(updatedNotes);
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
-    onClose();
-    setEditNoteId(null);
-    setTitle("");
-    setContent("");
+    resetForm(); 
+    onClose(); 
   };
 
   const handleEditNote = (note) => {
