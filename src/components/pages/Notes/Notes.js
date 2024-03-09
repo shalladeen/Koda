@@ -25,10 +25,10 @@ function Notes() {
 
   useEffect(() => {
     if (selectedTag === "None") {
-      setFilteredNotes(notes); // If no tag selected, display all notes
+      setFilteredNotes(notes); // Show all notes if no tag is selected
     } else {
-      const filtered = notes.filter(note => note.tag === selectedTag);
-      setFilteredNotes(filtered); // Filter notes based on selected tag
+      const filtered = notes.filter(note => note.tag === selectedTag || note.tag === "" || note.tag === undefined);
+      setFilteredNotes(filtered); // Show notes that match the selected tag or have no tag
     }
   }, [selectedTag, notes]);
 
