@@ -1,33 +1,12 @@
 import React, { useState, useEffect } from "react";
 import {
-  Flex,
-  Button,
-  Input,
-  Textarea,
-  Box,
-  Text,
-  Select,
-  Heading,
-  Wrap,
-  Tag,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  ButtonGroup, // Make sure ButtonGroup is imported
-  Menu, // Import Menu components
-  MenuButton,
-  MenuList,
-  MenuItem,
-} from "@chakra-ui/react";
-import { ChevronDownIcon } from '@chakra-ui/icons'; // For the menu button icon
+  Flex,Button,Input,Textarea,Box,Text,Heading,useDisclosure,Modal,ModalOverlay,
+  ModalContent,ModalHeader,ModalCloseButton,ModalBody,ModalFooter,ButtonGroup,Menu, HStack,
+  MenuButton,MenuList,MenuItem,Circle} from "@chakra-ui/react";
+import { ChevronDownIcon } from '@chakra-ui/icons';
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../nav/Navbar";
-import CustomTagModal from "./CustomTags"; // Adjust the import path as needed
+import CustomTagModal from "./CustomTags";
 
 function Notes() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -47,26 +26,23 @@ function Notes() {
 
   useEffect(() => {
     localStorage.setItem("customTags", JSON.stringify(customTags));
-  }, [customTags]);
-
-  useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(notes));
-  }, [notes]);
+  }, [customTags, notes]);
 
+
+  
   const handleSaveNote = () => {
     const updatedNote = {
       id: editNoteId ? editNoteId : Date.now(),
       title,
       content,
       tag,
-      type: editNoteId ? notes.find(note => note.id === editNoteId).type : 'quick', // Default to 'quick' if new
+      type: editNoteId ? notes.find(note => note.id === editNoteId).type : 'quick',
     };
   
     const updatedNotes = editNoteId ? notes.map(note => note.id === editNoteId ? updatedNote : note) : [...notes, updatedNote];
     setNotes(updatedNotes);
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
-  
-    // Reset form and close modal
     resetForm();
     onClose();
   };
@@ -75,7 +51,6 @@ function Notes() {
     if (note.type === 'document') {
       navigate("/notepage", { state: { noteId: note.id, type: note.type } });
     } else {
-      // It's a quick note, show the modal for editing
       setEditNoteId(note.id);
       setTitle(note.title);
       setContent(note.content);
@@ -90,8 +65,23 @@ function Notes() {
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
   };
 
+  const deleteTag = (indexToRemove) => {
+    const tagToDelete = customTags[indexToRemove];
+    const updatedTags = customTags.filter((_, index) => index !== indexToRemove);
+    setCustomTags(updatedTags);
 
-  
+    const updatedNotes = notes.map(note => {
+      if (note.tag === tagToDelete.title) {
+        return { ...note, tag: "None" }; 
+      }
+      return note;
+    });
+    setNotes(updatedNotes);
+
+    localStorage.setItem("customTags", JSON.stringify(updatedTags));
+    localStorage.setItem("notes", JSON.stringify(updatedNotes));
+  }
+
   const resetForm = () => {
     setEditNoteId(null);
     setTitle("");
@@ -99,57 +89,62 @@ function Notes() {
     setTag("None");
   };
 
-  function getTagColor(tagTitle) {
-    const predefinedColors = {
-      "Personal": "blue",
-      "Work": "green",
-      "Important": "red",
-    };
-    const customTagColor = customTags.find(tag => tag.title === tagTitle)?.color;
-    return predefinedColors[tagTitle] || customTagColor || "gray";
-  }
+  const getTagColor = (tagTitle) => {
+    if (tagTitle === "None") return "gray";
 
-  const handleSelectTag = (value) => {
-    if (value === "addCustom") {
-      onCustomTagModalOpen();
-    } else {
-      setTag(value);
-    }
+    return customTags.find(tag => tag.title === tagTitle)?.color || "gray";
   };
 
   return (
     <Flex direction="column" align="center" m={4}>
       <Navbar />
       <Heading mb={6}>My Notes</Heading>
+
       <Menu>
         <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="teal" my={4}>
           Create Note
         </MenuButton>
         <MenuList>
           <MenuItem onClick={onOpen}>Quick Note</MenuItem>
-          <MenuItem onClick={() => navigate("/Notepage")}>Document Note</MenuItem>
+          <MenuItem onClick={() => navigate("/document-note")}>Document Note</MenuItem>
         </MenuList>
       </Menu>
 
-      {/* Note Modal */}
-      <Modal isOpen={isOpen} onClose={onClose}>
+      
+     {/* Note Modal */}
+     <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{editNoteId ? "Edit Note" : "New Note"}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody pb={6}>
+          <ModalBody>
             <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} mb={3} />
-            <Textarea placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} />
-            <Select placeholder="Select tag" value={tag} onChange={(e) => handleSelectTag(e.target.value)} mt={3}>
-              <option value="None">None</option>
-              <option value="Personal">Personal</option>
-              <option value="Work">Work</option>
-              <option value="Important">Important</option>
-              {customTags.map((customTag, index) => (
-                <option key={index} value={customTag.title}>{customTag.title}</option>
-              ))}
-              <option value="addCustom">+ Add Custom Tag</option>
-            </Select>
+            <Textarea placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} mb={3} />
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>Select Tag</MenuButton>
+                <HStack>
+                    <Text p={5}>{tag === "None" ? "No Tag" : tag}</Text>
+                      {tag !== "None" && (
+                        <Circle size="15px" bg={getTagColor(tag)} />
+                      )}
+                  </HStack>
+              <MenuList>
+                <MenuItem onClick={() => setTag("None")}>
+                  <HStack>
+                    <Text>None</Text>
+                  </HStack>
+                </MenuItem>
+                {customTags.map((customTag, index) => (
+                  <MenuItem key={index} onClick={() => setTag(customTag.title)}>
+                    <HStack>
+                      <Text>{customTag.title}</Text>
+                      <Circle size="15px" bg={customTag.color} />
+                    </HStack>
+                  </MenuItem>
+                ))}
+                <MenuItem onClick={onCustomTagModalOpen}>+ Customize Tags</MenuItem>
+              </MenuList>
+            </Menu>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={handleSaveNote}>Save</Button>
@@ -164,58 +159,40 @@ function Notes() {
         onClose={onCustomTagModalClose}
         customTags={customTags}
         setCustomTags={setCustomTags}
+        deleteTag={deleteTag}
       />
 
-{/*QUICK NOTES */}
-<Heading size="md" my={4}>Quick Notes</Heading>
-<Flex wrap="wrap" justifyContent="center">
-  {notes.filter(note => note.type === "quick").map((note) => (
-    <Box
-      key={note.id}
-      p={4}
-      borderWidth="1px"
-      borderRadius="lg"
-      w="300px"
-      m="2"
-      bg={getTagColor(note.tag)}
-    >
-      <Text fontWeight="bold" mb={2}>{note.title || "Untitled Note"}</Text>
-      <Text mb={2}>{note.content}</Text>
-      <Flex justify="space-between" mt={4}>
-        <ButtonGroup isAttached variant="outline">
-          <Button size="sm" onClick={() => handleEditNote(note)}>Edit</Button>
-          <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
-        </ButtonGroup>
+      {/* Display notes */}
+      <Heading size="md" my={4}>Quick Notes</Heading>
+      <Flex wrap="wrap" justifyContent="center">
+        {notes.filter(note => note.type === "quick").map((note) => (
+          <Box key={note.id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m="2" bg={getTagColor(note.tag)}>
+            <Text fontWeight="bold" mb={2}>{note.title || "Untitled Note"}</Text>
+            <Text mb={2}>{note.content}</Text>
+            <Flex justify="space-between" mt={4}>
+              <ButtonGroup isAttached variant="outline">
+                <Button size="sm" onClick={() => handleEditNote(note)}>Edit</Button>
+                <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
+              </ButtonGroup>
+            </Flex>
+          </Box>
+        ))}
       </Flex>
-    </Box>
-  ))}
-</Flex>
 
-{/*DOCUMENT NOTES */}
-<Heading size="md" my={4}>Document Notes</Heading>
-<Flex wrap="wrap" justifyContent="center">
-  {notes.filter(note => note.type === "document").map((note) => (
-    <Box
-      key={note.id}
-      p={4}
-      borderWidth="1px"
-      borderRadius="lg"
-      w="300px"
-      m="2"
-      bg={getTagColor(note.tag)}
-    >
-      <Text fontWeight="bold" mb={2}>{note.title || "Untitled Document"}</Text>
-    
-      <Text mb={2}>{note.content}</Text>
-      <Flex justify="space-between" mt={4}>
-        <ButtonGroup isAttached variant="outline">
-          <Button size="sm" onClick={() => handleEditNote(note)}>Edit</Button>
-          <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
-        </ButtonGroup>
+      <Heading size="md" my={4}>Document Notes</Heading>
+      <Flex wrap="wrap" justifyContent="center">
+        {notes.filter(note => note.type === "document").map((note) => (
+          <Box key={note.id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m="2" bg={getTagColor(note.tag)}>
+            <Text fontWeight="bold" mb={2}>{note.title || "Untitled Document"}</Text>
+            <Flex justify="space-between" mt={4}>
+              <ButtonGroup isAttached variant="outline">
+                <Button size="sm" onClick={() => handleEditNote(note)}>Edit</Button>
+                <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
+              </ButtonGroup>
+            </Flex>
+          </Box>
+        ))}
       </Flex>
-    </Box>
-  ))}
-</Flex>
     </Flex>
   );
 }
