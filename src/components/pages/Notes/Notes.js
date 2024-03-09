@@ -22,18 +22,20 @@ function Notes() {
 
   const handleSaveNote = () => {
     let updatedNotes;
+    const timestamp = Date.now();
+  
     if (editNoteId) {
       updatedNotes = notes.map(note =>
-        note.id === editNoteId ? { ...note, title, content, tag, type: note.type } : note
+        note.id === editNoteId ? { ...note, title, content, tag, type: note.type, updatedAt: timestamp } : note
       );
     } else {
-      
       const newNote = {
         id: Date.now(),
         title,
         content,
         tag,
-        type: "quick" 
+        type: "quick",
+        createdAt: timestamp
       };
       updatedNotes = [...notes, newNote];
     }

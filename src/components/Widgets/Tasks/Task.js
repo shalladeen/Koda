@@ -79,7 +79,7 @@ function Task() {
     };
 
   return (
-    <Box p={5}>
+    <Box p={5} pb={20}>
       <Heading as="h2" size="xl" textAlign="center" my={5}>My Tasks</Heading>
       <Button onClick={onAddOpen} colorScheme="teal" mb={4}>Add Task</Button>
 
@@ -136,7 +136,7 @@ function Task() {
       
 
       {tasks.length > 0 ? (
-                <Box maxH="350px" overflowY="auto" mt={4} width="700px" maxWidth="700px">
+                <Box maxH="350px" overflowY="auto" mt={4} maxWidth="700px">
                     {tasks.map((task) => (
                         <Flex key={task.id} p={5} shadow="md" borderWidth="1px" my={2} alignItems="center">
                             <Checkbox isChecked={task.completed} onChange={() => toggleTaskCompletion(task.id)} mr={2} />

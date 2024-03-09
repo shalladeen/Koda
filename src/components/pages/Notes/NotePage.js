@@ -28,24 +28,33 @@ function NotePage() {
 
   const handleSave = () => {
     let notes = JSON.parse(localStorage.getItem("notes")) || [];
-    const noteData = {
-      id: editNoteId || Date.now(),
+    const timestamp = Date.now(); 
+  
+    const noteData = editNoteId ? {
+      ...notes.find(note => note.id === editNoteId),
+      title,
+      content,
+      tag,
+      updatedAt: timestamp,
+    } : {
+      id: Date.now(),
       title,
       content,
       tag,
       type: "document",
+      createdAt: timestamp,
     };
-
+  
     if (editNoteId) {
       notes = notes.map(note => note.id === editNoteId ? noteData : note);
     } else {
       notes.push(noteData);
     }
-
+  
     localStorage.setItem("notes", JSON.stringify(notes));
-    navigate("/Notes");
+  
+    navigate("/Notes"); 
   };
-
   return (
     <Flex direction="column" align="center" m={4}>
       <Navbar />
@@ -84,7 +93,7 @@ function NotePage() {
           placeholder="Type your note here..."
           style={{ height: "600px", width: "100%" }}
         />
-        <Button colorScheme="teal" onClick={handleSave} mt={4}>
+        <Button colorScheme="teal" onClick={handleSave} mt={20}>
           Save
         </Button>
       </Box>

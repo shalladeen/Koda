@@ -73,11 +73,11 @@ function Navbar() {
                 <Image src={koda2} alt="logo" boxSize="50px" mx="auto" />
               </RouterLink>
             </Box>
-            <DrawerBody p={0}>
-              <VStack align="start" spacing={4}>
+            <DrawerBody p={0} alignItems="center">
+              <VStack spacing={4} >
                 <NavLink to="/" icon={faGripVertical} label="Home" />
                 <NavLink to="/Notes" icon={faNotesMedical} label="Notes" />
-                <NavLink to="/TimeTracker" icon={faStopwatch} label="Time Tracker" />
+                <NavLink to="/TimeTracker" icon={faStopwatch} label="Focus Time" />
                 <NavLink to="/Friends" icon={faUserGroup} label="Friends" />
                 <NavLink to="/Settings" icon={faGear} label="Settings" />
               </VStack>

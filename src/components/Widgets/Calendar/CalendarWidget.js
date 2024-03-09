@@ -198,7 +198,7 @@ const handleAddUpcomingEvent = () => {
 
   return (
     <ChakraProvider>
-      <Box className={colorMode} p={5} maxWidth="1000px" mx="auto">
+      <Box className={colorMode} p={5} maxWidth="800px" mx="auto">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
