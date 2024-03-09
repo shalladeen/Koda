@@ -12,6 +12,8 @@ function Notes() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("None");
+  const quickNotes = notes.filter(note => note.type === "quick");
+  const documentNotes = notes.filter(note => note.type === "document");
 
   useEffect(() => {
     const storedNotes = JSON.parse(localStorage.getItem("notes")) || [];
@@ -91,35 +93,7 @@ function Notes() {
           <MenuItem onClick={handleDocumentNoteClick}>Document Note</MenuItem>
         </MenuList>
       </Menu>
-      <Wrap justify="center">
-        {notes.map((note) => (
-          <Box
-            key={note.id}
-            p={4}
-            borderWidth="1px"
-            borderRadius="lg"
-            w="300px"
-            m="2"
-            bg="gray.50"
-          >
-            <Text fontWeight="bold" mb={2}>
-              {note.title}
-            </Text>
-            <Text mb={2}>{note.content}</Text>
-            {note.tag && <Tag colorScheme={getTagColor(note.tag)}>{note.tag}</Tag>}
-            <Flex justify="space-between" mt={4}>
-              <ButtonGroup>
-                <Button size="sm" onClick={() => handleEditNote(note)}>
-                  Edit
-                </Button>
-                <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>
-                  Delete
-                </Button>
-              </ButtonGroup>
-            </Flex>
-          </Box>
-        ))}
-      </Wrap>
+     
       {/* Note Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -154,6 +128,70 @@ function Notes() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+       {/* End of Note Modal */}
+
+        {/* Display Quick Notes */}
+      <Heading size="md" my={4}>Quick Notes</Heading>
+      <Flex wrap="wrap" justifyContent="center">
+        {quickNotes.map((note) => (
+          <Box
+            key={note.id}
+            p={4}
+            borderWidth="1px"
+            borderRadius="lg"
+            w="300px"
+            m="2"
+            bg="gray.50"
+          >
+            <Text fontWeight="bold" mb={2}>
+              {note.title || "Untitled Note"}
+            </Text>
+            <Text mb={2}>{note.content}</Text>
+            {note.tag && <Tag colorScheme={getTagColor(note.tag)}>{note.tag}</Tag>}
+            <Flex justify="space-between" mt={4}>
+              <ButtonGroup>
+                <Button size="sm" onClick={() => handleEditNote(note)}>
+                  Edit
+                </Button>
+                <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>
+                  Delete
+                </Button>
+              </ButtonGroup>
+            </Flex>
+          </Box>
+        ))}
+      </Flex>
+
+      {/* Display Document Notes */}
+      <Heading size="md" my={4}>Document Notes</Heading>
+      <Wrap justify="center">
+        {documentNotes.map((note) => (
+          <Box
+            key={note.id}
+            p={4}
+            borderWidth="1px"
+            borderRadius="lg"
+            w="300px"
+            m="2"
+            bg="gray.50"
+          >
+            <Text fontWeight="bold" mb={2}>
+              {note.title || "Untitled Note"}
+            </Text>
+            {note.tag && <Tag colorScheme={getTagColor(note.tag)}>{note.tag}</Tag>}
+            <Flex justify="space-between" mt={4}>
+              <ButtonGroup>
+                <Button size="sm" onClick={() => handleEditNote(note)}>
+                  Edit
+                </Button>
+                <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>
+                  Delete
+                </Button>
+              </ButtonGroup>
+            </Flex>
+          </Box>
+        ))}
+      </Wrap>
     </Flex>
   );
 }
