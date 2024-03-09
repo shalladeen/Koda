@@ -1,8 +1,8 @@
 import React from 'react';
-
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
+
+import { CustomTagsProvider } from './components/context/CustomTagsContext';
 
 import Home from './components/pages/Home/Home';
 import Notes from './components/pages/Notes/Notes';
@@ -17,7 +17,7 @@ function App() {
     <ChakraProvider>
       <ColorModeScript />
       <BrowserRouter>
-        <div>
+        <CustomTagsProvider> 
           <div className="App">
             <Routes>
               <Route path="/" element={<Home />} />
@@ -29,7 +29,7 @@ function App() {
               <Route path="/Settings" element={<Settings />} />
             </Routes>
           </div>
-        </div>
+        </CustomTagsProvider>
       </BrowserRouter>
     </ChakraProvider>
   );

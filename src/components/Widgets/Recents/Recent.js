@@ -6,7 +6,7 @@ import { FaFileAlt, FaStickyNote } from 'react-icons/fa';
 const Recent = () => {
   const [recentNotes, setRecentNotes] = useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingNote, setEditingNote] = useState(null); // Use null for initialization
+  const [editingNote, setEditingNote] = useState(null);
   const navigate = useNavigate();
   const hoverBg = useColorModeValue('blue.50', 'gray.600');
 
@@ -36,7 +36,7 @@ const Recent = () => {
     const updatedNotes = recentNotes.filter(note => note.id !== noteId);
     localStorage.setItem('notes', JSON.stringify(updatedNotes));
     setRecentNotes(updatedNotes);
-    setIsEditModalOpen(false); // Close the modal if open
+    setIsEditModalOpen(false); 
   };
 
   const EditNoteModal = () => {

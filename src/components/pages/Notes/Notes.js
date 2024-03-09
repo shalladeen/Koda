@@ -1,67 +1,81 @@
 import React, { useState, useEffect } from "react";
-import { Flex, Button, VStack, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, 
-  ModalBody, ModalFooter, Input, Textarea, Box, Text, Select, Heading, Wrap, Tag, Menu, MenuButton, MenuList, MenuItem, ButtonGroup} from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom"; 
+import {
+  Flex,
+  Button,
+  Input,
+  Textarea,
+  Box,
+  Text,
+  Select,
+  Heading,
+  Wrap,
+  Tag,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  ButtonGroup, // Make sure ButtonGroup is imported
+  Menu, // Import Menu components
+  MenuButton,
+  MenuList,
+  MenuItem,
+} from "@chakra-ui/react";
+import { ChevronDownIcon } from '@chakra-ui/icons'; // For the menu button icon
+import { useNavigate } from "react-router-dom";
 import Navbar from "../../nav/Navbar";
+import CustomTagModal from "./CustomTags"; // Adjust the import path as needed
 
 function Notes() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [notes, setNotes] = useState([]);
-  const [filteredNotes, setFilteredNotes] = useState([]);
-  const navigate = useNavigate();
+  const [notes, setNotes] = useState(() => JSON.parse(localStorage.getItem("notes")) || []);
+  const [customTags, setCustomTags] = useState(() => JSON.parse(localStorage.getItem("customTags")) || []);
   const [editNoteId, setEditNoteId] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("None");
-  const [selectedTag, setSelectedTag] = useState("None"); // State for selected tag filter
-  const quickNotes = filteredNotes.filter(note => note.type === "quick"); // Filtered notes based on selected tag
-  const documentNotes = filteredNotes.filter(note => note.type === "document");
+  const navigate = useNavigate();
+
+  const {
+    isOpen: isCustomTagModalOpen,
+    onOpen: onCustomTagModalOpen,
+    onClose: onCustomTagModalClose,
+  } = useDisclosure();
 
   useEffect(() => {
-    const storedNotes = JSON.parse(localStorage.getItem("notes")) || [];
-    setNotes(storedNotes);
-    setFilteredNotes(storedNotes); // Initialize filteredNotes with all notes
-  }, []);
+    localStorage.setItem("customTags", JSON.stringify(customTags));
+  }, [customTags]);
 
   useEffect(() => {
-    if (selectedTag === "None") {
-      setFilteredNotes(notes); // Show all notes if no tag is selected
-    } else {
-      const filtered = notes.filter(note => note.tag === selectedTag || note.tag === "" || note.tag === undefined);
-      setFilteredNotes(filtered); // Show notes that match the selected tag or have no tag
-    }
-  }, [selectedTag, notes]);
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }, [notes]);
 
   const handleSaveNote = () => {
-    let updatedNotes;
-    const timestamp = Date.now();
+    const updatedNote = {
+      id: editNoteId ? editNoteId : Date.now(),
+      title,
+      content,
+      tag,
+      type: editNoteId ? notes.find(note => note.id === editNoteId).type : 'quick', // Default to 'quick' if new
+    };
   
-    if (editNoteId) {
-      updatedNotes = notes.map(note =>
-        note.id === editNoteId ? { ...note, title, content, tag, type: note.type, updatedAt: timestamp } : note
-      );
-    } else {
-      const newNote = {
-        id: Date.now(),
-        title,
-        content,
-        tag,
-        type: "quick",
-        createdAt: timestamp
-      };
-      updatedNotes = [...notes, newNote];
-    }
-  
+    const updatedNotes = editNoteId ? notes.map(note => note.id === editNoteId ? updatedNote : note) : [...notes, updatedNote];
     setNotes(updatedNotes);
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
+  
+    // Reset form and close modal
     resetForm();
     onClose();
   };
 
   const handleEditNote = (note) => {
     if (note.type === 'document') {
-      navigate("/notepage", { state: { noteId: note.id, type: "document" } });
+      navigate("/notepage", { state: { noteId: note.id, type: note.type } });
     } else {
+      // It's a quick note, show the modal for editing
       setEditNoteId(note.id);
       setTitle(note.title);
       setContent(note.content);
@@ -76,17 +90,8 @@ function Notes() {
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
   };
 
-  const openModalForNewNote = () => {
-    setEditNoteId(null);
-    setTitle("");
-    setContent("");
-    onOpen();
-  };
 
-  const handleDocumentNoteClick = () => {
-    navigate("/notepage");
-  };
-
+  
   const resetForm = () => {
     setEditNoteId(null);
     setTitle("");
@@ -94,142 +99,125 @@ function Notes() {
     setTag("None");
   };
 
+  function getTagColor(tagTitle) {
+    const predefinedColors = {
+      "Personal": "blue",
+      "Work": "green",
+      "Important": "red",
+    };
+    const customTagColor = customTags.find(tag => tag.title === tagTitle)?.color;
+    return predefinedColors[tagTitle] || customTagColor || "gray";
+  }
+
+  const handleSelectTag = (value) => {
+    if (value === "addCustom") {
+      onCustomTagModalOpen();
+    } else {
+      setTag(value);
+    }
+  };
+
   return (
     <Flex direction="column" align="center" m={4}>
       <Navbar />
       <Heading mb={6}>My Notes</Heading>
       <Menu>
-        <MenuButton as={Button} colorScheme="teal" my={4}>
+        <MenuButton as={Button} rightIcon={<ChevronDownIcon />} colorScheme="teal" my={4}>
           Create Note
         </MenuButton>
         <MenuList>
-          <MenuItem onClick={openModalForNewNote}>Quick Note</MenuItem>
-          <MenuItem onClick={handleDocumentNoteClick}>Document Note</MenuItem>
+          <MenuItem onClick={onOpen}>Quick Note</MenuItem>
+          <MenuItem onClick={() => navigate("/Notepage")}>Document Note</MenuItem>
         </MenuList>
       </Menu>
-     
+
       {/* Note Modal */}
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>{editNoteId ? "Edit Note" : "New Note"}</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Input
-              placeholder="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              mb={3}
-            />
-            <Textarea
-              placeholder="Content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              mb={3}
-            />
-            <Select value={tag} onChange={(e) => setTag(e.target.value)}>
+          <ModalBody pb={6}>
+            <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} mb={3} />
+            <Textarea placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} />
+            <Select placeholder="Select tag" value={tag} onChange={(e) => handleSelectTag(e.target.value)} mt={3}>
               <option value="None">None</option>
               <option value="Personal">Personal</option>
               <option value="Work">Work</option>
               <option value="Important">Important</option>
+              {customTags.map((customTag, index) => (
+                <option key={index} value={customTag.title}>{customTag.title}</option>
+              ))}
+              <option value="addCustom">+ Add Custom Tag</option>
             </Select>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSaveNote}>
-              Save
-            </Button>
+            <Button colorScheme="blue" mr={3} onClick={handleSaveNote}>Save</Button>
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-       {/* End of Note Modal */}
 
-      {/* Dropdown menu for tag filter */}
-      <Select value={selectedTag} onChange={(e) => setSelectedTag(e.target.value)} mb={4}>
-        <option value="None">Filter by Tag</option>
-        <option value="Personal">Personal</option>
-        <option value="Work">Work</option>
-        <option value="Important">Important</option>
-      </Select>
+      {/* Custom Tag Modal */}
+      <CustomTagModal
+        isOpen={isCustomTagModalOpen}
+        onClose={onCustomTagModalClose}
+        customTags={customTags}
+        setCustomTags={setCustomTags}
+      />
 
-      {/* Display Quick Notes */}
-      <Heading size="md" my={4}>Quick Notes</Heading>
-      <Flex wrap="wrap" justifyContent="center">
-        {quickNotes.map((note) => (
-          <Box
-            key={note.id}
-            p={4}
-            borderWidth="1px"
-            borderRadius="lg"
-            w="300px"
-            m="2"
-            bg="gray.50"
-          >
-            <Text fontWeight="bold" mb={2}>
-              {note.title || "Untitled Note"}
-            </Text>
-            <Text mb={2}>{note.content}</Text>
-            {note.tag && <Tag colorScheme={getTagColor(note.tag)}>{note.tag}</Tag>}
-            <Flex justify="space-between" mt={4}>
-              <ButtonGroup>
-                <Button size="sm" onClick={() => handleEditNote(note)}>
-                  Edit
-                </Button>
-                <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>
-                  Delete
-                </Button>
-              </ButtonGroup>
-            </Flex>
-          </Box>
-        ))}
+{/*QUICK NOTES */}
+<Heading size="md" my={4}>Quick Notes</Heading>
+<Flex wrap="wrap" justifyContent="center">
+  {notes.filter(note => note.type === "quick").map((note) => (
+    <Box
+      key={note.id}
+      p={4}
+      borderWidth="1px"
+      borderRadius="lg"
+      w="300px"
+      m="2"
+      bg={getTagColor(note.tag)}
+    >
+      <Text fontWeight="bold" mb={2}>{note.title || "Untitled Note"}</Text>
+      <Text mb={2}>{note.content}</Text>
+      <Flex justify="space-between" mt={4}>
+        <ButtonGroup isAttached variant="outline">
+          <Button size="sm" onClick={() => handleEditNote(note)}>Edit</Button>
+          <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
+        </ButtonGroup>
       </Flex>
+    </Box>
+  ))}
+</Flex>
 
-      {/* Display Document Notes */}
-      <Heading size="md" my={4}>Document Notes</Heading>
-      <Wrap justify="center">
-        {documentNotes.map((note) => (
-          <Box
-            key={note.id}
-            p={4}
-            borderWidth="1px"
-            borderRadius="lg"
-            w="300px"
-            m="2"
-            bg="gray.50"
-          >
-            <Text fontWeight="bold" mb={2}>
-              {note.title || "Untitled Note"}
-            </Text>
-            {note.tag && <Tag colorScheme={getTagColor(note.tag)}>{note.tag}</Tag>}
-            <Flex justify="space-between" mt={4}>
-              <ButtonGroup>
-                <Button size="sm" onClick={() => handleEditNote(note)}>
-                  Edit
-                </Button>
-                <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>
-                  Delete
-                </Button>
-              </ButtonGroup>
-            </Flex>
-          </Box>
-        ))}
-      </Wrap>
+{/*DOCUMENT NOTES */}
+<Heading size="md" my={4}>Document Notes</Heading>
+<Flex wrap="wrap" justifyContent="center">
+  {notes.filter(note => note.type === "document").map((note) => (
+    <Box
+      key={note.id}
+      p={4}
+      borderWidth="1px"
+      borderRadius="lg"
+      w="300px"
+      m="2"
+      bg={getTagColor(note.tag)}
+    >
+      <Text fontWeight="bold" mb={2}>{note.title || "Untitled Document"}</Text>
+    
+      <Text mb={2}>{note.content}</Text>
+      <Flex justify="space-between" mt={4}>
+        <ButtonGroup isAttached variant="outline">
+          <Button size="sm" onClick={() => handleEditNote(note)}>Edit</Button>
+          <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
+        </ButtonGroup>
+      </Flex>
+    </Box>
+  ))}
+</Flex>
     </Flex>
   );
-}
-
-// Helper function to determine the color scheme for tags
-function getTagColor(tag) {
-  switch (tag) {
-    case "Personal":
-      return "blue";
-    case "Work":
-      return "green";
-    case "Important":
-      return "red";
-    default:
-      return "gray";
-  }
 }
 
 export default Notes;
