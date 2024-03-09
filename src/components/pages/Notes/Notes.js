@@ -7,18 +7,30 @@ import Navbar from "../../nav/Navbar";
 function Notes() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [notes, setNotes] = useState([]);
+  const [filteredNotes, setFilteredNotes] = useState([]);
   const navigate = useNavigate();
   const [editNoteId, setEditNoteId] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("None");
-  const quickNotes = notes.filter(note => note.type === "quick");
-  const documentNotes = notes.filter(note => note.type === "document");
+  const [selectedTag, setSelectedTag] = useState("None"); // State for selected tag filter
+  const quickNotes = filteredNotes.filter(note => note.type === "quick"); // Filtered notes based on selected tag
+  const documentNotes = filteredNotes.filter(note => note.type === "document");
 
   useEffect(() => {
     const storedNotes = JSON.parse(localStorage.getItem("notes")) || [];
     setNotes(storedNotes);
+    setFilteredNotes(storedNotes); // Initialize filteredNotes with all notes
   }, []);
+
+  useEffect(() => {
+    if (selectedTag === "None") {
+      setFilteredNotes(notes); // If no tag selected, display all notes
+    } else {
+      const filtered = notes.filter(note => note.tag === selectedTag);
+      setFilteredNotes(filtered); // Filter notes based on selected tag
+    }
+  }, [selectedTag, notes]);
 
   const handleSaveNote = () => {
     let updatedNotes;
@@ -132,7 +144,15 @@ function Notes() {
       </Modal>
        {/* End of Note Modal */}
 
-        {/* Display Quick Notes */}
+      {/* Dropdown menu for tag filter */}
+      <Select value={selectedTag} onChange={(e) => setSelectedTag(e.target.value)} mb={4}>
+        <option value="None">Filter by Tag</option>
+        <option value="Personal">Personal</option>
+        <option value="Work">Work</option>
+        <option value="Important">Important</option>
+      </Select>
+
+      {/* Display Quick Notes */}
       <Heading size="md" my={4}>Quick Notes</Heading>
       <Flex wrap="wrap" justifyContent="center">
         {quickNotes.map((note) => (
