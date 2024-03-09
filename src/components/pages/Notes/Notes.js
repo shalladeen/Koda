@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Flex, Button, VStack, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, 
   ModalBody, ModalFooter, Input, Textarea, Box, Text, Select, Heading, Wrap, Tag, Menu, MenuButton, MenuList, MenuItem, ButtonGroup} from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom"; 
-import NotePage from "./NotePage";
 import Navbar from "../../nav/Navbar";
 
 function Notes() {
@@ -22,23 +21,37 @@ function Notes() {
   const handleSaveNote = () => {
     let updatedNotes;
     if (editNoteId) {
-      updatedNotes = notes.map(note => note.id === editNoteId ? { ...note, title, content, tag } : note);
+      updatedNotes = notes.map(note =>
+        note.id === editNoteId ? { ...note, title, content, tag, type: note.type } : note
+      );
     } else {
-      const newNote = { id: Date.now(), title, content, tag };
+      
+      const newNote = {
+        id: Date.now(),
+        title,
+        content,
+        tag,
+        type: "quick" 
+      };
       updatedNotes = [...notes, newNote];
     }
   
     setNotes(updatedNotes);
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
-    resetForm(); 
-    onClose(); 
+    resetForm();
+    onClose();
   };
 
   const handleEditNote = (note) => {
-    setEditNoteId(note.id);
-    setTitle(note.title);
-    setContent(note.content);
-    onOpen();
+    if (note.type === 'document') {
+      navigate("/notepage", { state: { noteId: note.id, type: "document" } });
+    } else {
+      setEditNoteId(note.id);
+      setTitle(note.title);
+      setContent(note.content);
+      setTag(note.tag);
+      onOpen();
+    }
   };
 
   const handleDeleteNote = (id) => {
