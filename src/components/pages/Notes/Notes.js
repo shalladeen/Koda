@@ -89,6 +89,8 @@ function Notes() {
     setTag("None");
   };
 
+  
+
   const getTagColor = (tagTitle) => {
     if (tagTitle === "None") return "gray";
 
@@ -106,7 +108,7 @@ function Notes() {
         </MenuButton>
         <MenuList>
           <MenuItem onClick={onOpen}>Quick Note</MenuItem>
-          <MenuItem onClick={() => navigate("/document-note")}>Document Note</MenuItem>
+          <MenuItem onClick={() => navigate("/notepage")}>Document Note</MenuItem>
         </MenuList>
       </Menu>
 

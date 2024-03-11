@@ -20,6 +20,8 @@ const CustomTagModal = ({ isOpen, onClose, customTags, setCustomTags, deleteTag 
     onClose(); 
   };
 
+  
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
