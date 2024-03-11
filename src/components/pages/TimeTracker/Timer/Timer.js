@@ -13,11 +13,10 @@ import {
 } from '@chakra-ui/react';
 
 function Timer() {
-    const maxTimeInMinutes = 120;
-    const [timeInMinutes, setTimeInMinutes] = useState(0);
-    const [secondsElapsed, setSecondsElapsed] = useState(0);
+    const maxTimeInMinutes = 120; 
+    const [timeInMinutes, setTimeInMinutes] = useState(0); 
+    const [secondsElapsed, setSecondsElapsed] = useState(0); 
     const [isRunning, setIsRunning] = useState(false);
-    const totalTimeInSeconds = timeInMinutes * 60;
 
     useEffect(() => {
         if (isRunning) {
@@ -38,7 +37,7 @@ function Timer() {
     const startTimer = () => {
         if (!isRunning && timeInMinutes > 0) {
             setIsRunning(true);
-            setSecondsElapsed(0); 
+            setSecondsElapsed(0);
         }
     };
 
@@ -52,25 +51,37 @@ function Timer() {
 
     const progress = 100 - ((secondsElapsed / (timeInMinutes * 60)) * 100);
 
+    const setPresetTime = (minutes) => {
+        if (!isRunning) {
+            setTimeInMinutes(minutes);
+            setSecondsElapsed(0);
+        }
+    };
+
     return (
         <Center minHeight="100vh" flexDirection="column">
             <VStack spacing={10}>
-                
                 <CircularProgress value={progress} size="400px" thickness="12px"
                                   color={getProgressColor(100 - progress)} max={100}>
                     <CircularProgressLabel fontSize="4xl">
-                        {`${Math.floor((totalTimeInSeconds - secondsElapsed) / 60)}m ${Math.round((totalTimeInSeconds - secondsElapsed) % 60)}s`}
+                        {`${Math.floor((timeInMinutes * 60 - secondsElapsed) / 60)}m ${Math.round((timeInMinutes * 60 - secondsElapsed) % 60)}s`}
                     </CircularProgressLabel>
                 </CircularProgress>
-                <Slider aria-label="timer-slider" defaultValue={0} min={0} max={maxTimeInMinutes * 60}
-                    onChange={(val) => {
-                        const newTimeInMinutes = Math.max(0, Math.min(val / 60, maxTimeInMinutes));
-                        if (!isRunning) {
-                            setTimeInMinutes(newTimeInMinutes);
-                            setSecondsElapsed(0);
-                        }
-                    }}
-                    value={timeInMinutes * 60} size="lg">
+                <HStack spacing={4}>
+                    <Button onClick={() => setPresetTime(30)} size="md">30m</Button>
+                    <Button onClick={() => setPresetTime(60)} size="md">1h</Button>
+                    <Button onClick={() => setPresetTime(90)} size="md">1h 30m</Button>
+                    <Button onClick={() => setPresetTime(120)} size="md">2h</Button>
+                </HStack>
+                <Slider aria-label="timer-slider" defaultValue={0} min={0} max={maxTimeInMinutes}
+                        step={1} // This makes the slider move in steps of 1 minute
+                        onChange={(val) => {
+                            if (!isRunning) {
+                                setTimeInMinutes(val);
+                                setSecondsElapsed(0);
+                            }
+                        }}
+                        value={timeInMinutes} size="lg">
                     <SliderTrack>
                         <SliderFilledTrack />
                     </SliderTrack>
@@ -86,7 +97,6 @@ function Timer() {
     );
 }
 
-// Adjusted to use the inverse of the progress for color determination
 function getProgressColor(inverseProgress) {
     if (inverseProgress < 33) return "blue.400";
     if (inverseProgress < 66) return "blue.400";
