@@ -127,14 +127,15 @@ function NotePage() {
           </MenuList>
         </Menu>
       </Flex>
-      <Box w="80%" maxW="800px">
+      <Box w="80%" maxW="800px" >
         <ReactQuill
           theme="snow"
           value={content}
           onChange={setContent}
           style={{ height: "600px", width: "100%" }}
+          
         />
-        <Button colorScheme="teal" onClick={handleSave} mt={4}>
+        <Button colorScheme="teal" onClick={handleSave} mt={14}>
           Save
         </Button>
       </Box>

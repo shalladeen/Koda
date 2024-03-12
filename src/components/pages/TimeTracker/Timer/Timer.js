@@ -98,9 +98,9 @@ function Timer() {
 }
 
 function getProgressColor(inverseProgress) {
-    if (inverseProgress < 33) return "blue.400";
-    if (inverseProgress < 66) return "blue.400";
-    return "blue.400";
+    if (inverseProgress < 33) return "green.400";
+    if (inverseProgress < 66) return "yellow.400";
+    return "red.400";
 }
 
 export default Timer;

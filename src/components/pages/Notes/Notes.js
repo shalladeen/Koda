@@ -168,7 +168,7 @@ function Notes() {
       <Heading size="md" my={4}>Quick Notes</Heading>
       <Flex wrap="wrap" justifyContent="center">
         {notes.filter(note => note.type === "quick").map((note) => (
-          <Box key={note.id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m="2" bg={getTagColor(note.tag)}>
+          <Box key={note.id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m="2">
             <Text fontWeight="bold" mb={2}>{note.title || "Untitled Note"}</Text>
             <Text mb={2}>{note.content}</Text>
             <Flex justify="space-between" mt={4}>
@@ -176,6 +176,12 @@ function Notes() {
                 <Button size="sm" onClick={() => handleEditNote(note)}>Edit</Button>
                 <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
               </ButtonGroup>
+              {note.tag && note.tag !== "None" && (
+             <HStack>
+                <Text>{note.tag}</Text>
+                <Circle size="15px" bg={getTagColor(note.tag)} />
+             </HStack>
+              )}
             </Flex>
           </Box>
         ))}
@@ -184,13 +190,19 @@ function Notes() {
       <Heading size="md" my={4}>Document Notes</Heading>
       <Flex wrap="wrap" justifyContent="center">
         {notes.filter(note => note.type === "document").map((note) => (
-          <Box key={note.id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m="2" bg={getTagColor(note.tag)}>
+          <Box key={note.id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m="2">
             <Text fontWeight="bold" mb={2}>{note.title || "Untitled Document"}</Text>
             <Flex justify="space-between" mt={4}>
               <ButtonGroup isAttached variant="outline">
                 <Button size="sm" onClick={() => handleEditNote(note)}>Edit</Button>
                 <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
               </ButtonGroup>
+              {note.tag && note.tag !== "None" && (
+              <HStack>
+                <Text>{note.tag}</Text>
+                <Circle size="15px" bg={getTagColor(note.tag)} />
+              </HStack>
+              )}
             </Flex>
           </Box>
         ))}
