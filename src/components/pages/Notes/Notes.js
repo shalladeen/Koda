@@ -117,11 +117,13 @@ function Notes() {
       <Navbar />
       <Flex direction="column" m={5}>
         <Heading mb={6}>My Notes</Heading>
-        <Button colorScheme="teal" my={4} onClick={openModalForNewNote}>Create Note</Button>
+        <Box>
+          <HStack >
+        <Button colorScheme="blue" my={4} onClick={openModalForNewNote} mr={6}>New Note</Button>
 
         {/* Note Listing and Filtering */}
         <Menu>
-          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>Filter by Tag</MenuButton>
+        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>{tag === "None" ? "Filter by Tag" : tag}</MenuButton>
           <MenuList>
             <MenuItem onClick={() => handleTagFilterChange("None")}>All Notes</MenuItem>
             {customTags.map((tag) => (
@@ -129,23 +131,20 @@ function Notes() {
             ))}
           </MenuList>
         </Menu>
-
+        </HStack>
+        </Box>
         <Flex wrap="wrap" justifyContent="center">
           {filteredNotes.map((note) => (
-            <Box key={note.id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m="2">
+            <Box key={note.id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m={2}
+            backgroundColor={getTagColor(note.tag)} boxShadow="md" h="250px">
               <Text fontWeight="bold" mb={2}>{note.title}</Text>
               <Text mb={2}>{note.content}</Text>
-              <Flex justify="space-between" mt={4}>
-                <ButtonGroup isAttached variant="outline">
-                  <Button size="sm" onClick={() => handleEditNote(note)}>Edit</Button>
+              <Flex justify="space-between">
+                <ButtonGroup isAttached variant="outline" position="fixed" h="300px">
+                  <Button size="sm" onClick={() => handleEditNote(note)} >Edit</Button>
                   <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
                 </ButtonGroup>
-                {note.tag && (
-                 <HStack>
-                 <Text>{note.tag}</Text>
-                 <Circle size="15px" bg={getTagColor(note.tag)} />
-               </HStack>
-                )}
+               
               </Flex>
             </Box>
           ))}
