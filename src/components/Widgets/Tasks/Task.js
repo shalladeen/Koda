@@ -116,7 +116,6 @@ function Task() {
           <ModalCloseButton />
           <form onSubmit={handleEditTask}>
             <ModalBody>
-              {/* Form fields identical to Add Task, but used for editing */}
               <FormControl isRequired>
                 <FormLabel>Title</FormLabel>
                 <Input value={newTaskTitle} onChange={(e) => setNewTaskTitle(e.target.value)} placeholder="Enter task title" />

@@ -14,7 +14,7 @@ function Signup() {
     const toggleForm = () => setIsSignUpActive(!isSignUpActive);
 
     const handleSubmit = async (event) => {
-        event.preventDefault(); // Prevents the default form submission behaviour
+        event.preventDefault(); 
         const userData = {
             name,
             email,
@@ -32,17 +32,18 @@ function Signup() {
 
             const data = await response.json();
             console.log(data.message);
-            // Here, handle the response. For example, show a success message or redirect the user.
+           
         } catch (error) {
             console.error('Error:', error);
-            // Handle error. For example, show an error message.
+           
         }
     };
 
     return (
-        <Flex direction="column" align="center" justify="center" h="100vh" p={4}>
+        <Flex h="100vh">
             <Navbar />
-            <VStack spacing={8} bg={formBackground} p={6} borderRadius="xl" boxShadow="lg" w="500px">
+            <Flex direction="column" align="center" justify="center" h="100vh" ml={{ base: "0", md: "64" }} w="70%">
+                <VStack spacing={8} bg={formBackground} p={6} borderRadius="xl" boxShadow="lg" w="500px">
                 {isSignUpActive ? (
                     <>
                         <Text fontSize="2xl" fontWeight="bold">Create An Account</Text>
@@ -92,6 +93,7 @@ function Signup() {
                     </>
                 )}
             </VStack>
+            </Flex>
         </Flex>
     );
 }

@@ -14,13 +14,13 @@
 
 /* Customize the background color for 'today' */
 .fc .fc-day-today {
-  background-color: #E0F2FE !important; /* Light blue */
+  background-color: #E0F2FE !important; 
 }
 
 /* Custom view handling for week and day views */
 .fc-timeGridWeek-view, .fc-timeGridDay-view {
-  max-height: 700px; /* Example max height */
-  overflow: auto; /* Allows scrolling within the view */
+  max-height: 700px;
+  overflow: auto;
 }
 
   

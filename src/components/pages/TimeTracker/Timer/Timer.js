@@ -74,7 +74,7 @@ function Timer() {
                     <Button onClick={() => setPresetTime(120)} size="md">2h</Button>
                 </HStack>
                 <Slider aria-label="timer-slider" defaultValue={0} min={0} max={maxTimeInMinutes}
-                        step={1} // This makes the slider move in steps of 1 minute
+                        step={1}
                         onChange={(val) => {
                             if (!isRunning) {
                                 setTimeInMinutes(val);

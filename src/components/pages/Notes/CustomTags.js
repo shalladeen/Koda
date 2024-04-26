@@ -1,4 +1,3 @@
-// CustomTagModal.js
 import React, { useState } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Input, Flex, Box, Text, IconButton, Heading } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
@@ -6,7 +5,7 @@ import { CloseIcon } from '@chakra-ui/icons';
 const CustomTagModal = ({ isOpen, onClose, customTags, setCustomTags, deleteTag }) => {
   const [newTagTitle, setNewTagTitle] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
-  const tagColors = ['#aec6cf', '#77dd77', '#ffd1dc',]; 
+  const tagColors = ['#aec6cf', '#77dd77', '#ffd1dc']; 
 
   const handleAddCustomTag = () => {
     if (!newTagTitle || !selectedColor) {
@@ -19,8 +18,6 @@ const CustomTagModal = ({ isOpen, onClose, customTags, setCustomTags, deleteTag 
     setSelectedColor('');
     onClose(); 
   };
-
-  
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Box, Flex, Stack, useColorModeValue, IconButton } from "@chakra-ui/react";
-import { FaUserCircle } from 'react-icons/fa';
+import { Box, Flex, Stack, useColorModeValue } from "@chakra-ui/react";
 import { useNavigate } from 'react-router-dom';
 import Recent from "../../Widgets/Recents/Recent";
 import Task from "../../Widgets/Tasks/Task";
@@ -10,38 +9,36 @@ import Navbar from "../../nav/Navbar";
 
 function Home() {
     const bgColor = useColorModeValue('#f9fdff', 'gray.800');
-    const buttonBg = useColorModeValue('blue.500', 'blue.200');
-    const textColor = useColorModeValue('white', 'gray.800');
+    
+    const mainContentBgColor = useColorModeValue('#f9fdff', 'gray.800'); 
+    
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
 
     const handleProfileClick = () => {
       if (isLoggedIn) {
-        navigate('/settings'); 
+        navigate('/profile'); 
       } else {
         navigate('/signup');
       }
     };
 
     return (
-      <Flex direction={["column", "row"]} bg={bgColor} height="100vh">
-        <Navbar />
+      <Flex direction={["column", "row"]} bg={bgColor} height="100vh" >
+        <Navbar onProfileClick={handleProfileClick}/>
 
-        <Flex direction="column" alignItems="center" p={[2, 5]} w="full">
+        <Flex
+          direction="column"
+          alignItems="center"
+          p={[2, 5]}
+          w="full"
+          ml={{ base: "0", md: "100px" }} 
+          borderRadius= "full"
+          bg={mainContentBgColor} 
+        >
           <Flex width="full" direction={["column", "row"]} alignItems="center" mt={[2, 10]} px={[4, 0]}>
               <WelcomeGreeting isLoggedIn={isLoggedIn} />
-              <IconButton
-                  aria-label="Profile"
-                  icon={<FaUserCircle />}
-                  isRound={true}
-                  size="lg"
-                  ml={[0, "auto"]} mt={[2, 0]}
-                  bg={buttonBg}
-                  color={textColor}
-                  onClick={handleProfileClick}
-                  _hover={{ bg: useColorModeValue('blue.600', 'blue.300') }}
-              />
           </Flex>
 
           <Flex
