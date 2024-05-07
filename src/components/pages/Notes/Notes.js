@@ -8,15 +8,29 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import Navbar from "../../nav/Navbar";
 import CustomTagModal from "./CustomTags";
 
+// Define default tags with pastel colors
+const defaultTags = [
+  { title: "Work", color: "#aec6cf" },  // Pastel blue
+  { title: "Personal", color: "#ccd5ae" },  // Pastel gray
+  { title: "School", color: "#77dd77" }   // Pastel green
+];
+
 function Notes() {
-  const { isOpen, onOpen, onClose } = useDisclosure(); 
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     isOpen: isCustomTagModalOpen,
     onOpen: onCustomTagModalOpen,
     onClose: onCustomTagModalClose
-  } = useDisclosure(); 
+  } = useDisclosure();
   const [notes, setNotes] = useState(() => JSON.parse(localStorage.getItem("notes") || "[]"));
-  const [customTags, setCustomTags] = useState(() => JSON.parse(localStorage.getItem("customTags") || "[]"));
+  const [customTags, setCustomTags] = useState(() => {
+    const storedTags = JSON.parse(localStorage.getItem("customTags"));
+    if (!storedTags || storedTags.length === 0) {
+      localStorage.setItem("customTags", JSON.stringify(defaultTags));
+      return defaultTags;
+    }
+    return storedTags;
+  });
   const [editNoteId, setEditNoteId] = useState(null);
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [title, setTitle] = useState("");
@@ -24,18 +38,13 @@ function Notes() {
   const [tag, setTag] = useState("None");
 
   useEffect(() => {
-    setFilteredNotes(notes); 
+    setFilteredNotes(notes);
   }, [notes]);
 
   useEffect(() => {
     localStorage.setItem("notes", JSON.stringify(notes));
     localStorage.setItem("customTags", JSON.stringify(customTags));
   }, [notes, customTags]);
-
-  useEffect(() => {
-    localStorage.setItem("customTags", JSON.stringify(customTags));
-    localStorage.setItem("notes", JSON.stringify(notes));
-  }, [customTags, notes]);
 
   const handleSaveNote = () => {
     const timestamp = Date.now();
@@ -50,7 +59,6 @@ function Notes() {
         title,
         content,
         tag,
-        type: "quick",
         createdAt: timestamp
       };
       updatedNotes = [...notes, newNote];
@@ -69,18 +77,18 @@ function Notes() {
     onOpen();
   };
 
-
   const handleDeleteNote = (id) => {
     const updatedNotes = notes.filter(note => note.id !== id);
     setNotes(updatedNotes);
+    setFilteredNotes(updatedNotes);
     localStorage.setItem("notes", JSON.stringify(updatedNotes));
   };
 
   const deleteTag = (indexToRemove) => {
-    const tagToDelete = customTags[indexToRemove];
     const updatedTags = customTags.filter((_, index) => index !== indexToRemove);
     setCustomTags(updatedTags);
-  }
+    localStorage.setItem("customTags", JSON.stringify(updatedTags));
+  };
 
   const openModalForNewNote = () => {
     setEditNoteId(null);
@@ -109,72 +117,30 @@ function Notes() {
 
   const getTagColor = (tagTitle) => {
     if (tagTitle === "None") return "gray";
-    return customTags.find(tag => tag.title === tagTitle)?.color || "gray";
+    return customTags.find(tag => tag.title === tagTitle)?.color || defaultTags.find(tag => tag.title === tagTitle)?.color || "gray";
   };
 
   return (
     <Flex height="100vh">
       <Navbar />
-      <Flex direction="column" m={5}>
+      <Flex direction="column" m={5} w="full">
         <Heading mb={6}>My Notes</Heading>
         <Box>
-          <HStack >
-        <Button colorScheme="blue" my={4} onClick={openModalForNewNote} mr={6}>New Note</Button>
+          <HStack>
+            <Button colorScheme="blue" my={4} onClick={openModalForNewNote} mr={6}>New Note</Button>
 
-        {/* Note Listing and Filtering */}
-        <Menu>
-        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>{tag === "None" ? "Filter by Tag" : tag}</MenuButton>
-          <MenuList>
-            <MenuItem onClick={() => handleTagFilterChange("None")}>All Notes</MenuItem>
-            {customTags.map((tag) => (
-              <MenuItem key={tag.title} onClick={() => handleTagFilterChange(tag.title)}>{tag.title}</MenuItem>
-            ))}
-          </MenuList>
-        </Menu>
-        </HStack>
-        </Box>
-        <Flex wrap="wrap" justifyContent="center">
-          {filteredNotes.map((note) => (
-            <Box key={note.id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m={2}
-            backgroundColor={getTagColor(note.tag)} boxShadow="md" h="250px">
-              <Text fontWeight="bold" mb={2}>{note.title}</Text>
-              <Text mb={2}>{note.content}</Text>
-              <Flex justify="space-between">
-                <ButtonGroup isAttached variant="outline" position="fixed" h="300px">
-                  <Button size="sm" onClick={() => handleEditNote(note)} >Edit</Button>
-                  <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
-                </ButtonGroup>
-               
-              </Flex>
-            </Box>
-          ))}
-          </Flex>
-
-        {/* Note Modal */}
-     <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>{editNoteId ? "Edit Note" : "New Note"}</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} mb={3} />
-            <Textarea placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} mb={3} />
+            {/* Note Listing and Filtering */}
             <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>Select Tag</MenuButton>
-                <HStack>
-                    <Text p={5}>{tag === "None" ? "No Tag" : tag}</Text>
-                      {tag !== "None" && (
-                        <Circle size="15px" bg={getTagColor(tag)} />
-                      )}
-                  </HStack>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>{tag === "None" ? "Filter by Tag" : tag}</MenuButton>
               <MenuList>
-                <MenuItem onClick={() => setTag("None")}>
+                <MenuItem onClick={() => handleTagFilterChange("None")}>
                   <HStack>
-                    <Text>None</Text>
+                    <Text>All Notes</Text>
+                    <Circle size="15px" bg="gray" />
                   </HStack>
                 </MenuItem>
                 {customTags.map((customTag, index) => (
-                  <MenuItem key={index} onClick={() => setTag(customTag.title)}>
+                  <MenuItem key={index} onClick={() => handleTagFilterChange(customTag.title)} bg={tag === customTag.title ? "blue.100" : "inherit"}>
                     <HStack>
                       <Text>{customTag.title}</Text>
                       <Circle size="15px" bg={customTag.color} />
@@ -184,24 +150,70 @@ function Notes() {
                 <MenuItem onClick={onCustomTagModalOpen}>+ Customize Tags</MenuItem>
               </MenuList>
             </Menu>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSaveNote}>Save</Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+          </HStack>
+        </Box>
+        <Flex wrap="wrap">
+          {filteredNotes.map((note) => (
+            <Box key={note.id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m={2}
+              backgroundColor={getTagColor(note.tag)} boxShadow="md" h="250px">
+              <Text fontWeight="bold" mb={2}>{note.title}</Text>
+              <Text mb={2}>{note.content}</Text>
+              <Flex justify="space-between">
+                <ButtonGroup isAttached variant="outline">
+                  <Button size="sm" onClick={() => handleEditNote(note)}>Edit</Button>
+                  <Button size="sm" colorScheme="red" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
+                </ButtonGroup>
+              </Flex>
+            </Box>
+          ))}
+        </Flex>
 
-      {/* Custom Tag Modal */}
-      <CustomTagModal
-        isOpen={isCustomTagModalOpen}
-        onClose={onCustomTagModalClose}
-        customTags={customTags}
-        setCustomTags={setCustomTags}
-        deleteTag={deleteTag}
-      />
+        {/* Note Modal */}
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>{editNoteId ? "Edit Note" : "New Note"}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Input placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} mb={3} />
+              <Textarea placeholder="Content" value={content} onChange={(e) => setContent(e.target.value)} mb={3} />
+              <Menu>
+                <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>Select Tag: {tag}</MenuButton>
+                <MenuList>
+                  <MenuItem onClick={() => setTag("None")}>
+                    <HStack>
+                      <Text>None</Text>
+                      <Circle size="15px" bg="gray" />
+                    </HStack>
+                  </MenuItem>
+                 
+                  {customTags.map((customTag, index) => (
+                    <MenuItem key={index} onClick={() => setTag(customTag.title)} bg={tag === customTag.title ? "blue.100" : "inherit"}>
+                      <HStack>
+                        <Text>{customTag.title}</Text>
+                        <Circle size="15px" bg={customTag.color} />
+                      </HStack>
+                    </MenuItem>
+                  ))}
+                  <MenuItem onClick={onCustomTagModalOpen}>+ Customize Tags</MenuItem>
+                </MenuList>
+              </Menu>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={handleSaveNote}>Save</Button>
+              <Button onClick={onClose}>Cancel</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
 
-        
+        {/* Custom Tag Modal */}
+        <CustomTagModal
+          isOpen={isCustomTagModalOpen}
+          onClose={onCustomTagModalClose}
+          customTags={customTags}
+          setCustomTags={setCustomTags}
+          deleteTag={deleteTag}
+        />
       </Flex>
     </Flex>
   );

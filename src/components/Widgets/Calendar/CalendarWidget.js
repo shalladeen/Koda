@@ -6,7 +6,8 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { useColorMode, Box, Text, VStack, Button, Modal, ModalOverlay, useDisclosure, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, FormControl, FormLabel, Input, Checkbox, Flex, ChakraProvider } from '@chakra-ui/react';
+import { useColorMode, Box, Text, VStack, Button, Modal, ModalOverlay, useDisclosure, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, 
+  FormControl, FormLabel, Input, Checkbox, Flex, ChakraProvider } from '@chakra-ui/react';
 import moment from 'moment';
 import '@fullcalendar/react';
 

@@ -1,32 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Flex, Box, Text, useColorModeValue, Heading, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, Input, Textarea } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
-import { FaFileAlt, FaStickyNote } from 'react-icons/fa';
+import {
+  Box, Flex, Text, Heading, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, Input, Textarea, Wrap, WrapItem, Circle, useColorModeValue
+} from '@chakra-ui/react';
 
 const Recent = () => {
   const [recentNotes, setRecentNotes] = useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
-  const navigate = useNavigate();
   const hoverBg = useColorModeValue('blue.50', 'gray.600');
+  const defaultColor = useColorModeValue('gray.50', 'gray.700');
 
   useEffect(() => {
     const storedNotes = JSON.parse(localStorage.getItem('notes')) || [];
     const sortedNotes = storedNotes.sort((a, b) => (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt));
-    setRecentNotes(sortedNotes);
+    setRecentNotes(sortedNotes.slice(0, 5));
   }, []);
 
   const handleNoteClick = (note) => {
-    if (note.type === 'document') {
-      navigate("/notepage", { state: { noteId: note.id, type: note.type } });
-    } else {
-      setEditingNote(note);
-      setIsEditModalOpen(true);
-    }
+    setEditingNote(note);
+    setIsEditModalOpen(true);
   };
 
   const handleSaveEditedNote = (editedFields) => {
-    const updatedNotes = recentNotes.map(note => note.id === editingNote.id ? { ...note, ...editedFields } : note);
+    const updatedNotes = recentNotes.map(note => note.id === editingNote.id ? { ...note, ...editedFields, updatedAt: Date.now() } : note);
     localStorage.setItem('notes', JSON.stringify(updatedNotes));
     setRecentNotes(updatedNotes);
     setIsEditModalOpen(false);
@@ -36,7 +32,13 @@ const Recent = () => {
     const updatedNotes = recentNotes.filter(note => note.id !== noteId);
     localStorage.setItem('notes', JSON.stringify(updatedNotes));
     setRecentNotes(updatedNotes);
-    setIsEditModalOpen(false); 
+    setIsEditModalOpen(false);
+  };
+
+  const getTagColor = (tagTitle) => {
+    const customTags = JSON.parse(localStorage.getItem('customTags')) || [];
+    if (tagTitle === "None") return defaultColor;
+    return customTags.find(tag => tag.title === tagTitle)?.color || defaultColor;
   };
 
   const EditNoteModal = () => {
@@ -84,26 +86,33 @@ const Recent = () => {
   return (
     <>
       <Heading size="lg" my={2}>Recent Notes</Heading>
-      <Flex overflowX="auto" p={4} minW="0">
+      <Wrap spacing="20px" p={4} minW="0">
         {recentNotes.map((note) => (
-          <Box
-            key={note.id}
-            borderWidth="1px"
-            borderRadius="lg"
-            p={4}
-            width="240px"
-            bg="gray.50"
-            _hover={{ bg: hoverBg, cursor: 'pointer', transform: 'scale(1.05)', transition: 'transform .2s' }}
-            onClick={() => handleNoteClick(note)}
-            mr={4}
-          >
-            <Text isTruncated fontWeight="bold">{note.title || "Untitled Note"}</Text>
-            <Flex align="center">
-              {note.type === 'document' ? <FaFileAlt size={20} style={{ marginRight: '5px' }} /> : <FaStickyNote size={20} style={{ marginRight: '5px' }} />}
-            </Flex>
-          </Box>
+          <WrapItem key={note.id}>
+            <Box
+              borderWidth="1px"
+              borderRadius="lg"
+              p={4}
+              width={{ base: "180px", sm: "240px" }}
+              bg={getTagColor(note.tag || "None")}
+              boxShadow="md"
+              minHeight="150px"
+              maxHeight="250px"
+              overflowY="auto"
+              _hover={{
+                bg: hoverBg,
+                cursor: 'pointer',
+                transform: 'scale(1.05)',
+                transition: 'transform .2s'
+              }}
+              onClick={() => handleNoteClick(note)}
+            >
+              <Text fontWeight="bold" mb={2}>{note.title || "Untitled Note"}</Text>
+              <Text mb={2} noOfLines={4}>{note.content}</Text>
+            </Box>
+          </WrapItem>
         ))}
-      </Flex>
+      </Wrap>
       {isEditModalOpen && <EditNoteModal />}
     </>
   );
