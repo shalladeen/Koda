@@ -120,10 +120,24 @@ function Notes() {
     return customTags.find(tag => tag.title === tagTitle)?.color || defaultTags.find(tag => tag.title === tagTitle)?.color || "gray";
   };
 
+  
+  const sidebarWidth = { base: "60px", md: "150px" };
+
   return (
-    <Flex height="100vh">
-      <Navbar />
-      <Flex direction="column" m={5} w="full">
+      <Flex direction="row"  height="100vh">
+      {/* Sidebar */}
+      <Box
+        position="fixed"
+        left="0"
+        top="0"
+        bottom="0"
+        width={sidebarWidth}
+        height="100vh"
+        zIndex="10"
+      >
+        <Navbar/>
+      </Box>
+      <Flex direction="column" m={5} w="full"  ml={sidebarWidth} p={{ base: 2, md: 5 }}>
         <Heading mb={6}>My Notes</Heading>
         <Box>
           <HStack>

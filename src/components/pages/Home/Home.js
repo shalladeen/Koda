@@ -33,7 +33,7 @@ function Home() {
         top="0"
         bottom="0"
         width={sidebarWidth}
-        bg="gray.700"
+        bg={useColorModeValue("gray.200", "gray.700")}
         height="100vh"
         zIndex="10"
       >
