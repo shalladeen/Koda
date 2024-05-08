@@ -40,7 +40,7 @@ function Navbar({ onProfileClick }) {
         <NavLink to="/Settings" icon={faGear} label="Settings" />
       </VStack>
       <Flex mt="auto" justifyContent="center" p="4">
-        <FaSun color={colorMode === 'light' ? 'yellow' : 'gray'} />
+        <FaSun color={colorMode === 'light' ? '#EDF2F7' : 'gray'} />
         <Switch
           isChecked={colorMode === 'dark'}
           onChange={toggleColorMode}

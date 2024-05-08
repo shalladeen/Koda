@@ -8,9 +8,17 @@
   background-color: var(--fc-today-bg-light) !important;
 }
 
+.fc-event {
+  cursor: pointer;
+  background-color: #32a8cc;
+  border: none !important;  
+  border-radius: 12px !important; 
+  transition: background-color 0.2s ease; 
+}
+
 .fc-event:hover {
   cursor: pointer;
-  background-color: #f0f0f0;
+  background-color: #cfcdcd;
 }
 
 .fc-day:hover {

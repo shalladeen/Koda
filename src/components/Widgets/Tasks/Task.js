@@ -220,7 +220,7 @@ const Task = () => {
       {/* Add Task Modal */}
       <Modal isOpen={isAddOpen} onClose={onAddClose}>
         <ModalOverlay />
-        <ModalContent backgroundColor={modalBgColor} color={modalTextColor}>
+        <ModalContent  color={modalTextColor}>
           <ModalHeader>Add a New Task</ModalHeader>
           <ModalCloseButton />
           <form onSubmit={addTask}>
@@ -261,7 +261,7 @@ const Task = () => {
       {/* Edit Task Modal */}
       <Modal isOpen={isEditOpen} onClose={closeEditModal}>
         <ModalOverlay />
-        <ModalContent backgroundColor={modalBgColor} color={modalTextColor}>
+        <ModalContent  color={modalTextColor}>
           <ModalHeader>Edit Task</ModalHeader>
           <ModalCloseButton />
           <form onSubmit={handleEditTask}>
@@ -302,7 +302,7 @@ const Task = () => {
       {/* Edit List Modal */}
       <Modal isOpen={isEditListOpen} onClose={onEditListClose}>
         <ModalOverlay />
-        <ModalContent backgroundColor={modalBgColor} color={modalTextColor}>
+        <ModalContent  color={modalTextColor}>
           <ModalHeader>Edit List</ModalHeader>
           <ModalCloseButton />
           <form onSubmit={editList}>
@@ -333,7 +333,7 @@ const Task = () => {
       {/* Add to List Modal */}
       <Modal isOpen={isListOpen} onClose={onListClose}>
         <ModalOverlay />
-        <ModalContent backgroundColor={modalBgColor} color={modalTextColor}>
+        <ModalContent color={modalTextColor}>
           <ModalHeader>Add Task to List</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -419,7 +419,7 @@ const Task = () => {
                   _hover={{ backgroundColor: hoverColor }}
                   mr={2}
                 />
-                <MenuList backgroundColor={modalBgColor} color={modalTextColor}>
+                <MenuList color={modalTextColor} borderRadius={10}>
                   <MenuItem onClick={() => openEditModal(task)}>Edit Task</MenuItem>
                   <MenuItem onClick={() => openListModal(task)}>Add to List</MenuItem>
                   <MenuDivider />
