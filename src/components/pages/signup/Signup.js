@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Navbar from "../../nav/Navbar";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Link, Flex, IconButton, useColorMode, VStack, HStack, useColorModeValue } from '@chakra-ui/react';
 import { FaGoogle, FaFacebook, FaGithub, FaLinkedin, FaMoon, FaSun } from 'react-icons/fa';
 
@@ -39,9 +40,33 @@ function Signup() {
         }
     };
 
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
+  
+    const handleProfileClick = () => {
+      if (isLoggedIn) {
+        navigate("/profile");
+      } else {
+        navigate("/signup");
+      }
+    };
+
+    const sidebarWidth = { base: "60px", md: "150px" };
+
     return (
         <Flex h="100vh">
-            <Navbar />
+            <Box
+        position="fixed"
+        left="0"
+        top="0"
+        bottom="0"
+        width={sidebarWidth}
+        bg={useColorModeValue("gray.200", "gray.700")}
+        height="100vh"
+        zIndex="10"
+      >
+        <Navbar onProfileClick={handleProfileClick} />
+      </Box>
             <Flex direction="column" align="center" justify="center" h="100vh" ml={{ base: "0", md: "64" }} w="70%">
                 <VStack spacing={8} bg={formBackground} p={6} borderRadius="xl" boxShadow="lg" w="500px">
                 {isSignUpActive ? (
