@@ -10,7 +10,8 @@
 
 .fc-event {
   cursor: pointer;
-  background-color: #32a8cc;
+  background-color: #269BC0;
+  padding: 10px;
   border: none !important;  
   border-radius: 12px !important; 
   transition: background-color 0.2s ease; 
@@ -51,6 +52,13 @@
 .fc-daygrid-day-number,
 .fc-timegrid-axis-cushion {
   font-size: 0.9em;
+}
+
+.fc .fc-view-harness {
+  border-radius: 15px;
+  overflow: hidden;
+  border: 2px solid var(#74808D);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Mobile responsiveness */

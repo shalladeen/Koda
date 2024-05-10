@@ -1,40 +1,46 @@
 // src/components/Calendar/CalendarEventList.js
-import { Box, Text, Flex, IconButton, VStack } from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
+import React from 'react';
+import { Box, Button, Heading, List, ListItem, Text } from '@chakra-ui/react';
 import moment from 'moment';
 
+const formatEventTime = (event) => {
+  const { allDay, start, end } = event;
+  if (allDay) {
+    const startDate = moment(start).format('dddd, MMMM D');
+    const endDate = end ? moment(end).subtract(1, 'day').format('dddd, MMMM D') : startDate;
+    return startDate === endDate ? startDate : `${startDate} - ${endDate}`;
+  } else {
+    const startTime = moment(start).format('h:mm A');
+    const endTime = moment(end).format('h:mm A');
+    const startDate = moment(start).format('dddd, MMMM D');
+    return `${startDate}, ${startTime} - ${endTime}`;
+  }
+};
+
 const CalendarEventList = ({ title, events, onAdd, onEdit }) => (
-  <Box borderWidth="1px" borderRadius="lg" p={5} mt={4} boxShadow="base">
-    <Flex justifyContent="space-between" alignItems="center">
-      <Text fontSize="xl" fontWeight="bold">{title}</Text>
-      <IconButton aria-label={`Add ${title}`} icon={<AddIcon />} size="sm" onClick={onAdd} />
-    </Flex>
-    <VStack spacing={4} mt={5} maxHeight="160px" overflow="auto">
+  <Box mt={8}>
+    <Heading as="h3" size="md" mb={4}>{title}</Heading>
+    <List spacing={3}>
       {events.length > 0 ? (
-        events.map(event => (
-          <Box
+        events.map((event) => (
+          <ListItem
             key={event.id}
-            p={2}
-            w="100%"
-            borderWidth="1px"
-            borderRadius="lg"
+            p={3}
+            borderRadius="md"
+            border="1px solid"
+            borderColor="gray.300"
             _hover={{ bg: 'gray.100', cursor: 'pointer' }}
             onClick={() => onEdit(event)}
           >
-            <Flex justify="space-between" align="center">
-              <Text fontWeight="bold">{event.title}</Text>
-              <Text fontSize="sm">
-                {event.allDay
-                  ? 'All day'
-                  : `${moment(event.start).format('HH:mm')} - ${moment(event.end).format('HH:mm')}`}
-              </Text>
-            </Flex>
-          </Box>
+            <Text fontWeight="bold">{event.title}</Text>
+            <Text>{formatEventTime(event)}</Text>
+          </ListItem>
         ))
       ) : (
-        <Text>No events available.</Text>
+        <Text>No events</Text>
       )}
-    </VStack>
+    </List>
+    <Button colorScheme="blue" mt={4} onClick={onAdd}>Add Event</Button>
   </Box>
 );
 
