@@ -1,4 +1,3 @@
-// src/components/Calendar/Calendar.js
 import React, { useState, useEffect } from 'react';
 import { Box, ChakraProvider, useDisclosure, useColorMode } from '@chakra-ui/react';
 import FullCalendar from '@fullcalendar/react';
@@ -6,8 +5,8 @@ import { calendarPlugins, calendarToolbar, calendarInitialView } from './Calenda
 import { loadEvents, addOrUpdateEvent, deleteEvent } from './CalendarEvents';
 import CalendarEventList from './CalendarEventList';
 import CalendarEventModal from './CalendarEventModal';
-import moment from 'moment';
 import '../Calendar/CalendarStyle.css';
+import moment from 'moment';
 
 const CalendarWidget = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -16,194 +15,145 @@ const CalendarWidget = () => {
   const [currentEvent, setCurrentEvent] = useState(null);
   const [eventTitle, setEventTitle] = useState('');
   const [allDay, setAllDay] = useState(false);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
+  const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('17:00');
 
-  // Load events from localStorage
   useEffect(() => {
     setEvents(loadEvents());
   }, []);
 
-  // Date Select
   const handleDateSelect = (selectInfo) => {
-    const { start, end, allDay } = selectInfo;
-    setStartDate(moment(start).format('YYYY-MM-DD'));
-    setEndDate(moment(end).subtract(1, 'day').format('YYYY-MM-DD'));
-    setAllDay(allDay);
+    setStartDate(moment(selectInfo.start).format('YYYY-MM-DD'));
+    setEndDate(moment(selectInfo.end).subtract(1, 'days').format('YYYY-MM-DD'));
+    setAllDay(selectInfo.allDay);
     setEventTitle('');
     setCurrentEvent(null);
-
-    if (!allDay) {
-      setStartTime(moment(start).format('HH:mm'));
-      setEndTime(moment(end).format('HH:mm'));
-    } else {
-      setStartTime('09:00');
-      setEndTime('17:00');
+    if (!selectInfo.allDay) {
+      setStartTime(moment(selectInfo.start).format('HH:mm'));
+      setEndTime(moment(selectInfo.end).format('HH:mm'));
     }
     onOpen();
   };
 
-  // Event Click
   const handleEventClick = (clickInfo) => {
-    const event = clickInfo.event;
+    // Logging the event data for debugging
+    console.log("Event clicked:", clickInfo.event);
+  
     setCurrentEvent({
-      id: event.id,
-      ...event.extendedProps,
+      id: clickInfo.event.id,
+      title: clickInfo.event.title,
+      start: clickInfo.event.start,
+      end: clickInfo.event.end,
+      allDay: clickInfo.event.allDay
     });
-    setEventTitle(event.title);
-    setStartDate(moment(event.start).format('YYYY-MM-DD'));
-    setEndDate(event.end ? moment(event.end).format('YYYY-MM-DD') : moment(event.start).format('YYYY-MM-DD'));
-    setAllDay(event.allDay);
-
-    if (!event.allDay) {
-      setStartTime(moment(event.start).format('HH:mm'));
-      setEndTime(moment(event.end).format('HH:mm'));
-    } else {
-      setStartTime('09:00');
-      setEndTime('17:00');
-    }
+    setEventTitle(clickInfo.event.title);
+    setAllDay(clickInfo.event.allDay);
+    setStartDate(moment(clickInfo.event.start).format('YYYY-MM-DD'));
+    setEndDate(clickInfo.event.end ? moment(clickInfo.event.end).format('YYYY-MM-DD') : moment(clickInfo.event.start).format('YYYY-MM-DD'));
+    setStartTime(moment(clickInfo.event.start).format('HH:mm'));
+    setEndTime(clickInfo.event.end ? moment(clickInfo.event.end).format('HH:mm') : moment(clickInfo.event.start).format('HH:mm'));
     onOpen();
   };
+  
 
-  // Event Drop or Resize
-  const handleEventChange = (info) => {
+  const handleEventDrop = (info) => {
     const { event } = info;
     const updatedEvent = {
       id: event.id,
       title: event.title,
-      start: event.allDay
-        ? moment(event.start).format('YYYY-MM-DD')
-        : moment(event.start).toISOString(),
-      end: event.allDay
-        ? moment(event.end).subtract(1, 'day').format('YYYY-MM-DD')
-        : event.end ? moment(event.end).toISOString() : null,
+      start: event.start,
+      end: event.end,
       allDay: event.allDay,
     };
+    updateEvent(updatedEvent);
+  };
+
+  const handleEventResize = (info) => {
+    const { event } = info;
+    const updatedEvent = {
+      id: event.id,
+      title: event.title,
+      start: event.start,
+      end: event.end,
+      allDay: event.allDay,
+    };
+    updateEvent(updatedEvent);
+  };
+
+  const updateEvent = (updatedEvent) => {
     const updatedEvents = addOrUpdateEvent(events, updatedEvent);
     setEvents(updatedEvents);
   };
 
-  // Save Event
   const saveEvent = () => {
-    const start = allDay
-      ? moment(startDate).format('YYYY-MM-DD')
-      : moment(startDate)
-          .set({
-            hours: moment(startTime, 'HH:mm').hours(),
-            minutes: moment(startTime, 'HH:mm').minutes(),
-          })
-          .toISOString();
-
-    const end = allDay
-      ? moment(endDate).add(1, 'day').format('YYYY-MM-DD')
-      : moment(endDate)
-          .set({
-            hours: moment(endTime, 'HH:mm').hours(),
-            minutes: moment(endTime, 'HH:mm').minutes(),
-          })
-          .toISOString();
-
     const newEvent = {
       id: currentEvent ? currentEvent.id : Date.now().toString(),
       title: eventTitle,
-      start,
-      end,
-      allDay,
+      start: allDay ? startDate : moment(startDate + 'T' + startTime).toISOString(),
+      end: allDay ? moment(endDate).add(1, 'day').toISOString() : moment(endDate + 'T' + endTime).toISOString(),
+      allDay: allDay,
     };
-
     const updatedEvents = addOrUpdateEvent(events, newEvent);
     setEvents(updatedEvents);
     onClose();
   };
 
-  // Delete Event
   const handleDeleteEvent = () => {
-    if (!currentEvent) return;
-    const updatedEvents = deleteEvent(events, currentEvent.id);
-    setEvents(updatedEvents);
-    onClose();
+    if (currentEvent && currentEvent.id) {
+      const updatedEvents = deleteEvent(events, currentEvent.id);
+      setEvents(updatedEvents);
+      onClose(); // Close the modal after deletion
+    } else {
+      console.error("No event selected or event ID is missing");
+    }
   };
+  
 
-  // Today's Events
-  const todaysEvents = events.filter((event) =>
-    moment().isSame(event.start, 'day')
-  );
-
-  // Add Today's Event
   const handleAddTodayEvent = () => {
-    const today = new Date();
-    setStartDate(moment(today).format('YYYY-MM-DD'));
-    setEndDate(moment(today).format('YYYY-MM-DD'));
+    const today = moment().format('YYYY-MM-DD');
+    setStartDate(today);
+    setEndDate(today);
     setAllDay(true);
     setEventTitle('');
     setCurrentEvent(null);
-
-    setStartTime('09:00');
-    setEndTime('17:00');
-
     onOpen();
   };
 
-  // Upcoming Events
-  const nextDay = moment().add(1, 'days');
-  const upcomingEvents = events.filter((event) =>
-    moment(event.start).isSame(nextDay, 'day')
-  );
-
-  // Add Upcoming Event
   const handleAddUpcomingEvent = () => {
-    const tomorrow = moment().add(1, 'day').startOf('day');
-    setStartDate(tomorrow.format('YYYY-MM-DD'));
-    setEndDate(tomorrow.format('YYYY-MM-DD'));
+    const tomorrow = moment().add(1, 'day').format('YYYY-MM-DD');
+    setStartDate(tomorrow);
+    setEndDate(tomorrow);
     setAllDay(true);
     setEventTitle('');
     setCurrentEvent(null);
     onOpen();
   };
+
+  const todaysEvents = events.filter(event => moment().isSame(event.start, 'day'));
+  const upcomingEvents = events.filter(event => moment(event.start).isAfter(moment()));
 
   return (
     <ChakraProvider>
       <Box className={colorMode} p={5} maxWidth="800px" mx="auto">
-        <Box
-          borderRadius="15px"
-          overflow="hidden"
-          border="2px solid"
-          borderColor="gray.300"
-          boxShadow="lg"
-        >
-          <FullCalendar
-            plugins={calendarPlugins}
-            initialView={calendarInitialView}
-            headerToolbar={calendarToolbar}
-            selectable
-            editable
-            selectMirror
-            dayMaxEvents
-            weekends
-            events={events}
-            select={handleDateSelect}
-            eventClick={handleEventClick}
-            eventDrop={handleEventChange}
-            eventResize={handleEventChange}
-          />
-        </Box>
-
-        <CalendarEventList
-          title="Today's Events"
-          events={todaysEvents}
-          onAdd={handleAddTodayEvent}
-          onEdit={(event) => setCurrentEvent(event)}
+        <FullCalendar
+          plugins={calendarPlugins}
+          initialView={calendarInitialView}
+          headerToolbar={calendarToolbar}
+          selectable
+          editable
+          selectMirror
+          dayMaxEvents
+          weekends
+          events={events}
+          select={handleDateSelect}
+          eventClick={handleEventClick}
+          eventDrop={handleEventDrop}
+          eventResize={handleEventResize}
         />
-
-        <CalendarEventList
-          title="Upcoming Events"
-          events={upcomingEvents}
-          onAdd={handleAddUpcomingEvent}
-          onEdit={(event) => setCurrentEvent(event)}
-        />
-
+        <CalendarEventList title="Today's Events" events={todaysEvents} onAdd={handleAddTodayEvent} onEdit={handleEventClick} />
+        <CalendarEventList title="Upcoming Events" events={upcomingEvents} onAdd={handleAddUpcomingEvent} onEdit={handleEventClick} />
         <CalendarEventModal
           isOpen={isOpen}
           onClose={onClose}
