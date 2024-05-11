@@ -6,7 +6,7 @@ export const calendarPlugins = [dayGridPlugin, timeGridPlugin, interactionPlugin
 
 export const calendarToolbar = {
   left: 'prev,next today',
-  center: 'title',
+  center: 'customTitle',
   right: 'dayGridMonth,timeGridWeek,timeGridDay',
 };
 

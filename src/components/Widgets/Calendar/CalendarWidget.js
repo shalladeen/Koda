@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Box, ChakraProvider, useDisclosure, useColorMode } from '@chakra-ui/react';
 import FullCalendar from '@fullcalendar/react';
 import { calendarPlugins, calendarToolbar, calendarInitialView } from './CalendarSettings';
 import { loadEvents, addOrUpdateEvent, deleteEvent } from './CalendarEvents';
 import CalendarEventList from './CalendarEventList';
 import CalendarEventModal from './CalendarEventModal';
+import MonthYearPickerModal from './MonthYearPickerModal';
 import '../Calendar/CalendarStyle.css';
 import moment from 'moment';
 
 const CalendarWidget = () => {
+  const calendarRef = useRef(null);
+  const [currentDate, setCurrentDate] = useState(new Date());
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
   const [events, setEvents] = useState([]);
@@ -24,6 +27,18 @@ const CalendarWidget = () => {
     setEvents(loadEvents());
   }, []);
 
+  const {
+    isOpen: isEventModalOpen,
+    onOpen: onEventModalOpen,
+    onClose: onEventModalClose
+  } = useDisclosure();
+  
+  const {
+    isOpen: isMonthYearPickerOpen,
+    onOpen: onMonthYearPickerOpen,
+    onClose: onMonthYearPickerClose
+  } = useDisclosure();
+
   const handleDateSelect = (selectInfo) => {
     setStartDate(moment(selectInfo.start).format('YYYY-MM-DD'));
     setEndDate(moment(selectInfo.end).subtract(1, 'days').format('YYYY-MM-DD'));
@@ -34,13 +49,10 @@ const CalendarWidget = () => {
       setStartTime(moment(selectInfo.start).format('HH:mm'));
       setEndTime(moment(selectInfo.end).format('HH:mm'));
     }
-    onOpen();
+    onEventModalOpen();  // Open event modal specifically
   };
 
   const handleEventClick = (clickInfo) => {
-    // Logging the event data for debugging
-    console.log("Event clicked:", clickInfo.event);
-  
     setCurrentEvent({
       id: clickInfo.event.id,
       title: clickInfo.event.title,
@@ -54,7 +66,7 @@ const CalendarWidget = () => {
     setEndDate(clickInfo.event.end ? moment(clickInfo.event.end).format('YYYY-MM-DD') : moment(clickInfo.event.start).format('YYYY-MM-DD'));
     setStartTime(moment(clickInfo.event.start).format('HH:mm'));
     setEndTime(clickInfo.event.end ? moment(clickInfo.event.end).format('HH:mm') : moment(clickInfo.event.start).format('HH:mm'));
-    onOpen();
+    onEventModalOpen();  // Open event modal specifically
   };
   
 
@@ -104,7 +116,7 @@ const CalendarWidget = () => {
     if (currentEvent && currentEvent.id) {
       const updatedEvents = deleteEvent(events, currentEvent.id);
       setEvents(updatedEvents);
-      onClose(); // Close the modal after deletion
+      onClose(); 
     } else {
       console.error("No event selected or event ID is missing");
     }
@@ -134,13 +146,46 @@ const CalendarWidget = () => {
   const todaysEvents = events.filter(event => moment().isSame(event.start, 'day'));
   const upcomingEvents = events.filter(event => moment(event.start).isAfter(moment()));
 
+   // Month/Year picker logic
+   const openMonthYearPicker = () => {
+    onOpen();
+  };
+
+  const onMonthYearChange = ({ year, month }) => {
+    const date = new Date(Date.UTC(year, month));
+    console.log(`UTC Date object being set: ${date.toUTCString()}`);
+    setCurrentDate(date);
+    if (calendarRef.current) {
+        calendarRef.current.getApi().gotoDate(date);
+    }
+    onMonthYearPickerClose();
+};
+
+  const customButtons = {
+    customTitle: {
+      text: moment(currentDate).format('MMMM YYYY'), 
+      click: () => onMonthYearPickerOpen(), 
+    }
+  };
+
   return (
     <ChakraProvider>
       <Box className={colorMode} p={5} maxWidth="800px" mx="auto">
-        <FullCalendar
+      <FullCalendar
+          ref={calendarRef}
           plugins={calendarPlugins}
+          timeZone="UTC"
           initialView={calendarInitialView}
-          headerToolbar={calendarToolbar}
+          headerToolbar={{
+            left: 'prev,next today',
+            center: 'customTitle',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay',
+          }}
+          customButtons={customButtons}
+          datesSet={(info) => {
+            console.log(`Calendar view updated to: ${info.start.toISOString()}`);
+            setCurrentDate(info.start);
+        }}
           selectable
           editable
           selectMirror
@@ -152,28 +197,33 @@ const CalendarWidget = () => {
           eventDrop={handleEventDrop}
           eventResize={handleEventResize}
         />
+         <MonthYearPickerModal
+          isOpen={isMonthYearPickerOpen}
+          onClose={onMonthYearPickerClose}
+          onChangeMonthYear={onMonthYearChange}
+        />
         <CalendarEventList title="Today's Events" events={todaysEvents} onAdd={handleAddTodayEvent} onEdit={handleEventClick} />
         <CalendarEventList title="Upcoming Events" events={upcomingEvents} onAdd={handleAddUpcomingEvent} onEdit={handleEventClick} />
         <CalendarEventModal
-          isOpen={isOpen}
-          onClose={onClose}
-          title={currentEvent ? 'Edit Event' : 'Add New Event'}
-          eventTitle={eventTitle}
-          setEventTitle={setEventTitle}
-          allDay={allDay}
-          setAllDay={setAllDay}
-          startDate={startDate}
-          setStartDate={setStartDate}
-          endDate={endDate}
-          setEndDate={setEndDate}
-          startTime={startTime}
-          setStartTime={setStartTime}
-          endTime={endTime}
-          setEndTime={setEndTime}
-          onSave={saveEvent}
-          onDelete={handleDeleteEvent}
-          isEditing={!!currentEvent}
-        />
+  isOpen={isEventModalOpen}
+  onClose={onEventModalClose}
+  title={currentEvent ? 'Edit Event' : 'Add New Event'}
+  eventTitle={eventTitle}
+  setEventTitle={setEventTitle}
+  allDay={allDay}
+  setAllDay={setAllDay}
+  startDate={startDate}
+  setStartDate={setStartDate}
+  endDate={endDate}
+  setEndDate={setEndDate}
+  startTime={startTime}
+  setStartTime={setStartTime}
+  endTime={endTime}
+  setEndTime={setEndTime}
+  onSave={saveEvent}
+  onDelete={handleDeleteEvent}
+  isEditing={!!currentEvent}
+/>
       </Box>
     </ChakraProvider>
   );
