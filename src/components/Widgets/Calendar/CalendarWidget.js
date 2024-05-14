@@ -29,10 +29,9 @@ const CalendarWidget = () => {
 
   useEffect(() => {
     if (calendarRef.current && currentDate) {
-        calendarRef.current.getApi().gotoDate(currentDate);
+      calendarRef.current.getApi().gotoDate(currentDate);
     }
-}, [currentDate]);
-
+  }, [currentDate]);
 
   const handleDateSelect = (selectInfo) => {
     setStartDate(moment(selectInfo.start).format('YYYY-MM-DD'));
@@ -54,9 +53,6 @@ const CalendarWidget = () => {
   } = useDisclosure();
 
   const handleEventClick = (clickInfo) => {
-    // Logging the event data for debugging
-    console.log("Event clicked:", clickInfo.event);
-  
     setCurrentEvent({
       id: clickInfo.event.id,
       title: clickInfo.event.title,
@@ -72,7 +68,6 @@ const CalendarWidget = () => {
     setEndTime(clickInfo.event.end ? moment(clickInfo.event.end).format('HH:mm') : moment(clickInfo.event.start).format('HH:mm'));
     onOpen();
   };
-  
 
   const handleEventDrop = (info) => {
     const { event } = info;
@@ -120,12 +115,11 @@ const CalendarWidget = () => {
     if (currentEvent && currentEvent.id) {
       const updatedEvents = deleteEvent(events, currentEvent.id);
       setEvents(updatedEvents);
-      onClose(); 
+      onClose();
     } else {
       console.error("No event selected or event ID is missing");
     }
   };
-  
 
   const handleAddTodayEvent = () => {
     const today = moment().format('YYYY-MM-DD');
@@ -147,26 +141,63 @@ const CalendarWidget = () => {
     onOpen();
   };
 
-  // Month/Year picker logic
-  const openMonthYearPicker = () => {
-    onOpen();
+  const handlePrev = () => {
+    const newDate = moment(currentDate).subtract(1, 'month').toDate();
+    setCurrentDate(newDate);
+  };
+
+  const handleNext = () => {
+    const newDate = moment(currentDate).add(1, 'month').toDate();
+    setCurrentDate(newDate);
+  };
+
+  const handleToday = () => {
+    const today = new Date();
+    setCurrentDate(today);
   };
 
   const onMonthYearChange = ({ year, month }) => {
     const date = new Date(year, month, 1);
-    console.log(`Date object being set: ${date.toUTCString()}`); 
-    setCurrentDate(date); 
+    setCurrentDate(date);
     if (calendarRef.current) {
-        calendarRef.current.getApi().gotoDate(date); 
+      calendarRef.current.getApi().gotoDate(date);
     }
-    onMonthYearPickerClose(); 
-};
+    onMonthYearPickerClose();
+  };
 
+  useEffect(() => {
+    const calendarApi = calendarRef.current.getApi();
+
+    const handleDatesSet = (info) => {
+      const newDate = new Date(info.start); // Get the new date
+      if (newDate.getTime() !== currentDate.getTime()) {
+        setCurrentDate(newDate); // Update state with the new date
+      }
+    };
+
+    calendarApi.on('datesSet', handleDatesSet);
+
+    return () => {
+      calendarApi.off('datesSet', handleDatesSet);
+    };
+  }, [currentDate]);
 
   const customButtons = {
+    customPrev: {
+      text: '<',
+      click: handlePrev
+    },
+    customNext: {
+      text: '>',
+      click: handleNext
+    },
+    customToday: {
+      text: 'Today',
+      click: handleToday
+    },
     customTitle: {
-      text: moment(currentDate).format('MMMM YYYY'), 
-      click: () => onMonthYearPickerOpen(), 
+      text: moment(currentDate).format('MMMM YYYY'),
+      click: () => onMonthYearPickerOpen(),
     }
   };
 
@@ -177,7 +208,7 @@ const CalendarWidget = () => {
     <ChakraProvider>
       <Box className={colorMode} p={5} maxWidth="800px" mx="auto">
         <FullCalendar
-        ref={calendarRef}
+          ref={calendarRef}
           plugins={calendarPlugins}
           initialView={calendarInitialView}
           headerToolbar={calendarToolbar}
@@ -193,10 +224,11 @@ const CalendarWidget = () => {
           eventResize={handleEventResize}
           customButtons={customButtons}
         />
-         <MonthYearPickerModal
+        <MonthYearPickerModal
           isOpen={isMonthYearPickerOpen}
           onClose={onMonthYearPickerClose}
           onChangeMonthYear={onMonthYearChange}
+          currentDate={currentDate} 
         />
         <CalendarEventList title="Today's Events" events={todaysEvents} onAdd={handleAddTodayEvent} onEdit={handleEventClick} />
         <CalendarEventList title="Upcoming Events" events={upcomingEvents} onAdd={handleAddUpcomingEvent} onEdit={handleEventClick} />

@@ -5,8 +5,8 @@ import interactionPlugin from '@fullcalendar/interaction';
 export const calendarPlugins = [dayGridPlugin, timeGridPlugin, interactionPlugin];
 
 export const calendarToolbar = {
-  left: 'prev,next today',
-  center: 'customTitle',
+  left: 'customToday',
+  center: 'customPrev,customTitle,customNext',
   right: 'dayGridMonth,timeGridWeek,timeGridDay',
 };
 
