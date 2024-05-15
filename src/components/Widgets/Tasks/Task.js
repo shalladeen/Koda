@@ -1,4 +1,3 @@
-// src/components/Task/Task.js
 import React, { useState, useEffect } from 'react';
 import {
   Box, Button, Heading, Text, useDisclosure,
@@ -67,14 +66,14 @@ const Task = () => {
     onEditOpen();
   };
 
-  const openListModal = (task) => {
-    setCurrentTask(task);
+  const openListModal = () => {
     onListOpen();
   };
 
   const saveList = () => {
     const updatedLists = addOrUpdateList(lists, listName);
     setLists(updatedLists);
+    saveLists(updatedLists);
     onListClose();
     setListName('');
   };
@@ -99,6 +98,10 @@ const Task = () => {
     setCurrentList(listName);
     setEditListName(listName);
     onEditListOpen();
+  };
+
+  const createNewList = () => {
+    onListOpen();
   };
 
   const resetTaskForm = () => {
@@ -153,15 +156,20 @@ const Task = () => {
         setTaskDesc={setTaskDesc}
         selectedList={selectedList}
         setSelectedList={setSelectedList}
+        lists={lists}
+        onCreateNewList={createNewList}
       />
 
       <TaskListModal
         isOpen={isListOpen || isEditListOpen}
         onClose={isListOpen ? onListClose : onEditListClose}
-        title={isListOpen ? 'Add Task to List' : 'Edit List'}
+        title={isListOpen ? 'Add List' : 'Edit List'}
         listName={isEditListOpen ? editListName : listName}
         setListName={isEditListOpen ? setEditListName : setListName}
         onSave={isListOpen ? saveList : saveEditList}
+        onDelete={isEditListOpen ? () => deleteListHandler(currentList) : deleteListHandler}
+        lists={lists}
+        onEditList={openEditListModal}
       />
     </Box>
   );
