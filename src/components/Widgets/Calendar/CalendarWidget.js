@@ -12,6 +12,7 @@ import moment from 'moment';
 const CalendarWidget = () => {
   const calendarRef = useRef(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isMonthYearPickerOpen, onOpen: onMonthYearPickerOpen, onClose: onMonthYearPickerClose } = useDisclosure();
   const [currentDate, setCurrentDate] = useState(new Date());
   const { colorMode } = useColorMode();
   const [events, setEvents] = useState([]);
@@ -46,12 +47,6 @@ const CalendarWidget = () => {
     onOpen();
   };
 
-  const {
-    isOpen: isMonthYearPickerOpen,
-    onOpen: onMonthYearPickerOpen,
-    onClose: onMonthYearPickerClose
-  } = useDisclosure();
-
   const handleEventClick = (clickInfo) => {
     setCurrentEvent({
       id: clickInfo.event.id,
@@ -65,7 +60,7 @@ const CalendarWidget = () => {
     setStartDate(moment(clickInfo.event.start).format('YYYY-MM-DD'));
     setEndDate(clickInfo.event.end ? moment(clickInfo.event.end).format('YYYY-MM-DD') : moment(clickInfo.event.start).format('YYYY-MM-DD'));
     setStartTime(moment(clickInfo.event.start).format('HH:mm'));
-    setEndTime(clickInfo.event.end ? moment(clickInfo.event.end).format('HH:mm') : moment(clickInfo.event.start).format('HH:mm'));
+    setEndTime(moment(clickInfo.event.end ? moment(clickInfo.event.end).format('HH:mm') : moment(clickInfo.event.start).format('HH:mm')));
     onOpen();
   };
 
@@ -169,9 +164,9 @@ const CalendarWidget = () => {
     const calendarApi = calendarRef.current.getApi();
 
     const handleDatesSet = (info) => {
-      const newDate = new Date(info.start); // Get the new date
+      const newDate = new Date(info.start); 
       if (newDate.getTime() !== currentDate.getTime()) {
-        setCurrentDate(newDate); // Update state with the new date
+        setCurrentDate(newDate); 
       }
     };
 
@@ -206,7 +201,7 @@ const CalendarWidget = () => {
 
   return (
     <ChakraProvider>
-      <Box className={colorMode} p={5} maxWidth="800px" mx="auto">
+      <Box className={colorMode === 'dark' ? 'dark-mode' : ''} p={5} maxWidth="800px" mx="auto">
         <FullCalendar
           ref={calendarRef}
           plugins={calendarPlugins}
@@ -228,7 +223,7 @@ const CalendarWidget = () => {
           isOpen={isMonthYearPickerOpen}
           onClose={onMonthYearPickerClose}
           onChangeMonthYear={onMonthYearChange}
-          currentDate={currentDate} 
+          currentDate={currentDate}
         />
         <CalendarEventList title="Today's Events" events={todaysEvents} onAdd={handleAddTodayEvent} onEdit={handleEventClick} />
         <CalendarEventList title="Upcoming Events" events={upcomingEvents} onAdd={handleAddUpcomingEvent} onEdit={handleEventClick} />

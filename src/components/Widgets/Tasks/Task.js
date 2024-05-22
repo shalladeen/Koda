@@ -71,6 +71,9 @@ const Task = () => {
   };
 
   const saveList = () => {
+    if (!listName.trim()) {
+      return;
+    }
     const updatedLists = addOrUpdateList(lists, listName);
     setLists(updatedLists);
     saveLists(updatedLists);
@@ -79,6 +82,9 @@ const Task = () => {
   };
 
   const saveEditList = () => {
+    if (!editListName.trim()) {
+      return;
+    }
     const updatedLists = lists.map(list => list === currentList ? editListName : list);
     setLists(updatedLists);
     saveLists(updatedLists);
@@ -101,7 +107,7 @@ const Task = () => {
   };
 
   const createNewList = () => {
-    onListOpen();
+    openListModal();
   };
 
   const resetTaskForm = () => {
@@ -110,6 +116,7 @@ const Task = () => {
     setTaskDesc('');
     setSelectedList(null);
   };
+
 
   const completionPercent = tasks.length ? Math.round((tasks.filter(task => task.completed).length / tasks.length) * 100) : 0;
 
@@ -147,7 +154,7 @@ const Task = () => {
 
       <TaskModal
         isOpen={isAddOpen || isEditOpen}
-        onClose={onAddClose}
+        onClose={isEditOpen ? onEditClose : onAddClose}
         onSave={saveTask}
         title={currentTask ? 'Edit Task' : 'Add a New Task'}
         taskTitle={taskTitle}
@@ -161,15 +168,29 @@ const Task = () => {
       />
 
       <TaskListModal
-        isOpen={isListOpen || isEditListOpen}
-        onClose={isListOpen ? onListClose : onEditListClose}
-        title={isListOpen ? 'Add List' : 'Edit List'}
-        listName={isEditListOpen ? editListName : listName}
-        setListName={isEditListOpen ? setEditListName : setListName}
-        onSave={isListOpen ? saveList : saveEditList}
-        onDelete={isEditListOpen ? () => deleteListHandler(currentList) : deleteListHandler}
+        isOpen={isListOpen}
+        onClose={onListClose}
+        title={'Add List'}
+        listName={listName}
+        setListName={setListName}
+        onSave={saveList}
+        onDelete={() => {}}
         lists={lists}
         onEditList={openEditListModal}
+        onSelectList={() => {}}
+      />
+
+      <TaskListModal
+        isOpen={isEditListOpen}
+        onClose={onEditListClose}
+        title={'Edit List'}
+        listName={editListName}
+        setListName={setEditListName}
+        onSave={saveEditList}
+        onDelete={deleteListHandler}
+        lists={lists}
+        onEditList={openEditListModal}
+        onSelectList={() => {}}
       />
     </Box>
   );

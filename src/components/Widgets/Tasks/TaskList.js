@@ -46,7 +46,6 @@ const TaskList = ({
             />
             <MenuList>
               <MenuItem icon={<MdEdit />} onClick={() => openEditModal(task)}>Edit Task</MenuItem>
-              <MenuItem onClick={() => openListModal(task)}>Add to List</MenuItem>
               <MenuDivider />
               <MenuItem icon={<MdDelete />} color="red" onClick={() => deleteTask(task.id)}>
                 Delete Task

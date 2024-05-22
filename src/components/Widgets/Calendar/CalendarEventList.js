@@ -1,4 +1,3 @@
-// src/components/Calendar/CalendarEventList.js
 import React from 'react';
 import { Box, Button, Heading, List, ListItem, Text } from '@chakra-ui/react';
 import moment from 'moment';
@@ -40,7 +39,7 @@ const CalendarEventList = ({ title, events, onAdd, onEdit }) => (
         <Text>No events</Text>
       )}
     </List>
-    <Button colorScheme="blue" mt={4} onClick={onAdd}>Add Event</Button>
+    <Button className="add-event-button" colorScheme="blue" mt={4} onClick={onAdd}>Add Event</Button>
   </Box>
 );
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter,
   ModalBody, ModalCloseButton, FormControl, FormLabel, Input, Button, Select,
@@ -6,20 +6,15 @@ import {
 import { useTaskColors } from './TaskSettings';
 
 const TaskModal = ({
-  isOpen, onClose, title, taskTitle, setTaskTitle, taskDesc, setTaskDesc, selectedList, setSelectedList, onSave, lists, onCreateNewList,
+  isOpen, onClose, title, taskTitle, setTaskTitle, taskDesc, setTaskDesc, selectedList, setSelectedList, onSave, lists, onCreateNewList
 }) => {
   const { modalTextColor, taskTextColor, buttonColor, hoverColor } = useTaskColors();
-  const [isCreatingNewList, setIsCreatingNewList] = useState(false);
-  const [newListName, setNewListName] = useState('');
 
   const handleListChange = (e) => {
-    const value = e.target.value;
-    if (value === 'createNew') {
-      setIsCreatingNewList(true);
+    if (e.target.value === 'createNew') {
       onCreateNewList();
     } else {
-      setIsCreatingNewList(false);
-      setSelectedList(value);
+      setSelectedList(e.target.value);
     }
   };
 
@@ -28,7 +23,7 @@ const TaskModal = ({
       <ModalOverlay />
       <ModalContent color={modalTextColor}>
         <ModalHeader>{title}</ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton /> 
         <ModalBody>
           <FormControl isRequired>
             <FormLabel>Task Title</FormLabel>
@@ -64,18 +59,6 @@ const TaskModal = ({
               ))}
               <option value="createNew">Create new list</option>
             </Select>
-            {isCreatingNewList && (
-              <FormControl mt={4}>
-                <FormLabel>New List Name</FormLabel>
-                <Input
-                  value={newListName}
-                  onChange={(e) => setNewListName(e.target.value)}
-                  placeholder="Enter new list name"
-                  backgroundColor={hoverColor}
-                  color={taskTextColor}
-                />
-              </FormControl>
-            )}
           </FormControl>
         </ModalBody>
         <ModalFooter>

@@ -1,6 +1,23 @@
 :root {
   --fc-today-bg-light: #E0F2FE;
-  --fc-today-bg-dark: #CADBE9;
+  --fc-today-bg-dark: #1E3A8A; /* Darker shade of blue for dark mode */
+  --fc-event-bg-light: #269BC0;
+  --fc-event-bg-dark: #1C6E8C;
+  --fc-hover-bg-light: #cfcdcd;
+  --fc-hover-bg-dark: #374151;
+  --fc-border-light: #afb9c4;
+  --fc-border-dark: #4B5563;
+  --fc-bg-light: #ffffff;
+  --fc-bg-dark: #1F2937;
+  --fc-text-light: #000000;
+  --fc-text-dark: #F3F4F6;
+
+  --button-bg-light: #269BC0; 
+  --button-bg-dark: #1C6E8C; 
+  --button-hover-bg-light: #1E7BA1;
+  --button-hover-bg-dark: #145A70; 
+  --button-text-light: #FFFFFF; 
+  --button-text-dark: #FFFFFF;
 }
 
 /* General styling for the calendar */
@@ -10,32 +27,36 @@
 
 .fc-event {
   cursor: pointer;
-  background-color: #269BC0;
- 
+  background-color: var(--fc-event-bg-light);
   transition: background-color 0.2s ease; 
 }
 
 .fc-event:hover {
   cursor: pointer;
-  background-color: #cfcdcd;
+  background-color: var(--fc-hover-bg-light);
 }
 
 .fc-day:hover {
   cursor: pointer;
-  background-color: #fff;
+  background-color: var(--fc-bg-light);
 }
 
-.fc .fc-view-harness {
+.fc .fc-view-harness,
+.fc .fc-view-harness > * {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: auto;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--fc-border-light);
+
 }
 
 /* Customize the timeGridWeek and timeGridDay views */
 .fc-timeGridWeek-view,
 .fc-timeGridDay-view {
-  max-height: 700px;
-  overflow: auto;
+  border-radius: 13px;
+  overflow: hidden;
 }
 
 /* General Calendar Styling */
@@ -45,18 +66,63 @@
 
 .fc-toolbar-title {
   font-size: 1.5em;
+  color: var(--fc-text-light);
 }
 
 .fc-daygrid-day-number,
 .fc-timegrid-axis-cushion {
   font-size: 0.9em;
+  color: var(--fc-text-light);
 }
 
-.fc .fc-view-harness {
-  border-radius: 15px;
-  overflow: hidden;
-  border: 2px solid var(#74808D);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+/* Dark Mode */
+.dark-mode .fc .fc-day-today {
+  background-color: var(--fc-today-bg-dark) !important;
+  color: var(--fc-text-dark); /* Ensure text is readable */
+}
+
+.dark-mode .fc-event {
+  background-color: var(--fc-event-bg-dark);
+}
+
+.dark-mode .fc-event:hover {
+  background-color: var(--fc-hover-bg-dark);
+}
+
+.dark-mode .fc-day:hover {
+  background-color: var(--fc-bg-dark);
+}
+
+.dark-mode .fc .fc-view-harness,
+.dark-mode .fc .fc-view-harness > * {
+  border: 2px solid var(--fc-border-dark);
+  background-color: var(--fc-bg-dark);
+}
+
+.dark-mode .fc-toolbar-title,
+.dark-mode .fc-daygrid-day-number,
+.dark-mode .fc-timegrid-axis-cushion {
+  color: var(--fc-text-dark);
+}
+
+/* Add Event Button Styling */
+.add-event-button {
+  background-color: var(--button-bg-light);
+  color: var(--button-text-light);
+  transition: background-color 0.2s ease;
+}
+
+.add-event-button:hover {
+  background-color: var(--button-hover-bg-light);
+}
+
+.dark-mode .add-event-button {
+  background-color: var(--button-bg-dark);
+  color: var(--button-text-dark);
+}
+
+.dark-mode .add-event-button:hover {
+  background-color: var(--button-hover-bg-dark);
 }
 
 /* Mobile responsiveness */
@@ -94,7 +160,7 @@
 
   .fc-timeGridWeek-view,
   .fc-timeGridDay-view {
-    max-height: 500px;
+    max-height: none;
   }
 
   .fc-day-today {
@@ -132,7 +198,7 @@
 
   .fc-timeGridWeek-view,
   .fc-timeGridDay-view {
-    max-height: 400px;
+    max-height: none;
   }
 
   .fc-day-today {
@@ -170,7 +236,7 @@
 
   .fc-timeGridWeek-view,
   .fc-timeGridDay-view {
-    max-height: 300px;
+    max-height: none;
   }
 
   .fc-day-today {
