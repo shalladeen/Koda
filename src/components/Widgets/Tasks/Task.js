@@ -14,7 +14,6 @@ const Task = () => {
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const { isOpen: isListOpen, onOpen: onListOpen, onClose: onListClose } = useDisclosure();
-  const { isOpen: isEditListOpen, onOpen: onEditListOpen, onClose: onEditListClose } = useDisclosure();
   const [tasks, setTasks] = useState([]);
   const [lists, setLists] = useState([]);
   const [currentTask, setCurrentTask] = useState(null);
@@ -23,7 +22,6 @@ const Task = () => {
   const [selectedList, setSelectedList] = useState(null);
   const [currentList, setCurrentList] = useState(null);
   const [listName, setListName] = useState('');
-  const [editListName, setEditListName] = useState('');
   const { primaryColor, secondaryColor, buttonColor, hoverColor } = useTaskColors();
 
   useEffect(() => {
@@ -67,6 +65,8 @@ const Task = () => {
   };
 
   const openListModal = () => {
+    setListName('');
+    setCurrentList(null);
     onListOpen();
   };
 
@@ -81,33 +81,18 @@ const Task = () => {
     setListName('');
   };
 
-  const saveEditList = () => {
-    if (!editListName.trim()) {
-      return;
-    }
-    const updatedLists = lists.map(list => list === currentList ? editListName : list);
-    setLists(updatedLists);
-    saveLists(updatedLists);
-    onEditListClose();
-    setEditListName('');
-  };
-
   const deleteListHandler = (listName) => {
     const { updatedLists, updatedTasks } = deleteList(lists, tasks, listName);
     setLists(updatedLists);
     setTasks(updatedTasks);
     if (selectedList === listName) setSelectedList(null);
-    onEditListClose();
+    onListClose();
   };
 
   const openEditListModal = (listName) => {
     setCurrentList(listName);
-    setEditListName(listName);
-    onEditListOpen();
-  };
-
-  const createNewList = () => {
-    openListModal();
+    setListName(listName);
+    onListOpen();
   };
 
   const resetTaskForm = () => {
@@ -116,7 +101,6 @@ const Task = () => {
     setTaskDesc('');
     setSelectedList(null);
   };
-
 
   const completionPercent = tasks.length ? Math.round((tasks.filter(task => task.completed).length / tasks.length) * 100) : 0;
 
@@ -164,33 +148,20 @@ const Task = () => {
         selectedList={selectedList}
         setSelectedList={setSelectedList}
         lists={lists}
-        onCreateNewList={createNewList}
+        onCreateNewList={openListModal}
       />
 
       <TaskListModal
         isOpen={isListOpen}
         onClose={onListClose}
-        title={'Add List'}
+        title={currentList ? 'Edit List' : 'Add List'}
         listName={listName}
         setListName={setListName}
         onSave={saveList}
-        onDelete={() => {}}
-        lists={lists}
-        onEditList={openEditListModal}
-        onSelectList={() => {}}
-      />
-
-      <TaskListModal
-        isOpen={isEditListOpen}
-        onClose={onEditListClose}
-        title={'Edit List'}
-        listName={editListName}
-        setListName={setEditListName}
-        onSave={saveEditList}
         onDelete={deleteListHandler}
         lists={lists}
         onEditList={openEditListModal}
-        onSelectList={() => {}}
+        currentList={currentList}
       />
     </Box>
   );

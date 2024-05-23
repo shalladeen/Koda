@@ -4,11 +4,13 @@ import {
   ModalBody, ModalCloseButton, FormControl, FormLabel, Input, Button, Select,
 } from '@chakra-ui/react';
 import { useTaskColors } from './TaskSettings';
+import './TaskModal.css';
+
 
 const TaskModal = ({
   isOpen, onClose, title, taskTitle, setTaskTitle, taskDesc, setTaskDesc, selectedList, setSelectedList, onSave, lists, onCreateNewList
 }) => {
-  const { modalTextColor, taskTextColor, buttonColor, hoverColor } = useTaskColors();
+  const { modalTextColor, taskTextColor, buttonColor, hoverColor, primaryColor } = useTaskColors();
 
   const handleListChange = (e) => {
     if (e.target.value === 'createNew') {
@@ -23,7 +25,7 @@ const TaskModal = ({
       <ModalOverlay />
       <ModalContent color={modalTextColor}>
         <ModalHeader>{title}</ModalHeader>
-        <ModalCloseButton /> 
+        <ModalCloseButton />
         <ModalBody>
           <FormControl isRequired>
             <FormLabel>Task Title</FormLabel>
@@ -53,11 +55,12 @@ const TaskModal = ({
               placeholder="Select list"
               backgroundColor={hoverColor}
               color={taskTextColor}
+              className="custom-select"
             >
               {lists.map((list, index) => (
                 <option key={index} value={list}>{list}</option>
               ))}
-              <option value="createNew">Create new list</option>
+              <option value="createNew" className="create-new-option">Create new list</option>
             </Select>
           </FormControl>
         </ModalBody>
