@@ -1,23 +1,23 @@
 :root {
   --fc-today-bg-light: #E0F2FE;
-  --fc-today-bg-dark: #1E3A8A; /* Darker shade of blue for dark mode */
+  --fc-today-bg-dark: #1E3A8A;
   --fc-event-bg-light: #269BC0;
   --fc-event-bg-dark: #1C6E8C;
   --fc-hover-bg-light: #cfcdcd;
   --fc-hover-bg-dark: #374151;
-  --fc-border-light: #afb9c4;
-  --fc-border-dark: #4B5563;
+  --fc-border-light: #e9ecf0;
+  --fc-border-dark: #374151;
   --fc-bg-light: #ffffff;
   --fc-bg-dark: #1F2937;
   --fc-text-light: #000000;
   --fc-text-dark: #F3F4F6;
 
   --button-bg-light: #269BC0; 
-  --button-bg-dark: #1C6E8C; 
+  --button-bg-dark: #B5C5D6; 
   --button-hover-bg-light: #1E7BA1;
-  --button-hover-bg-dark: #145A70; 
+  --button-hover-bg-dark: #374151; 
   --button-text-light: #FFFFFF; 
-  --button-text-dark: #FFFFFF;
+  --button-text-dark: #080808;
 }
 
 /* General styling for the calendar */
@@ -48,7 +48,7 @@
   margin: auto;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid var(--fc-border-light);
+  border: 0.5px solid var(--fc-border-light);
 
 }
 
@@ -95,7 +95,7 @@
 
 .dark-mode .fc .fc-view-harness,
 .dark-mode .fc .fc-view-harness > * {
-  border: 2px solid var(--fc-border-dark);
+  border: 1px solid var(--fc-border-dark);
   background-color: var(--fc-bg-dark);
 }
 

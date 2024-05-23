@@ -102,7 +102,9 @@ const Task = () => {
     setSelectedList(null);
   };
 
-  const completionPercent = tasks.length ? Math.round((tasks.filter(task => task.completed).length / tasks.length) * 100) : 0;
+  // Calculate completion percentage based on selected list
+  const filteredTasks = selectedList ? tasks.filter(task => task.list === selectedList) : tasks;
+  const completionPercent = filteredTasks.length ? Math.round((filteredTasks.filter(task => task.completed).length / filteredTasks.length) * 100) : 0;
 
   return (
     <Box p={5} pb={20} maxWidth="500px">
@@ -125,7 +127,7 @@ const Task = () => {
       </Text>
 
       <TaskList
-        tasks={selectedList ? tasks.filter(task => task.list === selectedList) : tasks}
+        tasks={filteredTasks}
         toggleTaskCompletion={toggleTaskCompletion}
         openEditModal={openEditModal}
         deleteTask={deleteTaskHandler}

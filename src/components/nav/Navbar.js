@@ -21,7 +21,7 @@ function Navbar({ onProfileClick }) {
   };
 
   return (
-    <Flex direction="column" bg={bg} p="2" boxShadow="xl" height="full">
+    <Flex direction="column" bg={bg} p="2" height="full">
       <IconButton
         icon={<FaUserCircle />}
         aria-label="User Profile"

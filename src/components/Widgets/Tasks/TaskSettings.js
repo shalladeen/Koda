@@ -6,7 +6,7 @@ export const useTaskColors = () => {
   const primaryColor = useColorModeValue('#2C3E50', '#B5C5D6');
   const secondaryColor = useColorModeValue('#74808D', '#B5C5D6');
   const buttonColor = useColorModeValue('#269BC0', '#B5C5D6');
-  const hoverColor = useColorModeValue('#B5C5D6', '#269BC0');
+  const hoverColor = useColorModeValue('#B5C5D6', '#374151');
   const modalBgColor = useColorModeValue('#2C3E50', '#2C3E50');
   const modalTextColor = useColorModeValue('#2C3E50', '#f9fdff');
   const taskTextColor = useColorModeValue('black', 'white');

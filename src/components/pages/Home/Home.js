@@ -35,7 +35,6 @@ function Home() {
         width={sidebarWidth}
         bg={useColorModeValue("gray.200", "gray.700")}
         height="100vh"
-        zIndex="10"
       >
         <Navbar onProfileClick={handleProfileClick} />
       </Box>

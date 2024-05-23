@@ -14,7 +14,7 @@ const TaskList = ({
   } = useTaskColors();
 
   return (
-    <Box p={4} borderRadius="lg" backgroundColor={bgColor}>
+    <Box p={4} borderRadius="lg">
       {tasks.map((task) => (
         <Flex key={task.id} p={3} alignItems="center" borderRadius="md">
           <Checkbox
