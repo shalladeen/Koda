@@ -57,10 +57,17 @@ const TaskListModal = ({
                 key={index}
                 alignItems="center"
                 mt={2}
-                _hover={{ backgroundColor: hoverColor, cursor: 'pointer' }}
-                onClick={() => setListName(list)}
+                borderRadius="md"
               >
-                <Text flex="1" color={taskTextColor}>{list}</Text>
+                <Box
+                  flex="1"
+                  _hover={{ backgroundColor: hoverColor, cursor: 'pointer' }}
+                  p={2}
+                  borderRadius="md"
+                  onClick={() => setListName(list)}
+                >
+                  <Text color={taskTextColor}>{list}</Text>
+                </Box>
                 {title === 'Add List' && (
                   <IconButton
                     icon={<MdEdit />}

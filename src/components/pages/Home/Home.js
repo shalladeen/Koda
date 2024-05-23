@@ -40,46 +40,52 @@ function Home() {
         <Navbar onProfileClick={handleProfileClick} />
       </Box>
 
-      {/* Main Content */}
-      <Flex
-        direction="column"
-        alignItems="center"
-        p={{ base: 2, md: 5 }}
-        w="full"
+      {/* Main Content Container */}
+      <Box
+        flex="1"
         ml={sidebarWidth}
-        bg={mainContentBgColor}
       >
-        {/* Welcome Greeting */}
         <Flex
-          width="full"
           direction="column"
-          mt={{ base: 2, md: 10 }}
-          px={{ base: 4, md: 0 }}
-        >
-          <WelcomeGreeting isLoggedIn={isLoggedIn} />
-        </Flex>
-
-        {/* Main Layout */}
-        <Flex
-          direction={{ base: "column", lg: "row" }}
-          justifyContent="space-between"
-          alignItems="start"
+          alignItems="center"
+          p={{ base: 2, md: 5 }}
           w="full"
-          mt={4}
-          gap={5}
+          h="full"
+          bg={mainContentBgColor}
+          
         >
-          {/* Left Column: Task and Recent */}
-          <Stack spacing={5} w={{ base: "full", lg: "45%" }} flexShrink={0}>
-            <Task />
-            <Recent />
-          </Stack>
+          {/* Welcome Greeting */}
+          <Flex
+            width="full"
+            direction="column"
+            mt={{ base: 2, md: 10 }}
+            px={{ base: 4, md: 0 }}
+          >
+            <WelcomeGreeting isLoggedIn={isLoggedIn} />
+          </Flex>
 
-          {/* Right Column: Calendar */}
-          <Box flex={1} w={{ base: "full" }}>
-            <MyCalendarWidget />
-          </Box>
+          {/* Main Layout */}
+          <Flex
+            direction={{ base: "column", lg: "row" }}
+            justifyContent="space-between"
+            alignItems="start"
+            w="full"
+            mt={4}
+            gap={5}
+          >
+            {/* Left Column: Task and Recent */}
+            <Stack spacing={5} w={{ base: "full", lg: "45%" }} flexShrink={0}>
+              <Task />
+              <Recent />
+            </Stack>
+
+            {/* Right Column: Calendar */}
+            <Box flex={1} w={{ base: "full" }}>
+              <MyCalendarWidget />
+            </Box>
+          </Flex>
         </Flex>
-      </Flex>
+      </Box>
     </Flex>
   );
 }

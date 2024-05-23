@@ -105,7 +105,7 @@ const Task = () => {
   const completionPercent = tasks.length ? Math.round((tasks.filter(task => task.completed).length / tasks.length) * 100) : 0;
 
   return (
-    <Box p={5} pb={20}>
+    <Box p={5} pb={20} maxWidth="500px">
       <Heading as="h2" size="xl" my={5} color={primaryColor}>
         My Tasks | {completionPercent}%
       </Heading>
@@ -128,7 +128,6 @@ const Task = () => {
         tasks={selectedList ? tasks.filter(task => task.list === selectedList) : tasks}
         toggleTaskCompletion={toggleTaskCompletion}
         openEditModal={openEditModal}
-        openListModal={openListModal}
         deleteTask={deleteTaskHandler}
       />
 
