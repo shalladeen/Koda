@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Flex, Button, Input, Textarea, Box, Text, Heading, useDisclosure, Modal, ModalOverlay,
   ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, ButtonGroup, Menu, HStack,
@@ -36,6 +37,8 @@ function Notes() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("None");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const navigate = useNavigate();
 
   const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
   const buttonColor = useColorModeValue("black", "white");
@@ -56,6 +59,14 @@ function Notes() {
     localStorage.setItem("notes", JSON.stringify(notes));
     localStorage.setItem("customTags", JSON.stringify(customTags));
   }, [notes, customTags]);
+
+  const handleProfileClick = () => {
+    if (isLoggedIn) {
+        navigate("/profile");
+    } else {
+        navigate("/SignupPage");
+    }
+};
 
   const handleSaveNote = () => {
     const timestamp = Date.now();
@@ -146,7 +157,7 @@ function Notes() {
         zIndex="10"
         bg={bgColor}
       >
-        <Navbar />
+        <Navbar onProfileClick={handleProfileClick}/>
       </Box>
       <Flex direction="column" m={5} w="full" ml={sidebarWidth} p={{ base: 2, md: 5 }}>
         <Heading mb={6}>My Notes</Heading>

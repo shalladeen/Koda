@@ -20,6 +20,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@use-gesture/react": "^10.3.0",
+    "axios": "^1.7.2",
     "chakra-dayzed-datepicker": "^0.2.10",
     "date-fns": "^3.3.1",
     "dayzed": "^3.2.3",

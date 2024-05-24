@@ -12,7 +12,7 @@ function TimeTracker() {
         if (isLoggedIn) {
             navigate("/profile");
         } else {
-            navigate("/signup");
+            navigate("/SignupPage");
         }
     };
 

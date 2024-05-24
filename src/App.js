@@ -8,7 +8,7 @@ import { TimerProvider } from './components/context/TimerContext';
 import Home from './components/pages/Home/Home';
 import Notes from './components/pages/Notes/Notes';
 import Friends from './components/pages/Friends/Friends';
-import Signup from './components/pages/Signup/Signup';
+import SignupPage from './components/pages/Signup/SignupPage';
 import Settings from './components/pages/Settings/Settings';
 import TimeTracker from './components/pages/TimeTracker/TimeTracker';
 
@@ -24,7 +24,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/Notes/*" element={<Notes />} />
                 <Route path="/TimeTracker" element={<TimeTracker />} />
-                <Route path="/Signup" element={<Signup />} />
+                <Route path="/SignupPage" element={<SignupPage />} />
                 <Route path="/Friends" element={<Friends />} />
                 <Route path="/Settings" element={<Settings />} />
               </Routes>

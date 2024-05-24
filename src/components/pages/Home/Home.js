@@ -21,7 +21,7 @@ function Home() {
     if (isLoggedIn) {
       navigate("/profile");
     } else {
-      navigate("/signup");
+      navigate("/SignupPage");
     }
   };
 
