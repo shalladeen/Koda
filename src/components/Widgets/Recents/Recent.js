@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Text, Heading, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, Input, Textarea, Wrap, WrapItem, Circle, useColorModeValue
+  Box, Text, Heading, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, Input, 
+  Textarea, Wrap, WrapItem, useColorModeValue
 } from '@chakra-ui/react';
 
 const Recent = () => {

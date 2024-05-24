@@ -6,6 +6,7 @@ import Task from "../../Widgets/Tasks/Task";
 import MyCalendarWidget from "../../Widgets/Calendar/CalendarWidget";
 import WelcomeGreeting from "../../Widgets/Greeting/Greeting";
 import Navbar from "../../nav/Navbar";
+import MiniTimer from "../TimeTracker/Timer/MiniTimer";
 
 function Home() {
   const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
@@ -43,10 +44,7 @@ function Home() {
       </Box>
 
       {/* Main Content Container */}
-      <Box
-        flex="1"
-        ml={sidebarWidth}
-      >
+      <Box flex="1" ml={sidebarWidth}>
         <Flex
           direction="column"
           alignItems="center"
@@ -56,14 +54,17 @@ function Home() {
           bg={mainContentBgColor}
           color={textColor}
         >
-          {/* Welcome Greeting */}
+          {/* Welcome Greeting and Mini Timer */}
           <Flex
             width="full"
-            direction="column"
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
             mt={{ base: 2, md: 10 }}
             px={{ base: 4, md: 0 }}
           >
             <WelcomeGreeting isLoggedIn={isLoggedIn} />
+            <MiniTimer /> {/* Add MiniTimer here */}
           </Flex>
 
           {/* Main Layout */}

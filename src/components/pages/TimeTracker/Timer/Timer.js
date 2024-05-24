@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+// src/components/pages/TimeTracker/Timer.js
+import React from 'react';
 import {
   Button,
   Center,
@@ -11,28 +12,9 @@ import {
   VStack,
   HStack,
 } from '@chakra-ui/react';
-
+import { useTimer } from '../../../context/TimerContext';
 function Timer() {
-    const maxTimeInMinutes = 120; 
-    const [timeInMinutes, setTimeInMinutes] = useState(0); 
-    const [secondsElapsed, setSecondsElapsed] = useState(0); 
-    const [isRunning, setIsRunning] = useState(false);
-
-    useEffect(() => {
-        if (isRunning) {
-            const interval = setInterval(() => {
-                setSecondsElapsed(prevSeconds => {
-                    const nextSeconds = prevSeconds + 1;
-                    if (nextSeconds >= timeInMinutes * 60) {
-                        clearInterval(interval);
-                        setIsRunning(false);
-                    }
-                    return nextSeconds;
-                });
-            }, 1000);
-            return () => clearInterval(interval);
-        }
-    }, [isRunning, secondsElapsed, timeInMinutes]);
+    const { timeInMinutes, setTimeInMinutes, secondsElapsed, setSecondsElapsed, isRunning, setIsRunning } = useTimer();
 
     const startTimer = () => {
         if (!isRunning && timeInMinutes > 0) {
@@ -73,7 +55,7 @@ function Timer() {
                     <Button onClick={() => setPresetTime(90)} size="md">1h 30m</Button>
                     <Button onClick={() => setPresetTime(120)} size="md">2h</Button>
                 </HStack>
-                <Slider aria-label="timer-slider" defaultValue={0} min={0} max={maxTimeInMinutes}
+                <Slider aria-label="timer-slider" defaultValue={0} min={0} max={120}
                         step={1}
                         onChange={(val) => {
                             if (!isRunning) {
