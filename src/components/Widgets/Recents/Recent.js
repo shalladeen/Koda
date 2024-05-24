@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Flex, Text, Heading, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, Input, Textarea, Wrap, WrapItem, Circle, useColorModeValue
+  Box, Text, Heading, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, Input, Textarea, Wrap, WrapItem, Circle, useColorModeValue
 } from '@chakra-ui/react';
 
 const Recent = () => {
   const [recentNotes, setRecentNotes] = useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingNote, setEditingNote] = useState(null);
-  const hoverBg = useColorModeValue('blue.50', 'gray.600');
-  const defaultColor = useColorModeValue('gray.50', 'gray.700');
+  const hoverBg = useColorModeValue('gray.200', 'gray.500');
+  const defaultColor = useColorModeValue('gray.300', 'gray.300');
+  const buttonColor = useColorModeValue("black", "white");
+  const buttonText = useColorModeValue("white", "black");
+  const textColor = useColorModeValue("black", "black");
+  const modalBgColor = useColorModeValue("white", "black");
+  const modalTextColor = useColorModeValue("black", "white");
 
   useEffect(() => {
     const storedNotes = JSON.parse(localStorage.getItem('notes')) || [];
     const sortedNotes = storedNotes.sort((a, b) => (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt));
-    setRecentNotes(sortedNotes.slice(0, 5));
+    setRecentNotes(sortedNotes.slice(0, 6));
   }, []);
 
   const handleNoteClick = (note) => {
@@ -53,10 +58,10 @@ const Recent = () => {
     return (
       <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Edit Quick Note</ModalHeader>
+        <ModalContent backgroundColor={modalBgColor} color={modalTextColor}>
+          <ModalHeader>Edit Note</ModalHeader>
           <ModalCloseButton />
-          <ModalBody pb={6}>
+          <ModalBody pb={6} >
             <Input
               placeholder="Title"
               value={title}
@@ -70,7 +75,7 @@ const Recent = () => {
             />
           </ModalBody>
           <ModalBody>
-            <Button colorScheme="blue" mr={3} onClick={() => handleSaveEditedNote({ title, content })}>
+            <Button backgroundColor={buttonColor} color={buttonText} mr={3} onClick={() => handleSaveEditedNote({ title, content })}>
               Save
             </Button>
             <Button colorScheme="red" mr={3} onClick={() => handleDeleteNote(editingNote.id)}>
@@ -94,6 +99,7 @@ const Recent = () => {
               borderRadius="lg"
               p={4}
               width={{ base: "180px", sm: "240px" }}
+              color={textColor}
               bg={getTagColor(note.tag || "None")}
               boxShadow="md"
               minHeight="150px"

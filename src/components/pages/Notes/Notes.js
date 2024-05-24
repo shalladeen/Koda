@@ -160,7 +160,6 @@ function Notes() {
                 <MenuItem onClick={() => handleTagFilterChange("None")}>
                   <HStack>
                     <Text>All Notes</Text>
-                    <Circle size="15px" bg={noneTagColor} />
                   </HStack>
                 </MenuItem>
                 {customTags.map((customTag, index) => (
@@ -219,7 +218,6 @@ function Notes() {
                   <MenuItem onClick={() => setTag("None")}>
                     <HStack>
                       <Text>None</Text>
-                      <Circle size="15px" bg={noneTagColor} />
                     </HStack>
                   </MenuItem>
                   {customTags.map((customTag, index) => (
