@@ -9,7 +9,7 @@ import { useTaskColors } from './TaskSettings';
 const TaskListModal = ({
   isOpen, onClose, title, listName, setListName, onSave, onDelete, lists, onEditList
 }) => {
-  const { modalTextColor, buttonColor, hoverColor, taskTextColor } = useTaskColors();
+  const { modalBgColor, modalTextColor, taskTextColor, buttonColor, hoverColor } = useTaskColors();
   const toast = useToast();
 
   const handleSave = () => {
@@ -36,7 +36,7 @@ const TaskListModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent color={modalTextColor}>
+      <ModalContent bg={modalBgColor} color={modalTextColor}>
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>

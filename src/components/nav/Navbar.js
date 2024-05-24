@@ -8,14 +8,31 @@ import { FaUserCircle, FaMoon, FaSun } from 'react-icons/fa';
 function Navbar({ onProfileClick }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const location = useLocation();
-  const bg = useColorModeValue('blue.800', 'gray.800');
+  const bg = useColorModeValue('#000000', '#1c1c1c');
+  const profileColor = useColorModeValue('black', 'white');
+  const iconColor = useColorModeValue('white', 'white');
+  const textColor = useColorModeValue('white', 'white');
+  const activeBg = useColorModeValue('gray.700', 'gray.600');
+  const hoverBg = useColorModeValue('gray.600', 'gray.500');
+  const sunColor = useColorModeValue('white', 'gray');
+  const moonColor = useColorModeValue('gray', 'white');
 
   const NavLink = ({ to, icon, label }) => {
     const isActive = location.pathname === to;
     return (
-      <Flex as={RouterLink} to={to} align="center" p="2" role="group" cursor="pointer">
-        <FontAwesomeIcon icon={icon} size="lg" color="white" />
-        <Box ml="4" color="white">{label}</Box>
+      <Flex
+        as={RouterLink}
+        to={to}
+        align="center"
+        p="2"
+        role="group"
+        cursor="pointer"
+        bg={isActive ? activeBg : 'transparent'}
+        borderRadius="md"
+        _hover={{ bg: hoverBg }}
+      >
+        <FontAwesomeIcon icon={icon} size="lg" color={iconColor} />
+        <Box ml="4" color={textColor}>{label}</Box>
       </Flex>
     );
   };
@@ -31,6 +48,7 @@ function Navbar({ onProfileClick }) {
         onClick={onProfileClick}
         borderRadius="full"
         mt="6"
+        color={profileColor}
       />
       <VStack spacing={4} align="stretch">
         <NavLink to="/" icon={faGripVertical} label="Home" />
@@ -39,16 +57,15 @@ function Navbar({ onProfileClick }) {
         <NavLink to="/Friends" icon={faUserGroup} label="Friends" />
         <NavLink to="/Settings" icon={faGear} label="Settings" />
       </VStack>
-      <Flex mt="auto" justifyContent="center" p="4">
-        <FaSun color={colorMode === 'light' ? '#EDF2F7' : 'gray'} />
+      <Flex mt="auto" justifyContent="center" p="4" alignItems="center">
+        <FaSun color={sunColor} />
         <Switch
           isChecked={colorMode === 'dark'}
           onChange={toggleColorMode}
-          colorScheme="blue"
           size="lg"
           mx="2"
         />
-        <FaMoon color={colorMode === 'dark' ? 'slateblue' : 'gray'} />
+        <FaMoon color={moonColor} />
       </Flex>
     </Flex>
   );

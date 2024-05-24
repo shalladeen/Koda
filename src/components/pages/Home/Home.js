@@ -8,8 +8,10 @@ import WelcomeGreeting from "../../Widgets/Greeting/Greeting";
 import Navbar from "../../nav/Navbar";
 
 function Home() {
-  const bgColor = useColorModeValue("#f9fdff", "gray.800");
-  const mainContentBgColor = useColorModeValue("#f9fdff", "gray.800");
+  const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
+  const sidebarBgColor = useColorModeValue("gray.200", "gray.700");
+  const mainContentBgColor = useColorModeValue("#f9fdff", "#1c1c1c");
+  const textColor = useColorModeValue("black", "white");
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
@@ -33,8 +35,9 @@ function Home() {
         top="0"
         bottom="0"
         width={sidebarWidth}
-        bg={useColorModeValue("gray.200", "gray.700")}
+        bg={sidebarBgColor}
         height="100vh"
+        color={textColor}
       >
         <Navbar onProfileClick={handleProfileClick} />
       </Box>
@@ -51,7 +54,7 @@ function Home() {
           w="full"
           h="full"
           bg={mainContentBgColor}
-          
+          color={textColor}
         >
           {/* Welcome Greeting */}
           <Flex

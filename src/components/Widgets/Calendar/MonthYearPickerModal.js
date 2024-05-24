@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton,
-  ModalBody, ModalFooter, Button, SimpleGrid, Box
+  ModalBody, ModalFooter, Button, SimpleGrid, Box, useColorModeValue,
 } from '@chakra-ui/react';
 
 const MonthYearPickerModal = ({ isOpen, onClose, onChangeMonthYear, currentDate }) => {
@@ -26,6 +26,10 @@ const MonthYearPickerModal = ({ isOpen, onClose, onChangeMonthYear, currentDate 
     onClose();
   };
 
+  const bg = useColorModeValue('gray.200', 'gray.600');
+  const selectedBg = useColorModeValue('black', 'white');
+  const selectedColor = useColorModeValue('white', 'black');
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -41,8 +45,8 @@ const MonthYearPickerModal = ({ isOpen, onClose, onChangeMonthYear, currentDate 
                 p={2}
                 borderWidth="1px"
                 borderRadius="md"
-                bg={selectedMonth === index ? "blue.500" : "gray.200"}
-                color={selectedMonth === index ? "white" : "black"}
+                bg={selectedMonth === index ? selectedBg : bg}
+                color={selectedMonth === index ? selectedColor : 'black'}
                 onClick={() => setSelectedMonth(index)}
               >
                 {name}
@@ -57,8 +61,8 @@ const MonthYearPickerModal = ({ isOpen, onClose, onChangeMonthYear, currentDate 
                 p={2}
                 borderWidth="1px"
                 borderRadius="md"
-                bg={selectedYear === yearOption ? "blue.500" : "gray.200"}
-                color={selectedYear === yearOption ? "white" : "black"}
+                bg={selectedYear === yearOption ? selectedBg : bg}
+                color={selectedYear === yearOption ? selectedColor : 'black'}
                 onClick={() => setSelectedYear(yearOption)}
               >
                 {yearOption}

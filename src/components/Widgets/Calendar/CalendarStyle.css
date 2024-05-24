@@ -1,23 +1,23 @@
 :root {
-  --fc-today-bg-light: #E0F2FE;
-  --fc-today-bg-dark: #1E3A8A;
-  --fc-event-bg-light: #269BC0;
-  --fc-event-bg-dark: #1C6E8C;
-  --fc-hover-bg-light: #cfcdcd;
-  --fc-hover-bg-dark: #374151;
-  --fc-border-light: #e9ecf0;
-  --fc-border-dark: #374151;
+  --fc-today-bg-light: #f0f0f0;
+  --fc-today-bg-dark: #2c2c2c;
+  --fc-event-bg-light: #d0d0d0;
+  --fc-event-bg-dark: #3c3c3c;
+  --fc-hover-bg-light: #e0e0e0;
+  --fc-hover-bg-dark: #4c4c4c;
+  --fc-border-light: #dcdcdc;
+  --fc-border-dark: #5c5c5c;
   --fc-bg-light: #ffffff;
-  --fc-bg-dark: #1F2937;
+  --fc-bg-dark: #1c1c1c;
   --fc-text-light: #000000;
-  --fc-text-dark: #F3F4F6;
+  --fc-text-dark: #ffffff;
 
-  --button-bg-light: #269BC0; 
-  --button-bg-dark: #B5C5D6; 
-  --button-hover-bg-light: #1E7BA1;
-  --button-hover-bg-dark: #374151; 
-  --button-text-light: #FFFFFF; 
-  --button-text-dark: #080808;
+  --button-bg-light: #000000;
+  --button-bg-dark: #ffffff;
+  --button-hover-bg-light: #333333;
+  --button-hover-bg-dark: #cccccc;
+  --button-text-light: #ffffff;
+  --button-text-dark: #000000;
 }
 
 /* General styling for the calendar */
@@ -28,17 +28,15 @@
 .fc-event {
   cursor: pointer;
   background-color: var(--fc-event-bg-light);
-  transition: background-color 0.2s ease; 
+  transition: background-color 0.2s ease;
 }
 
 .fc-event:hover {
-  cursor: pointer;
   background-color: var(--fc-hover-bg-light);
 }
 
 .fc-day:hover {
-  cursor: pointer;
-  background-color: var(--fc-bg-light);
+  background-color: var(--fc-hover-bg-light);
 }
 
 .fc .fc-view-harness,
@@ -49,7 +47,6 @@
   border-radius: 12px;
   overflow: hidden;
   border: 0.5px solid var(--fc-border-light);
-
 }
 
 /* Customize the timeGridWeek and timeGridDay views */
@@ -75,10 +72,31 @@
   color: var(--fc-text-light);
 }
 
+/* Toolbar Styling */
+.fc-toolbar {
+  background-color: var(--fc-bg-light);
+  color: var(--fc-text-light);
+}
+
+.fc .fc-button{
+  background-color: var(--button-bg-light);
+  color: var(--button-text-light);
+  border: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+}
+.fc .fc-button-primary:not(:disabled).fc-button-active{
+  background-color: var(--button-hover-bg-light);
+}
+
+.fc .fc-button:hover {
+  background-color: var(--button-hover-bg-light);
+}
+
 /* Dark Mode */
 .dark-mode .fc .fc-day-today {
   background-color: var(--fc-today-bg-dark) !important;
-  color: var(--fc-text-dark); /* Ensure text is readable */
+  color: var(--fc-text-dark);
 }
 
 .dark-mode .fc-event {
@@ -90,7 +108,7 @@
 }
 
 .dark-mode .fc-day:hover {
-  background-color: var(--fc-bg-dark);
+  background-color: var(--fc-hover-bg-dark);
 }
 
 .dark-mode .fc .fc-view-harness,
@@ -103,6 +121,25 @@
 .dark-mode .fc-daygrid-day-number,
 .dark-mode .fc-timegrid-axis-cushion {
   color: var(--fc-text-dark);
+}
+
+/* Dark Mode for Toolbar */
+.dark-mode .fc-toolbar {
+  background-color: var(--fc-bg-dark);
+  color: var(--fc-text-dark);
+}
+
+.dark-mode .fc-toolbar button {
+  background-color: var(--button-bg-dark);
+  color: var(--button-text-dark);
+}
+
+.dark-mode .fc-toolbar button:hover {
+  background-color: var(--button-hover-bg-dark);
+}
+
+.dark-mode .fc-toolbar button:focus {
+  box-shadow: 0 0 2px 2px var(--button-hover-bg-dark);
 }
 
 /* Add Event Button Styling */
@@ -214,6 +251,7 @@
   .fc-header-toolbar {
     flex-direction: column;
     align-items: center;
+    border-bottom: none;
     gap: 6px;
   }
 
@@ -242,4 +280,56 @@
   .fc-day-today {
     background-color: var(--fc-today-bg-dark);
   }
+}
+
+/* Styles for the Event Lists */
+.event-list {
+  background-color: var(--fc-bg-light);
+  color: var(--fc-text-light);
+  border: 1px solid var(--fc-border-light);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 20px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.event-list .event-list-item {
+  border-bottom: 1px solid var(--fc-border-light);
+  padding: 10px 0;
+  transition: background-color 0.2s ease;
+}
+
+.event-list .event-list-item:last-child {
+  border-bottom: none;
+}
+
+.event-list .event-list-item:hover {
+  background-color: var(--fc-hover-bg-light);
+}
+
+.event-list .event-title {
+  font-weight: bold;
+}
+
+.event-list .event-time {
+  color: var(--fc-text-light);
+}
+
+/* Dark Mode for Event Lists */
+.dark-mode .event-list {
+  background-color: var(--fc-bg-dark);
+  color: var(--fc-text-dark);
+  border: 1px solid var(--fc-border-dark);
+}
+
+.dark-mode .event-list .event-list-item {
+  border-bottom: 1px solid var(--fc-border-dark);
+}
+
+.dark-mode .event-list .event-list-item:hover {
+  background-color: var(--fc-hover-bg-dark);
+}
+
+.dark-mode .event-list .event-time {
+  color: var(--fc-text-dark);
 }

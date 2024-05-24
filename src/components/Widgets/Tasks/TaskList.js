@@ -10,11 +10,11 @@ const TaskList = ({
   tasks, toggleTaskCompletion, openEditModal, deleteTask,
 }) => {
   const {
-    bgColor, primaryColor, secondaryColor, buttonColor, hoverColor, taskTextColor, modalTextColor,
+    bgColor, primaryColor, secondaryColor, buttonColor, hoverColor, taskTextColor,
   } = useTaskColors();
 
   return (
-    <Box p={4} borderRadius="lg">
+    <Box p={4} borderRadius="lg" >
       {tasks.map((task) => (
         <Flex key={task.id} p={3} alignItems="center" borderRadius="md">
           <Checkbox

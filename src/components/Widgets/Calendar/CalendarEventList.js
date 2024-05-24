@@ -17,29 +17,25 @@ const formatEventTime = (event) => {
 };
 
 const CalendarEventList = ({ title, events, onAdd, onEdit }) => (
-  <Box mt={8}>
+  <Box className="event-list" mt={8}>
     <Heading as="h3" size="md" mb={4}>{title}</Heading>
     <List spacing={3}>
       {events.length > 0 ? (
         events.map((event) => (
           <ListItem
             key={event.id}
-            p={3}
-            borderRadius="md"
-            border="1px solid"
-            borderColor="gray.300"
-            _hover={{ bg: 'gray.100', cursor: 'pointer' }}
+            className="event-list-item"
             onClick={() => onEdit(event)}
           >
-            <Text fontWeight="bold">{event.title}</Text>
-            <Text>{formatEventTime(event)}</Text>
+            <Text className="event-title">{event.title}</Text>
+            <Text className="event-time">{formatEventTime(event)}</Text>
           </ListItem>
         ))
       ) : (
         <Text>No events</Text>
       )}
     </List>
-    <Button className="add-event-button" colorScheme="blue" mt={4} onClick={onAdd}>Add Event</Button>
+    <Button className="add-event-button" mt={4} onClick={onAdd}>Add Event</Button>
   </Box>
 );
 

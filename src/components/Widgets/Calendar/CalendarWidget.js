@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, ChakraProvider, useDisclosure, useColorMode } from '@chakra-ui/react';
+import { Box, ChakraProvider, useDisclosure, useColorMode, background } from '@chakra-ui/react';
 import FullCalendar from '@fullcalendar/react';
 import { calendarPlugins, calendarToolbar, calendarInitialView } from './CalendarSettings';
 import { loadEvents, addOrUpdateEvent, deleteEvent } from './CalendarEvents';
@@ -47,20 +47,24 @@ const CalendarWidget = () => {
     onOpen();
   };
 
-  const handleEventClick = (clickInfo) => {
+  const handleEventClick = (event) => {
+    if (!event) {
+      console.error('Event is undefined');
+      return;
+    }
     setCurrentEvent({
-      id: clickInfo.event.id,
-      title: clickInfo.event.title,
-      start: clickInfo.event.start,
-      end: clickInfo.event.end,
-      allDay: clickInfo.event.allDay
+      id: event.id,
+      title: event.title,
+      start: event.start,
+      end: event.end,
+      allDay: event.allDay
     });
-    setEventTitle(clickInfo.event.title);
-    setAllDay(clickInfo.event.allDay);
-    setStartDate(moment(clickInfo.event.start).format('YYYY-MM-DD'));
-    setEndDate(clickInfo.event.end ? moment(clickInfo.event.end).format('YYYY-MM-DD') : moment(clickInfo.event.start).format('YYYY-MM-DD'));
-    setStartTime(moment(clickInfo.event.start).format('HH:mm'));
-    setEndTime(moment(clickInfo.event.end ? moment(clickInfo.event.end).format('HH:mm') : moment(clickInfo.event.start).format('HH:mm')));
+    setEventTitle(event.title);
+    setAllDay(event.allDay);
+    setStartDate(moment(event.start).format('YYYY-MM-DD'));
+    setEndDate(event.end ? moment(event.end).format('YYYY-MM-DD') : moment(event.start).format('YYYY-MM-DD'));
+    setStartTime(moment(event.start).format('HH:mm'));
+    setEndTime(moment(event.end ? moment(event.end).format('HH:mm') : moment(event.start).format('HH:mm')));
     onOpen();
   };
 
@@ -180,7 +184,7 @@ const CalendarWidget = () => {
   const customButtons = {
     customPrev: {
       text: '<',
-      click: handlePrev
+      click: handlePrev,
     },
     customNext: {
       text: '>',
@@ -214,7 +218,7 @@ const CalendarWidget = () => {
           weekends
           events={events}
           select={handleDateSelect}
-          eventClick={handleEventClick}
+          eventClick={(clickInfo) => handleEventClick(clickInfo.event)}
           eventDrop={handleEventDrop}
           eventResize={handleEventResize}
           customButtons={customButtons}

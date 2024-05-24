@@ -6,11 +6,10 @@ import {
 import { useTaskColors } from './TaskSettings';
 import './TaskModal.css';
 
-
 const TaskModal = ({
   isOpen, onClose, title, taskTitle, setTaskTitle, taskDesc, setTaskDesc, selectedList, setSelectedList, onSave, lists, onCreateNewList
 }) => {
-  const { modalTextColor, taskTextColor, buttonColor, hoverColor, primaryColor } = useTaskColors();
+  const { modalBgColor, modalTextColor, taskTextColor, buttonColor, hoverColor } = useTaskColors();
 
   const handleListChange = (e) => {
     if (e.target.value === 'createNew') {
@@ -23,7 +22,7 @@ const TaskModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
-      <ModalContent color={modalTextColor}>
+      <ModalContent bg={modalBgColor} color={modalTextColor}>
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
