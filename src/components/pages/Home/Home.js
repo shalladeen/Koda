@@ -60,7 +60,7 @@ function Home() {
             direction="row"
             justifyContent="space-between"
             alignItems="center"
-            mt={{ base: 2, md: 10 }}
+           
             px={{ base: 4, md: 0 }}
           >
             <WelcomeGreeting isLoggedIn={isLoggedIn} />
