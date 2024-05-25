@@ -1,13 +1,28 @@
 import React from 'react';
-import { Box, Flex, VStack, IconButton, useColorModeValue, Switch, useColorMode } from '@chakra-ui/react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import {
+  Box,
+  Flex,
+  VStack,
+  IconButton,
+  useColorModeValue,
+  Switch,
+  useColorMode,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+} from '@chakra-ui/react';
+import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup, faGear, faStopwatch, faGripVertical, faNotesMedical } from '@fortawesome/free-solid-svg-icons';
 import { FaUserCircle, FaMoon, FaSun } from 'react-icons/fa';
+import { useAuth } from '../context/AuthContext';
 
 function Navbar({ onProfileClick }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isLoggedIn, handleLogout } = useAuth();
   const bg = useColorModeValue('#000000', '#1c1c1c');
   const profileColor = useColorModeValue('black', 'white');
   const iconColor = useColorModeValue('white', 'white');
@@ -39,17 +54,27 @@ function Navbar({ onProfileClick }) {
 
   return (
     <Flex direction="column" bg={bg} p="2" height="full">
-      <IconButton
-        icon={<FaUserCircle />}
-        aria-label="User Profile"
-        size="lg"
-        alignSelf="center"
-        mb="6"
-        onClick={onProfileClick}
-        borderRadius="full"
-        mt="6"
-        color={profileColor}
-      />
+      {isLoggedIn ? (
+        <Menu>
+          <MenuButton as={IconButton} icon={<FaUserCircle />} size="lg" alignSelf="center" mb="6" borderRadius="full" mt="6" color={profileColor} />
+          <MenuList>
+            <MenuItem onClick={onProfileClick}>View Profile</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          </MenuList>
+        </Menu>
+      ) : (
+        <IconButton
+          icon={<FaUserCircle />}
+          aria-label="User Profile"
+          size="lg"
+          alignSelf="center"
+          mb="6"
+          onClick={() => navigate('/SignupPage')}
+          borderRadius="full"
+          mt="6"
+          color={profileColor}
+        />
+      )}
       <VStack spacing={4} align="stretch">
         <NavLink to="/" icon={faGripVertical} label="Home" />
         <NavLink to="/Notes" icon={faNotesMedical} label="Notes" />

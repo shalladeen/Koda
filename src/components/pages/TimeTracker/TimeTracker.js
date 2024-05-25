@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Timer from './Timer/Timer';
 import { useNavigate } from "react-router-dom";
 import Navbar from '../../nav/Navbar';
 import { Box, Flex, useColorModeValue } from '@chakra-ui/react';
+import { useAuth } from '../../context/AuthContext';
 
 function TimeTracker() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
+    const { isLoggedIn } = useAuth();
 
     const handleProfileClick = () => {
         if (isLoggedIn) {
-            navigate("/profile");
+            navigate("/ProfilePage");
         } else {
             navigate("/SignupPage");
         }

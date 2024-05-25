@@ -8,6 +8,7 @@ import {
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import Navbar from "../../nav/Navbar";
 import CustomTagModal from "./CustomTags";
+import { useAuth } from "../../context/AuthContext";
 
 // Define default tags with pastel colors
 const defaultTags = [
@@ -37,8 +38,8 @@ function Notes() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("None");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
 
   const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
   const buttonColor = useColorModeValue("black", "white");
@@ -62,11 +63,11 @@ function Notes() {
 
   const handleProfileClick = () => {
     if (isLoggedIn) {
-        navigate("/profile");
+        navigate("/ProfilePage");
     } else {
         navigate("/SignupPage");
     }
-};
+  };
 
   const handleSaveNote = () => {
     const timestamp = Date.now();
@@ -234,7 +235,7 @@ function Notes() {
                   {customTags.map((customTag, index) => (
                     <MenuItem 
                     key={index} 
-                    onClick={() => handleTagFilterChange(customTag.title)} 
+                    onClick={() => setTag(customTag.title)} 
                     bg={tag === customTag.title ? "blue.100" : "inherit"}
                     _hover={{ bg: hoverBgColor}}
                   >

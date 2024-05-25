@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import Navbar from "../../nav/Navbar";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, FormLabel, Input, Stack, Text, Link, Flex, IconButton, useColorMode, VStack, HStack, useColorModeValue } from '@chakra-ui/react';
-import { FaGoogle, FaFacebook, FaGithub, FaLinkedin, FaMoon, FaSun } from 'react-icons/fa';
+import { Box, Button, FormControl, FormLabel, Input, Text, Link, Flex, IconButton, VStack, HStack, useColorModeValue } from '@chakra-ui/react';
+import { FaGoogle, FaFacebook, FaGithub, FaLinkedin } from 'react-icons/fa';
 import { register, login } from '../../../services/authService';
+import { useAuth } from '../../context/AuthContext';
 
 function SignupPage() {
     const [isSignUpActive, setIsSignUpActive] = useState(true);
@@ -11,9 +12,9 @@ function SignupPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { colorMode, toggleColorMode } = useColorMode();
     const formBackground = useColorModeValue('gray.50', 'gray.700');
     const navigate = useNavigate();
+    const { login: authLogin } = useAuth();
 
     const toggleForm = () => setIsSignUpActive(!isSignUpActive);
 
@@ -21,9 +22,14 @@ function SignupPage() {
         event.preventDefault();
         try {
             await register(username, email, password);
-            navigate('/profile');
+            authLogin();
+            navigate('/ProfilePage');
         } catch (err) {
-            setError(err.response.data.message);
+            if (err.response && err.response.data) {
+                setError(err.response.data.message);
+            } else {
+                setError('An unexpected error occurred. Please try again.');
+            }
         }
     };
 
@@ -31,19 +37,14 @@ function SignupPage() {
         event.preventDefault();
         try {
             await login(email, password);
-            navigate('/profile');
+            authLogin();
+            navigate('/ProfilePage');
         } catch (err) {
-            setError(err.response.data.message);
-        }
-    };
-
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    const handleProfileClick = () => {
-        if (isLoggedIn) {
-            navigate("/profile");
-        } else {
-            navigate("/signup");
+            if (err.response && err.response.data) {
+                setError(err.response.data.message);
+            } else {
+                setError('An unexpected error occurred. Please try again.');
+            }
         }
     };
 
@@ -61,7 +62,7 @@ function SignupPage() {
                 height="100vh"
                 zIndex="10"
             >
-                <Navbar onProfileClick={handleProfileClick} />
+                <Navbar onProfileClick={() => navigate('/profile')} />
             </Box>
             <Flex direction="column" align="center" justify="center" h="100vh" ml={{ base: "0", md: "64" }} w="70%">
                 <VStack spacing={8} bg={formBackground} p={6} borderRadius="xl" boxShadow="lg" w="500px">

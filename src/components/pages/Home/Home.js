@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box, Flex, Stack, useColorModeValue } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import Recent from "../../Widgets/Recents/Recent";
@@ -7,6 +7,7 @@ import MyCalendarWidget from "../../Widgets/Calendar/CalendarWidget";
 import WelcomeGreeting from "../../Widgets/Greeting/Greeting";
 import Navbar from "../../nav/Navbar";
 import MiniTimer from "../TimeTracker/Timer/MiniTimer";
+import { useAuth } from "../../context/AuthContext";
 
 function Home() {
   const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
@@ -14,12 +15,12 @@ function Home() {
   const mainContentBgColor = useColorModeValue("#f9fdff", "#1c1c1c");
   const textColor = useColorModeValue("black", "white");
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
 
   const handleProfileClick = () => {
     if (isLoggedIn) {
-      navigate("/profile");
+      navigate("/ProfilePage");
     } else {
       navigate("/SignupPage");
     }
@@ -60,11 +61,10 @@ function Home() {
             direction="row"
             justifyContent="space-between"
             alignItems="center"
-           
             px={{ base: 4, md: 0 }}
           >
             <WelcomeGreeting isLoggedIn={isLoggedIn} />
-            <MiniTimer /> {/* Add MiniTimer here */}
+            <MiniTimer />
           </Flex>
 
           {/* Main Layout */}

@@ -14,7 +14,7 @@ const Signup = () => {
         e.preventDefault();
         try {
             await register(username, email, password);
-            navigate('/profile');
+            navigate('/ProfilePage');
         } catch (err) {
             setError(err.response.data.message);
         }
