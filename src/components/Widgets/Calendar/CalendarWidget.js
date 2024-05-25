@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, ChakraProvider, useDisclosure, useColorMode, background } from '@chakra-ui/react';
+import { Box, ChakraProvider, useDisclosure, useColorMode } from '@chakra-ui/react';
 import FullCalendar from '@fullcalendar/react';
 import { calendarPlugins, calendarToolbar, calendarInitialView } from './CalendarSettings';
 import { loadEvents, addOrUpdateEvent, deleteEvent } from './CalendarEvents';
@@ -9,13 +9,12 @@ import CalendarEventModal from './CalendarEventModal';
 import '../Calendar/CalendarStyle.css';
 import moment from 'moment';
 
-const CalendarWidget = () => {
+const CalendarWidget = ({ events, onAddOrUpdateEvent, onDeleteEvent }) => {
   const calendarRef = useRef(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isMonthYearPickerOpen, onOpen: onMonthYearPickerOpen, onClose: onMonthYearPickerClose } = useDisclosure();
   const [currentDate, setCurrentDate] = useState(new Date());
   const { colorMode } = useColorMode();
-  const [events, setEvents] = useState([]);
   const [currentEvent, setCurrentEvent] = useState(null);
   const [eventTitle, setEventTitle] = useState('');
   const [allDay, setAllDay] = useState(false);
@@ -23,10 +22,6 @@ const CalendarWidget = () => {
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [startTime, setStartTime] = useState('09:00');
   const [endTime, setEndTime] = useState('17:00');
-
-  useEffect(() => {
-    setEvents(loadEvents());
-  }, []);
 
   useEffect(() => {
     if (calendarRef.current && currentDate) {
@@ -77,7 +72,7 @@ const CalendarWidget = () => {
       end: event.end,
       allDay: event.allDay,
     };
-    updateEvent(updatedEvent);
+    onAddOrUpdateEvent(updatedEvent);
   };
 
   const handleEventResize = (info) => {
@@ -89,12 +84,7 @@ const CalendarWidget = () => {
       end: event.end,
       allDay: event.allDay,
     };
-    updateEvent(updatedEvent);
-  };
-
-  const updateEvent = (updatedEvent) => {
-    const updatedEvents = addOrUpdateEvent(events, updatedEvent);
-    setEvents(updatedEvents);
+    onAddOrUpdateEvent(updatedEvent);
   };
 
   const saveEvent = () => {
@@ -105,15 +95,13 @@ const CalendarWidget = () => {
       end: allDay ? moment(endDate).add(1, 'day').toISOString() : moment(endDate + 'T' + endTime).toISOString(),
       allDay: allDay,
     };
-    const updatedEvents = addOrUpdateEvent(events, newEvent);
-    setEvents(updatedEvents);
+    onAddOrUpdateEvent(newEvent);
     onClose();
   };
 
   const handleDeleteEvent = () => {
     if (currentEvent && currentEvent.id) {
-      const updatedEvents = deleteEvent(events, currentEvent.id);
-      setEvents(updatedEvents);
+      onDeleteEvent(currentEvent.id);
       onClose();
     } else {
       console.error("No event selected or event ID is missing");
@@ -229,7 +217,7 @@ const CalendarWidget = () => {
           onChangeMonthYear={onMonthYearChange}
           currentDate={currentDate}
         />
-        <CalendarEventList title="Today's Events" events={todaysEvents} onAdd={handleAddTodayEvent} onEdit={handleEventClick} />
+        
         <CalendarEventList title="Upcoming Events" events={upcomingEvents} onAdd={handleAddUpcomingEvent} onEdit={handleEventClick} />
         <CalendarEventModal
           isOpen={isOpen}

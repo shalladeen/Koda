@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Heading, Text, useColorModeValue } from '@chakra-ui/react';
 
-function WelcomeGreeting({ isLoggedIn }) {
+function WelcomeGreeting({ isLoggedIn, compact = false }) {
     const textColor = useColorModeValue('gray.800', 'gray.100');
     const [messageIndex, setMessageIndex] = useState(0);
 
@@ -52,13 +52,10 @@ function WelcomeGreeting({ isLoggedIn }) {
     }, []);
 
     return (
-        <Box w="40%" p={10} mt={30} borderRadius="lg" textAlign="center">
-            <Heading color={textColor} size="lg">
-                {isLoggedIn ? "Welcome back to Koda!" : "Welcome to Koda!"}
-            </Heading>
-            <Text mt={4} color={textColor}>
+        <Box textAlign="center" py={compact ? 1 : 10} px={compact ? 2 : 10} borderRadius="lg">
+            <Heading color={textColor} size={compact ? 'sm' : 'lg'}>
                 {getGreetingMessage()}
-            </Text>
+            </Heading>
         </Box>
     );
 }

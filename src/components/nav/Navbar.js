@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup, faStopwatch, faGripVertical, faNotesMedical } from '@fortawesome/free-solid-svg-icons';
 import { FaUserCircle, FaMoon, FaSun } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+import WelcomeGreeting from '../Widgets/Greeting/Greeting';
 
 function Navbar({ onProfileClick }) {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -56,6 +57,7 @@ function Navbar({ onProfileClick }) {
     <Flex direction="column" bg={bg} p="2" height="full">
       {isLoggedIn ? (
         <Menu>
+          
           <MenuButton as={IconButton} icon={<FaUserCircle />} size="lg" alignSelf="center" mb="6" borderRadius="full" mt="6" color={profileColor} />
           <MenuList>
             <MenuItem onClick={onProfileClick}>View Profile</MenuItem>
@@ -63,6 +65,7 @@ function Navbar({ onProfileClick }) {
           </MenuList>
         </Menu>
       ) : (
+        
         <IconButton
           icon={<FaUserCircle />}
           aria-label="User Profile"
@@ -75,6 +78,7 @@ function Navbar({ onProfileClick }) {
           color={profileColor}
         />
       )}
+      
       <VStack spacing={4} align="stretch">
         <NavLink to="/" icon={faGripVertical} label="Home" />
         <NavLink to="/Notes" icon={faNotesMedical} label="Notes" />

@@ -10,6 +10,7 @@ export const loadEvents = () => {
           : new Date(event.start),
         end: event.end ? new Date(event.end) : null,
         allDay: !!event.allDay,
+        completed: !!event.completed,
       }))
     : [];
 };
@@ -19,6 +20,7 @@ export const saveEvents = (events) => {
     ...event,
     start: event.allDay ? event.start : moment(event.start).toISOString(),
     end: event.end ? moment(event.end).toISOString() : null,
+    completed: !!event.completed,
   }));
   localStorage.setItem('fullCalendarEvents', JSON.stringify(sanitizedEvents));
 };

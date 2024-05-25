@@ -33,23 +33,25 @@ function MiniTimer() {
 
     return (
         <Box
-            bg={isHovered ? hoverBgColor : bgColor}
+            bg={isHovered ? hoverBgColor : 'transparent'}
             color={textColor}
             borderRadius="md"
             p={4}
-            boxShadow="md"
+            
             transition="all 0.5s ease-in-out"
             style={{ transitionProperty: 'background-color, border-color, color, fill, stroke, opacity, box-shadow, transform' }}
-            width="150px"
-            height="80px"
+            width="120px"
+            height="60px"
             display="flex"
             justifyContent="center"
             alignItems="center"
-            position="relative" // Ensure relative positioning for the button
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
+            position="fixed"
+            top="20px"
+            right="20px"
         >
-            <Text fontSize="2xl" fontWeight="bold">
+            <Text fontSize="lg" fontWeight="bold">
                 {`${Math.floor(remainingTime / 60)}m ${Math.round(remainingTime % 60)}s`}
             </Text>
             {isHovered && (
@@ -57,10 +59,10 @@ function MiniTimer() {
                     aria-label={isRunning ? 'Pause timer' : 'Resume timer'}
                     icon={isRunning ? <FaPause /> : <FaPlay />}
                     onClick={handlePauseResume}
-                    position="absolute" // Position absolutely within the Box
-                    top="50%" // Center vertically
-                    left="50%" // Center horizontally
-                    transform="translate(-50%, -50%)" // Offset to center
+                    position="absolute"
+                    top="50%"
+                    left="50%"
+                    transform="translate(-50%, -50%)"
                     bg={textColor}
                     color={bgColor}
                     _hover={{ bg: buttonHoverBgColor }}
