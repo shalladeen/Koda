@@ -3,6 +3,7 @@ import { Box, Flex, Stack, useColorModeValue } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import Recent from "../../Widgets/Recents/Recent";
 import Task from "../../Widgets/Tasks/Task";
+import WelcomeGreeting from "../../Widgets/Greeting/Greeting";
 import MyCalendarWidget from "../../Widgets/Calendar/CalendarWidget";
 import Navbar from "../../nav/Navbar";
 import MiniTimer from "../TimeTracker/Timer/MiniTimer";
@@ -54,7 +55,7 @@ function Home() {
           bg={mainContentBgColor}
           color={textColor}
         >
-          {/*Mini Timer */}
+          {/* Greeting & Mini Timer */}
           <Flex
             width="full"
             direction="row"
@@ -63,6 +64,7 @@ function Home() {
             mt={20}
             px={{ base: 4, md: 0 }}
           >
+            <WelcomeGreeting isLoggedIn={isLoggedIn} />
             <MiniTimer />
           </Flex>
 
