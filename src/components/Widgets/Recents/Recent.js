@@ -47,14 +47,14 @@ const Recent = () => {
     return customTags.find(tag => tag.title === tagTitle)?.color || defaultColor;
   };
 
-  const EditNoteModal = () => {
-    const [title, setTitle] = useState(editingNote?.title || '');
-    const [content, setContent] = useState(editingNote?.content || '');
+  const EditNoteModal = ({ note }) => {
+    const [title, setTitle] = useState(note?.title || '');
+    const [content, setContent] = useState(note?.content || '');
 
     useEffect(() => {
-      setTitle(editingNote?.title || '');
-      setContent(editingNote?.content || '');
-    }, [editingNote]);
+      setTitle(note?.title || '');
+      setContent(note?.content || '');
+    }, [note]);
 
     return (
       <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
@@ -62,7 +62,7 @@ const Recent = () => {
         <ModalContent backgroundColor={modalBgColor} color={modalTextColor}>
           <ModalHeader>Edit Note</ModalHeader>
           <ModalCloseButton />
-          <ModalBody pb={6} >
+          <ModalBody pb={6}>
             <Input
               placeholder="Title"
               value={title}
@@ -79,7 +79,7 @@ const Recent = () => {
             <Button backgroundColor={buttonColor} color={buttonText} mr={3} onClick={() => handleSaveEditedNote({ title, content })}>
               Save
             </Button>
-            <Button colorScheme="red" mr={3} onClick={() => handleDeleteNote(editingNote.id)}>
+            <Button colorScheme="red" mr={3} onClick={() => handleDeleteNote(note.id)}>
               Delete
             </Button>
             <Button onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
@@ -107,7 +107,7 @@ const Recent = () => {
               maxHeight="250px"
               overflowY="auto"
               _hover={{
-                bg: hoverBg,
+                bg: note.tag ? hoverBg : getTagColor(note.tag || "None"),
                 cursor: 'pointer',
                 transform: 'scale(1.05)',
                 transition: 'transform .2s'
@@ -120,7 +120,7 @@ const Recent = () => {
           </WrapItem>
         ))}
       </Wrap>
-      {isEditModalOpen && <EditNoteModal />}
+      {isEditModalOpen && <EditNoteModal note={editingNote} />}
     </>
   );
 };

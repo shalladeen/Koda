@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import Recent from "../../Widgets/Recents/Recent";
 import Task from "../../Widgets/Tasks/Task";
 import MyCalendarWidget from "../../Widgets/Calendar/CalendarWidget";
-import WelcomeGreeting from "../../Widgets/Greeting/Greeting";
 import Navbar from "../../nav/Navbar";
 import MiniTimer from "../TimeTracker/Timer/MiniTimer";
 import { useAuth } from "../../context/AuthContext";
@@ -55,15 +54,15 @@ function Home() {
           bg={mainContentBgColor}
           color={textColor}
         >
-          {/* Welcome Greeting and Mini Timer */}
+          {/*Mini Timer */}
           <Flex
             width="full"
             direction="row"
             justifyContent="space-between"
             alignItems="center"
+            mt={20}
             px={{ base: 4, md: 0 }}
           >
-            <WelcomeGreeting isLoggedIn={isLoggedIn} />
             <MiniTimer />
           </Flex>
 
@@ -73,7 +72,6 @@ function Home() {
             justifyContent="space-between"
             alignItems="start"
             w="full"
-            mt={4}
             gap={5}
           >
             {/* Left Column: Task and Recent */}
@@ -83,7 +81,7 @@ function Home() {
             </Stack>
 
             {/* Right Column: Calendar */}
-            <Box flex={1} w={{ base: "full" }}>
+            <Box flex={1} w={{ base: "full" }} mt={4}>
               <MyCalendarWidget />
             </Box>
           </Flex>

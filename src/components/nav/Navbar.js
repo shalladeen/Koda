@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserGroup, faGear, faStopwatch, faGripVertical, faNotesMedical } from '@fortawesome/free-solid-svg-icons';
+import { faUserGroup, faStopwatch, faGripVertical, faNotesMedical } from '@fortawesome/free-solid-svg-icons';
 import { FaUserCircle, FaMoon, FaSun } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 
@@ -80,7 +80,6 @@ function Navbar({ onProfileClick }) {
         <NavLink to="/Notes" icon={faNotesMedical} label="Notes" />
         <NavLink to="/TimeTracker" icon={faStopwatch} label="Focus Time" />
         <NavLink to="/Friends" icon={faUserGroup} label="Friends" />
-        <NavLink to="/Settings" icon={faGear} label="Settings" />
       </VStack>
       <Flex mt="auto" justifyContent="center" p="4" alignItems="center">
         <FaSun color={sunColor} />

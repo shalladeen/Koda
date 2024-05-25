@@ -175,9 +175,14 @@ function Notes() {
                   </HStack>
                 </MenuItem>
                 {customTags.map((customTag, index) => (
-                  <MenuItem key={index} onClick={() => handleTagFilterChange(customTag.title)} bg={tag === customTag.title ? "blue.100" : "inherit"}>
+                  <MenuItem 
+                  key={index} 
+                  onClick={() => handleTagFilterChange(customTag.title)} 
+                  bg={tag === customTag.title ? "blue.100" : "inherit"}
+                  _hover={{ bg: hoverBgColor}}
+                >
                     <HStack>
-                      <Text>{customTag.title}</Text>
+                      <Text >{customTag.title}</Text>
                       <Circle size="15px" bg={customTag.color} />
                     </HStack>
                   </MenuItem>
@@ -190,7 +195,9 @@ function Notes() {
         <Flex wrap="wrap">
           {filteredNotes.map((note) => (
             <Box key={note.id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m={2}
-              backgroundColor={getTagColor(note.tag)} boxShadow="md" h="250px" color={textColor} position="relative">
+              backgroundColor={getTagColor(note.tag)} boxShadow="md" h="250px" color={textColor} position="relative"
+              _hover={{ bg: hoverBgColor, cursor: 'pointer' }}
+              >
               <Text fontWeight="bold" mb={2}>{note.title}</Text>
               <Text mb={2}>{note.content}</Text>
               <ButtonGroup position="absolute" bottom={2} left={2}>

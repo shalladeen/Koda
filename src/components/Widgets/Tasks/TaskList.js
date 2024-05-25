@@ -10,7 +10,7 @@ const TaskList = ({
   tasks, toggleTaskCompletion, openEditModal, deleteTask,
 }) => {
   const {
-    bgColor, primaryColor, secondaryColor, buttonColor, hoverColor, taskTextColor,
+  secondaryColor, hoverColor, taskTextColor,
   } = useTaskColors();
 
   return (

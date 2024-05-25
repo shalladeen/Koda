@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import Navbar from "../../nav/Navbar";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, FormControl, FormLabel, Input, Text, Link, Flex, IconButton, VStack, HStack, useColorModeValue } from '@chakra-ui/react';
-import { FaGoogle, FaFacebook, FaGithub, FaLinkedin } from 'react-icons/fa';
+import {
+  Box, Button, FormControl, FormLabel, Input, Text, Link, Flex, IconButton,
+  VStack, HStack, useColorModeValue, InputGroup, InputLeftElement
+} from '@chakra-ui/react';
+import { FaGoogle, FaFacebook, FaGithub, FaLinkedin, FaUser, FaLock, FaEnvelope } from 'react-icons/fa';
 import { register, login } from '../../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 
@@ -36,7 +39,7 @@ function SignupPage() {
     const handleLoginSubmit = async (event) => {
         event.preventDefault();
         try {
-            await login(email, password);
+            await login(username, password);
             authLogin();
             navigate('/ProfilePage');
         } catch (err) {
@@ -51,7 +54,7 @@ function SignupPage() {
     const sidebarWidth = { base: "60px", md: "150px" };
 
     return (
-        <Flex h="100vh">
+        <Flex h="100vh" justifyContent="center" alignItems="center" bg={useColorModeValue("#f9fdff","#1c1c1c")}>
             <Box
                 position="fixed"
                 left="0"
@@ -64,8 +67,8 @@ function SignupPage() {
             >
                 <Navbar onProfileClick={() => navigate('/profile')} />
             </Box>
-            <Flex direction="column" align="center" justify="center" h="100vh" ml={{ base: "0", md: "64" }} w="70%">
-                <VStack spacing={8} bg={formBackground} p={6} borderRadius="xl" boxShadow="lg" w="500px">
+            <Flex direction="column" align="center" justify="center" w="full" maxW="md" p={6} bg={formBackground} borderRadius="xl" boxShadow="lg">
+                <VStack spacing={8} w="full">
                     {isSignUpActive ? (
                         <>
                             <Text fontSize="2xl" fontWeight="bold">Create An Account</Text>
@@ -76,19 +79,42 @@ function SignupPage() {
                                 <IconButton aria-label="LinkedIn" icon={<FaLinkedin />} />
                             </HStack>
                             <Text>or use your email for registration</Text>
-                            <FormControl>
+                            <FormControl id="username">
                                 <FormLabel>Username</FormLabel>
-                                <Input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                                <InputGroup>
+                                    <InputLeftElement pointerEvents="none" children={<FaUser />} />
+                                    <Input
+                                        placeholder="Username"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                    />
+                                </InputGroup>
                             </FormControl>
-                            <FormControl>
+                            <FormControl id="email">
                                 <FormLabel>Email</FormLabel>
-                                <Input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                                <InputGroup>
+                                    <InputLeftElement pointerEvents="none" children={<FaEnvelope />} />
+                                    <Input
+                                        type="email"
+                                        placeholder="Email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                </InputGroup>
                             </FormControl>
-                            <FormControl>
+                            <FormControl id="password">
                                 <FormLabel>Password</FormLabel>
-                                <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                <InputGroup>
+                                    <InputLeftElement pointerEvents="none" children={<FaLock />} />
+                                    <Input
+                                        type="password"
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                </InputGroup>
                             </FormControl>
-                            <Button colorScheme="blue" onClick={handleSignUpSubmit}>Sign Up</Button>
+                            <Button colorScheme="blue" onClick={handleSignUpSubmit} w="full">Sign Up</Button>
                             <Button variant="link" onClick={toggleForm}>Already have an account? Sign In</Button>
                         </>
                     ) : (
@@ -101,16 +127,31 @@ function SignupPage() {
                                 <IconButton aria-label="LinkedIn" icon={<FaLinkedin />} />
                             </HStack>
                             <Text>or use your email to login</Text>
-                            <FormControl>
-                                <FormLabel>Email</FormLabel>
-                                <Input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                            <FormControl id="username">
+                                <FormLabel>Username</FormLabel>
+                                <InputGroup>
+                                    <InputLeftElement pointerEvents="none" children={<FaUser />} />
+                                    <Input
+                                        placeholder="Username/Email"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                    />
+                                </InputGroup>
                             </FormControl>
-                            <FormControl>
+                            <FormControl id="password">
                                 <FormLabel>Password</FormLabel>
-                                <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                                <InputGroup>
+                                    <InputLeftElement pointerEvents="none" children={<FaLock />} />
+                                    <Input
+                                        type="password"
+                                        placeholder="Password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                    />
+                                </InputGroup>
                             </FormControl>
                             <Link colorScheme="blue">Forget Your Password?</Link>
-                            <Button colorScheme="blue" onClick={handleLoginSubmit}>Sign In</Button>
+                            <Button colorScheme="blue" onClick={handleLoginSubmit} w="full">Sign In</Button>
                             <Button variant="link" onClick={toggleForm}>Don't have an account? Sign Up</Button>
                         </>
                     )}
