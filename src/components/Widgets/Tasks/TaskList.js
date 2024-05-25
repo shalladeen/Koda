@@ -16,7 +16,7 @@ const TaskList = ({
   return (
     <Box p={4} borderRadius="lg" >
       {tasks.map((task) => (
-        <Flex key={task.id} p={3} alignItems="center" borderRadius="md">
+        <Flex key={task.id}  alignItems="center" borderRadius="md">
           <Checkbox
             isChecked={task.completed}
             onChange={() => toggleTaskCompletion(task.id)}

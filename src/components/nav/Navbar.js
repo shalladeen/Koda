@@ -72,6 +72,7 @@ function Navbar({ onProfileClick }) {
           size="lg"
           alignSelf="center"
           mb="6"
+          backgroundColor="gray.300"
           onClick={() => navigate('/SignupPage')}
           borderRadius="full"
           mt="6"

@@ -1,36 +1,40 @@
-// src/components/context/TimerContext.js
-import React, { createContext, useState, useContext, useEffect } from 'react';
+// src/context/TimerContext.js
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const TimerContext = createContext();
 
-export const TimerProvider = ({ children }) => {
-    const [timeInMinutes, setTimeInMinutes] = useState(0);
-    const [secondsElapsed, setSecondsElapsed] = useState(0);
-    const [isRunning, setIsRunning] = useState(false);
+export function useTimer() {
+  return useContext(TimerContext);
+}
 
-    useEffect(() => {
-        let interval;
-        if (isRunning) {
-            interval = setInterval(() => {
-                setSecondsElapsed(prevSeconds => {
-                    const nextSeconds = prevSeconds + 1;
-                    if (nextSeconds >= timeInMinutes * 60) {
-                        clearInterval(interval);
-                        setIsRunning(false);
-                        return timeInMinutes * 60;
-                    }
-                    return nextSeconds;
-                });
-            }, 1000);
-        }
-        return () => clearInterval(interval);
-    }, [isRunning, timeInMinutes]);
+export function TimerProvider({ children }) {
+  const [timeInMinutes, setTimeInMinutes] = useState(0);
+  const [secondsElapsed, setSecondsElapsed] = useState(0);
+  const [isRunning, setIsRunning] = useState(false);
+  const [tag, setTag] = useState('work');
 
-    return (
-        <TimerContext.Provider value={{ timeInMinutes, setTimeInMinutes, secondsElapsed, setSecondsElapsed, isRunning, setIsRunning }}>
-            {children}
-        </TimerContext.Provider>
-    );
-};
+  useEffect(() => {
+    let interval;
+    if (isRunning) {
+      interval = setInterval(() => {
+        setSecondsElapsed(prev => prev + 1);
+      }, 1000);
+    } else if (!isRunning && secondsElapsed !== 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [isRunning, secondsElapsed]);
 
-export const useTimer = () => useContext(TimerContext);
+  const value = {
+    timeInMinutes,
+    setTimeInMinutes,
+    secondsElapsed,
+    setSecondsElapsed,
+    isRunning,
+    setIsRunning,
+    tag,
+    setTag
+  };
+
+  return <TimerContext.Provider value={value}>{children}</TimerContext.Provider>;
+}
