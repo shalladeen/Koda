@@ -217,8 +217,6 @@ const CalendarWidget = ({ events, onAddOrUpdateEvent, onDeleteEvent }) => {
           onChangeMonthYear={onMonthYearChange}
           currentDate={currentDate}
         />
-        
-        <CalendarEventList title="Upcoming Events" events={upcomingEvents} onAdd={handleAddUpcomingEvent} onEdit={handleEventClick} />
         <CalendarEventModal
           isOpen={isOpen}
           onClose={onClose}

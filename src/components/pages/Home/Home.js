@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Box, Flex, Stack, useColorModeValue } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
-import Recent from "../../Widgets/Recents/Recent";
-import Task from "../../Widgets/Tasks/Task";
-import MyCalendarWidget from "../../Widgets/Calendar/CalendarWidget";
-import Navbar from "../../nav/Navbar";
-import MiniTimer from "../TimeTracker/Timer/MiniTimer";
-import { useAuth } from "../../context/AuthContext";
-import TodaysEvents from "../../Widgets/Calendar/TodaysEvents";
-import { loadEvents, saveEvents, addOrUpdateEvent, deleteEvent } from "../../Widgets/Calendar/CalendarEvents";
+import React, { useState, useEffect } from 'react';
+import { Box, Flex, Stack, useColorModeValue, Text, VStack } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import Recent from '../../Widgets/Recents/Recent';
+import Task from '../../Widgets/Tasks/Task';
+import MyCalendarWidget from '../../Widgets/Calendar/CalendarWidget';
+import Navbar from '../../nav/Navbar';
+import MiniTimer from '../TimeTracker/Timer/MiniTimer';
+import { useAuth } from '../../context/AuthContext';
+import TodaysEvents from '../../Widgets/Calendar/TodaysEvents';
+import UpcomingEventsWidget from '../../Widgets/Calendar/UpcomingEvents';
+import { loadEvents, saveEvents, addOrUpdateEvent, deleteEvent } from '../../Widgets/Calendar/CalendarEvents';
+import moment from 'moment';
 
 function Home() {
   const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
@@ -53,6 +55,8 @@ function Home() {
     setEvents(updatedEvents);
   };
 
+  const currentDate = moment().format('MMMM Do, YYYY');
+
   return (
     <Flex direction="row" bg={bgColor} height="100vh">
       {/* Sidebar */}
@@ -80,9 +84,17 @@ function Home() {
           bg={mainContentBgColor}
           color={textColor}
         >
-          {/* Today's Events & Mini Timer */}
-          <TodaysEvents events={events} onToggleComplete={handleToggleComplete} />
-          <Box mt={4} w="full">
+          {/* Date */}
+          <Text fontSize="lg" mb={4}>{currentDate}</Text>
+
+          {/* Events Section */}
+          <VStack w="full" align="left">
+            <TodaysEvents events={events} onToggleComplete={handleToggleComplete} />
+            <UpcomingEventsWidget events={events} />
+          </VStack>
+
+          {/* Mini Timer */}
+          <Box mt={4}>
             <MiniTimer />
           </Box>
 

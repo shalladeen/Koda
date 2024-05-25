@@ -80,7 +80,7 @@ function Navbar({ onProfileClick }) {
       )}
       
       <VStack spacing={4} align="stretch">
-        <NavLink to="/" icon={faGripVertical} label="Home" />
+        <NavLink to="/" icon={faGripVertical} label="Dashboard" />
         <NavLink to="/Notes" icon={faNotesMedical} label="Notes" />
         <NavLink to="/TimeTracker" icon={faStopwatch} label="Focus Time" />
         <NavLink to="/Friends" icon={faUserGroup} label="Friends" />

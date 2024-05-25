@@ -22,7 +22,7 @@ const MonthYearPickerModal = ({ isOpen, onClose, onChangeMonthYear, currentDate 
   }, [isOpen, currentDate]);
 
   const handleSave = () => {
-    onChangeMonthYear({ year: selectedYear, month: selectedMonth });
+    onChangeMonthYear({ year: selectedYear, month: selectedMonth + 1 });
     onClose();
   };
 
