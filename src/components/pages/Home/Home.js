@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from 'react';
 import { Box, Flex, Stack, useColorModeValue } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import Recent from "../../Widgets/Recents/Recent";
@@ -8,6 +8,7 @@ import MyCalendarWidget from "../../Widgets/Calendar/CalendarWidget";
 import Navbar from "../../nav/Navbar";
 import MiniTimer from "../TimeTracker/Timer/MiniTimer";
 import { useAuth } from "../../context/AuthContext";
+import TaskModal from "../../Widgets/Tasks/TaskModal";
 
 function Home() {
   const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
@@ -27,6 +28,16 @@ function Home() {
   };
 
   const sidebarWidth = { base: "60px", md: "150px" };
+
+  const [isAddTaskModalOpen, setAddTaskModalOpen] = useState(false);
+
+  const handleOpenAddTaskModal = () => {
+    setAddTaskModalOpen(true);
+  };
+
+  const handleCloseAddTaskModal = () => {
+    setAddTaskModalOpen(false);
+  };
 
   return (
     <Flex direction="row" bg={bgColor} height="100vh">
@@ -58,13 +69,12 @@ function Home() {
           {/* Greeting & Mini Timer */}
           <Flex
             width="full"
-            direction="row"
+            direction={{ base: "column", md: "row" }}
             justifyContent="space-between"
             alignItems="center"
-            mt={20}
-            px={{ base: 4, md: 0 }}
+            
           >
-            <WelcomeGreeting isLoggedIn={isLoggedIn} />
+            <WelcomeGreeting isLoggedIn={isLoggedIn} onAddTask={handleOpenAddTaskModal} />
             <MiniTimer />
           </Flex>
 
@@ -78,7 +88,7 @@ function Home() {
           >
             {/* Left Column: Task and Recent */}
             <Stack spacing={5} w={{ base: "full", lg: "45%" }} flexShrink={0}>
-              <Task />
+              <Task onAddTask={handleOpenAddTaskModal} />
               <Recent />
             </Stack>
 
@@ -89,6 +99,21 @@ function Home() {
           </Flex>
         </Flex>
       </Box>
+
+      <TaskModal
+        isOpen={isAddTaskModalOpen}
+        onClose={handleCloseAddTaskModal}
+        title="Add a New Task"
+        taskTitle=""
+        setTaskTitle={() => {}}
+        taskDesc=""
+        setTaskDesc={() => {}}
+        selectedList=""
+        setSelectedList={() => {}}
+        onSave={() => {}}
+        lists={[]}
+        onCreateNewList={() => {}}
+      />
     </Flex>
   );
 }

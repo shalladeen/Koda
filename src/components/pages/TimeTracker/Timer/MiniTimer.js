@@ -38,11 +38,6 @@ function MiniTimer() {
             borderRadius="md"
             p={4}
             boxShadow="md"
-            position="fixed"
-            bottom="20px"
-            right="20px"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
             transition="all 0.5s ease-in-out"
             style={{ transitionProperty: 'background-color, border-color, color, fill, stroke, opacity, box-shadow, transform' }}
             width="150px"
@@ -50,6 +45,9 @@ function MiniTimer() {
             display="flex"
             justifyContent="center"
             alignItems="center"
+            position="relative" // Ensure relative positioning for the button
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             <Text fontSize="2xl" fontWeight="bold">
                 {`${Math.floor(remainingTime / 60)}m ${Math.round(remainingTime % 60)}s`}
@@ -59,13 +57,13 @@ function MiniTimer() {
                     aria-label={isRunning ? 'Pause timer' : 'Resume timer'}
                     icon={isRunning ? <FaPause /> : <FaPlay />}
                     onClick={handlePauseResume}
-                    position="absolute" // Position the button absolutely
+                    position="absolute" // Position absolutely within the Box
                     top="50%" // Center vertically
                     left="50%" // Center horizontally
                     transform="translate(-50%, -50%)" // Offset to center
-                    bg={textColor} // Match the button color with the text color
-                    color={bgColor} // Invert the button text color to match the background
-                    _hover={{ bg: buttonHoverBgColor }} // Add hover effect
+                    bg={textColor}
+                    color={bgColor}
+                    _hover={{ bg: buttonHoverBgColor }}
                 />
             )}
         </Box>

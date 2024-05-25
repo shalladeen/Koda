@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import {
   Box, Button, Heading, Text, useDisclosure,
 } from '@chakra-ui/react';
@@ -10,7 +10,7 @@ import {
 } from './TaskUtils';
 import { useTaskColors } from './TaskSettings';
 
-const Task = () => {
+const Task = forwardRef((props, ref) => {
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const { isOpen: isListOpen, onOpen: onListOpen, onClose: onListClose } = useDisclosure();
@@ -28,6 +28,10 @@ const Task = () => {
     setTasks(loadTasks());
     setLists(loadLists());
   }, []);
+
+  useImperativeHandle(ref, () => ({
+    openAddTaskModal: onAddOpen,
+  }));
 
   const saveTask = () => {
     const taskToSave = {
@@ -107,7 +111,7 @@ const Task = () => {
   const completionPercent = filteredTasks.length ? Math.round((filteredTasks.filter(task => task.completed).length / filteredTasks.length) * 100) : 0;
 
   return (
-    <Box p={5} pb={20} maxWidth="500px">
+    <Box p={5}  maxWidth="500px">
       <Heading as="h2" size="xl" my={5} color={primaryColor}>
         My Tasks | {completionPercent}%
       </Heading>
@@ -166,6 +170,6 @@ const Task = () => {
       />
     </Box>
   );
-};
+});
 
 export default Task;

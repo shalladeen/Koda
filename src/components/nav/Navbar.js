@@ -23,13 +23,13 @@ function Navbar({ onProfileClick }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { isLoggedIn, handleLogout } = useAuth();
-  const bg = useColorModeValue('#000000', '#1c1c1c');
+  const bg = useColorModeValue('gray.100', '#0e0e0e');
   const profileColor = useColorModeValue('black', 'white');
-  const iconColor = useColorModeValue('white', 'white');
-  const textColor = useColorModeValue('white', 'white');
-  const activeBg = useColorModeValue('gray.700', 'gray.600');
-  const hoverBg = useColorModeValue('gray.600', 'gray.500');
-  const sunColor = useColorModeValue('white', 'gray');
+  const iconColor = useColorModeValue('black', 'white');
+  const textColor = useColorModeValue('black', 'white');
+  const activeBg = useColorModeValue('gray.400', 'gray.600');
+  const hoverBg = useColorModeValue('gray.500', 'gray.500');
+  const sunColor = useColorModeValue('black', 'gray');
   const moonColor = useColorModeValue('gray', 'white');
 
   const NavLink = ({ to, icon, label }) => {
