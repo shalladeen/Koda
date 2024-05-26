@@ -5,7 +5,6 @@ import moment from 'moment';
 
 const UpcomingEventsWidget = ({ events }) => {
   const textColor = useColorModeValue('gray.800', 'gray.100');
-  const bgColor = useColorModeValue('gray.200', 'gray.700');
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -19,7 +18,7 @@ const UpcomingEventsWidget = ({ events }) => {
       <Box w="40%"borderRadius="lg" textAlign="left" bg={useColorModeValue("#f9fdff", "#1c1c1c")}>
         <HStack>
           <Text fontSize="sm" color={textColor}>
-            {upcomingEvents.length > 0 ? `Upcoming Events: You have ${upcomingEvents.length} ${upcomingEvents.length === 1 ? 'event' : 'events'} coming up.` : 'There are no upcoming events.'}
+            {upcomingEvents.length > 0 ? `You have ${upcomingEvents.length} ${upcomingEvents.length === 1 ? 'event' : 'events'} coming up.` : 'There are no upcoming events.'}
           </Text>
           {upcomingEvents.length > 0 && (
             <Button size="sm" ml={4} onClick={onOpen}>

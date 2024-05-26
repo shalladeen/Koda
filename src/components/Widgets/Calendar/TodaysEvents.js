@@ -15,7 +15,7 @@ const TodaysEvents = ({ events, onToggleComplete }) => {
       <Box borderRadius="lg" textAlign="left" bg={useColorModeValue("#f9fdff", "#1c1c1c")}>
         <HStack>
           <Text fontSize="sm" color={textColor}>
-            You have {todayEvents.length} {todayEvents.length === 1 ? 'event' : 'events'} today.
+          {todayEvents.length > 0 ? `You have ${todayEvents.length} ${todayEvents.length === 1 ? 'event' : 'events'} today.` : 'There are no events today.'}
           </Text>
           {todayEvents.length > 0 && (
             <Button size="sm" ml={4} onClick={onOpen}>

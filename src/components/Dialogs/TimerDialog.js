@@ -19,7 +19,7 @@ const TimerDialog = ({ isOpen, onClose, tag }) => {
         <ModalHeader>Timer Completed</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Text>Your {tag} timer is done!</Text>
+          <Text>Your {tag === 'none' ? 'timer' : `${tag} timer`} is done!</Text>
         </ModalBody>
         <ModalFooter>
           <Button colorScheme="blue" onClick={onClose}>

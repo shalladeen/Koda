@@ -1,5 +1,5 @@
 // src/components/pages/TimeTracker/Timer.js
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   Button,
   Center,
@@ -19,8 +19,7 @@ import { useTimer } from '../../../context/TimerContext';
 import TimerDialog from '../../../Dialogs/TimerDialog';
 
 function Timer() {
-  const { timeInMinutes, setTimeInMinutes, secondsElapsed, setSecondsElapsed, isRunning, setIsRunning, tag, setTag } = useTimer();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { timeInMinutes, setTimeInMinutes, secondsElapsed, setSecondsElapsed, isRunning, setIsRunning, tag, setTag, isDialogOpen, closeDialog } = useTimer();
 
   const startTimer = () => {
     if (!isRunning && timeInMinutes > 0) {
@@ -32,33 +31,20 @@ function Timer() {
 
   const progress = 100 - ((secondsElapsed / (timeInMinutes * 60)) * 100);
 
-  useEffect(() => {
-    let interval;
-    if (isRunning) {
-      interval = setInterval(() => {
-        setSecondsElapsed(prev => {
-          if (prev >= timeInMinutes * 60 - 1) {
-            clearInterval(interval);
-            setIsRunning(false);
-            setIsDialogOpen(true);
-            return prev + 1;
-          }
-          return prev + 1;
-        });
-      }, 1000);
+  const handleSliderChange = (val) => {
+    if (!isRunning) {
+      setTimeInMinutes(Math.max(0, val)); 
+      setSecondsElapsed(0); 
     }
-    return () => clearInterval(interval);
-  }, [isRunning, timeInMinutes, setSecondsElapsed, setIsRunning]);
-
-  const closeDialog = () => setIsDialogOpen(false);
+  };
 
   return (
     <Center minHeight="100vh" flexDirection="column">
-      
+      <Text>What are we focusing on today?</Text>
       <VStack spacing={10}>
         <CircularProgress value={progress} size="400px" thickness="12px" color={getProgressColor(100 - progress)} max={100}>
           <CircularProgressLabel fontSize="4xl">
-            {`${Math.floor((timeInMinutes * 60 - secondsElapsed) / 60)}m ${Math.round((timeInMinutes * 60 - secondsElapsed) % 60)}s`}
+            {`${Math.max(0, Math.floor((timeInMinutes * 60 - secondsElapsed) / 60))}m ${Math.max(0, Math.round((timeInMinutes * 60 - secondsElapsed) % 60))}s`}
           </CircularProgressLabel>
         </CircularProgress>
         <Box width="150px">
@@ -76,12 +62,7 @@ function Timer() {
           min={0}
           max={120}
           step={1}
-          onChange={(val) => {
-            if (!isRunning) {
-              setTimeInMinutes(val);
-              setSecondsElapsed(0);
-            }
-          }}
+          onChange={handleSliderChange}
           value={timeInMinutes}
           size="lg"
         >
@@ -90,6 +71,7 @@ function Timer() {
           </SliderTrack>
           <SliderThumb />
         </Slider>
+        
         <HStack spacing={6}>
           <Button onClick={isRunning ? pauseTimer : startTimer} isDisabled={timeInMinutes === 0} size="lg">
             {isRunning ? 'Pause' : 'Focus'}

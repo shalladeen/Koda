@@ -6,28 +6,9 @@ import { FaPause, FaPlay } from 'react-icons/fa';
 import TimerDialog from '../../../Dialogs/TimerDialog';
 
 function MiniTimer() {
-  const { timeInMinutes, secondsElapsed, isRunning, setIsRunning, tag } = useTimer();
+  const { timeInMinutes, secondsElapsed, isRunning, setIsRunning, tag, isDialogOpen, closeDialog } = useTimer();
   const [remainingTime, setRemainingTime] = useState(timeInMinutes * 60 - secondsElapsed);
   const [isHovered, setIsHovered] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  useEffect(() => {
-    let interval;
-    if (isRunning) {
-      interval = setInterval(() => {
-        setRemainingTime(prevTime => {
-          if (prevTime <= 1) {
-            clearInterval(interval);
-            setIsRunning(false);
-            setIsDialogOpen(true);
-            return 0;
-          }
-          return prevTime - 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isRunning, setIsRunning]);
 
   useEffect(() => {
     setRemainingTime(timeInMinutes * 60 - secondsElapsed);
@@ -42,7 +23,7 @@ function MiniTimer() {
     setIsRunning(!isRunning);
   };
 
-  const closeDialog = () => setIsDialogOpen(false);
+  if (!isRunning) return null;
 
   return (
     <>
