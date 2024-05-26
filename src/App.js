@@ -8,6 +8,7 @@ import Home from './components/pages/Home/Home';
 import Notes from './components/pages/Notes/Notes';
 import Friends from './components/pages/Friends/Friends';
 import SignupPage from './components/pages/Signup/SignupPage';
+import CalendarPage from './components/pages/CalendarPage/CalendarPage';
 import Settings from './components/pages/Settings/Settings';
 import TimeTracker from './components/pages/TimeTracker/TimeTracker';
 import ProfilePage from './components/pages/Profile/ProfilePage';
@@ -30,6 +31,7 @@ function App() {
                   <Route path="/Friends" element={<Friends />} />
                   <Route path="/Settings" element={<Settings />} />
                   <Route path="/ProfilePage" element={<ProfilePage />} />
+                  <Route path="/CalendarPage" element={<CalendarPage />} />
                 </Routes>
                 <LogoutDialog />
               </div>

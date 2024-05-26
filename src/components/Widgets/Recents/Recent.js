@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import {
   Box, Text, Heading, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Button, Input, 
-  Textarea, Wrap, WrapItem, useColorModeValue
+  Textarea, VStack, HStack, useColorModeValue
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 const Recent = () => {
   const [recentNotes, setRecentNotes] = useState([]);
@@ -15,6 +16,9 @@ const Recent = () => {
   const textColor = useColorModeValue("black", "black");
   const modalBgColor = useColorModeValue("white", "black");
   const modalTextColor = useColorModeValue("black", "white");
+
+  const navigate = useNavigate();
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     const storedNotes = JSON.parse(localStorage.getItem('notes')) || [];
@@ -91,35 +95,48 @@ const Recent = () => {
 
   return (
     <>
-      <Heading size="lg" my={2}>Recent Notes</Heading>
-      <Wrap spacing="20px" p={4} minW="0">
-        {recentNotes.map((note) => (
-          <WrapItem key={note.id}>
-            <Box
-              borderWidth="1px"
-              borderRadius="lg"
-              p={4}
-              width={{ base: "180px", sm: "240px" }}
-              color={textColor}
-              bg={getTagColor(note.tag || "None")}
-              boxShadow="md"
-              minHeight="150px"
-              maxHeight="250px"
-              overflowY="auto"
-              _hover={{
-                bg: note.tag ? hoverBg : getTagColor(note.tag || "None"),
-                cursor: 'pointer',
-                transform: 'scale(1.05)',
-                transition: 'transform .2s'
-              }}
-              onClick={() => handleNoteClick(note)}
-            >
-              <Text fontWeight="bold" mb={2}>{note.title || "Untitled Note"}</Text>
-              <Text mb={2} noOfLines={4}>{note.content}</Text>
+      <HStack w="full" justifyContent="space-between" mb={4}>
+        <Heading size="md">Notes</Heading>
+        <Button
+          size="sm"
+          onClick={() => navigate('/Notes')}
+          backgroundColor="transparent"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          rightIcon={
+            <Box as="span" transition="transform 0.2s" transform={isHovered ? 'translateX(4px)' : 'translateX(0)'}>
+              &#8250;
             </Box>
-          </WrapItem>
+          }
+        >
+          All
+        </Button>
+      </HStack>
+      <VStack spacing="3" align="start" w="full">
+        {recentNotes.map((note) => (
+          <Box
+            key={note.id}
+            p={3}
+            w="full"
+            borderWidth="1px"
+            borderRadius="lg"
+            color={textColor}
+            _hover={{
+              bg: hoverBg,
+              cursor: 'pointer',
+              transform: 'scale(1.02)',
+              transition: 'transform .2s'
+            }}
+            onClick={() => handleNoteClick(note)}
+          >
+            <HStack>
+              <Box width="8px" height="8px" borderRadius="50%" bg={getTagColor(note.tag || "None")} />
+              <Text fontWeight="bold">{note.title || "Untitled Note"}</Text>
+            </HStack>
+            <Text noOfLines={2} pl={4}>{note.content}</Text>
+          </Box>
         ))}
-      </Wrap>
+      </VStack>
       {isEditModalOpen && <EditNoteModal note={editingNote} />}
     </>
   );

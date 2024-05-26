@@ -1,23 +1,12 @@
 import React from 'react';
 import {
-  Box,
-  Flex,
-  VStack,
-  IconButton,
-  useColorModeValue,
-  Switch,
-  useColorMode,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-} from '@chakra-ui/react';
+  Box, Flex, VStack, IconButton, useColorModeValue, Switch, useColorMode, Menu, MenuButton,
+  MenuList, MenuItem,} from '@chakra-ui/react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserGroup, faStopwatch, faGripVertical, faNotesMedical } from '@fortawesome/free-solid-svg-icons';
+import { faUserGroup, faStopwatch, faGripVertical, faNotesMedical, faCalendar } from '@fortawesome/free-solid-svg-icons';
 import { FaUserCircle, FaMoon, FaSun } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
-import WelcomeGreeting from '../Widgets/Greeting/Greeting';
 
 function Navbar({ onProfileClick }) {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -57,7 +46,6 @@ function Navbar({ onProfileClick }) {
     <Flex direction="column" bg={bg} p="2" height="full">
       {isLoggedIn ? (
         <Menu>
-          
           <MenuButton as={IconButton} icon={<FaUserCircle />} size="lg" alignSelf="center" mb="6" borderRadius="full" mt="6" color={profileColor} />
           <MenuList>
             <MenuItem onClick={onProfileClick}>View Profile</MenuItem>
@@ -65,26 +53,25 @@ function Navbar({ onProfileClick }) {
           </MenuList>
         </Menu>
       ) : (
-        
         <IconButton
           icon={<FaUserCircle />}
           aria-label="User Profile"
           size="lg"
           alignSelf="center"
           mb="6"
-          backgroundColor="gray.300"
           onClick={() => navigate('/SignupPage')}
           borderRadius="full"
           mt="6"
           color={profileColor}
         />
       )}
-      
       <VStack spacing={4} align="stretch">
         <NavLink to="/" icon={faGripVertical} label="Dashboard" />
         <NavLink to="/Notes" icon={faNotesMedical} label="Notes" />
         <NavLink to="/TimeTracker" icon={faStopwatch} label="Focus Time" />
+        <NavLink to="/CalendarPage" icon={faCalendar} label="Calendar" />
         <NavLink to="/Friends" icon={faUserGroup} label="Friends" />
+        
       </VStack>
       <Flex mt="auto" justifyContent="center" p="4" alignItems="center">
         <FaSun color={sunColor} />

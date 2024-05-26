@@ -112,10 +112,10 @@ const Task = forwardRef((props, ref) => {
 
   return (
     <Box p={5}  maxWidth="500px">
-      <Heading as="h2" size="xl" my={5} color={primaryColor}>
+      <Heading as="h2" size="md" my={5} color={secondaryColor}>
         My Tasks | {completionPercent}%
       </Heading>
-      <Text mb={4} color={secondaryColor}>
+      <Text mb={4} color={secondaryColor} size="sm">
         {['All', ...lists].map((listName, index) => (
           <Button
             key={index}
@@ -137,7 +137,7 @@ const Task = forwardRef((props, ref) => {
         deleteTask={deleteTaskHandler}
       />
 
-      <Button onClick={onAddOpen} colorScheme="teal" mt={4} backgroundColor={buttonColor} _hover={{ backgroundColor: hoverColor }}>
+      <Button onClick={onAddOpen} size="sm" colorScheme="teal" mt={4} backgroundColor={buttonColor} _hover={{ backgroundColor: hoverColor }}>
         Add Task
       </Button>
 

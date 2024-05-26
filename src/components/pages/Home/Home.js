@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Flex, Stack, useColorModeValue, Text, VStack } from '@chakra-ui/react';
+import { Box, Flex, Stack, useColorModeValue, Text, VStack, HStack, IconButton, useDisclosure } from '@chakra-ui/react';
+import { CalendarIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import Recent from '../../Widgets/Recents/Recent';
 import Task from '../../Widgets/Tasks/Task';
-import MyCalendarWidget from '../../Widgets/Calendar/CalendarWidget';
 import Navbar from '../../nav/Navbar';
-import MiniTimer from '../TimeTracker/Timer/MiniTimer';
 import { useAuth } from '../../context/AuthContext';
 import TodaysEvents from '../../Widgets/Calendar/TodaysEvents';
 import UpcomingEventsWidget from '../../Widgets/Calendar/UpcomingEvents';
 import { loadEvents, saveEvents, addOrUpdateEvent, deleteEvent } from '../../Widgets/Calendar/CalendarEvents';
 import moment from 'moment';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from '@chakra-ui/react';
+import MyCalendarWidget from '../../Widgets/Calendar/CalendarWidget';
 
 function Home() {
   const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
@@ -20,6 +21,8 @@ function Home() {
 
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleProfileClick = () => {
     if (isLoggedIn) {
@@ -84,19 +87,23 @@ function Home() {
           bg={mainContentBgColor}
           color={textColor}
         >
-          {/* Date */}
-          <Text fontSize="lg" mb={4}>{currentDate}</Text>
+          {/* Date with Calendar Icon */}
+          <HStack mb={4}>
+            <Text fontSize="lg">{currentDate}</Text>
+            <IconButton
+              icon={<CalendarIcon />}
+              aria-label="Open Calendar"
+              onClick={onOpen}
+              variant="ghost"
+              size="md"
+            />
+          </HStack>
 
           {/* Events Section */}
           <VStack w="full" align="left">
             <TodaysEvents events={events} onToggleComplete={handleToggleComplete} />
             <UpcomingEventsWidget events={events} />
           </VStack>
-
-          {/* Mini Timer */}
-          <Box mt={4}>
-            <MiniTimer />
-          </Box>
 
           {/* Main Layout */}
           <Flex
@@ -107,23 +114,34 @@ function Home() {
             gap={5}
             mt={5}
           >
-            {/* Left Column: Task and Recent */}
+            {/* Left Column: Task */}
             <Stack spacing={5} w={{ base: "full", lg: "45%" }} flexShrink={0}>
               <Task />
-              <Recent />
             </Stack>
 
-            {/* Right Column: Calendar */}
+            {/* Right Column: Recent Notes */}
             <Box flex={1} w={{ base: "full" }} mt={4}>
-              <MyCalendarWidget
-                events={events}
-                onAddOrUpdateEvent={handleAddOrUpdateEvent}
-                onDeleteEvent={handleDeleteEvent}
-              />
+              <Recent />
             </Box>
           </Flex>
         </Flex>
       </Box>
+
+      {/* Calendar Modal */}
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Calendar</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <MyCalendarWidget
+              events={events}
+              onAddOrUpdateEvent={handleAddOrUpdateEvent}
+              onDeleteEvent={handleDeleteEvent}
+            />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Flex>
   );
 }
