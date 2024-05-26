@@ -15,10 +15,13 @@ const register = async (username, email, password) => {
         throw new Error('User already exists');
     }
 
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const user = await User.create({
         username,
         email,
-        password,
+        password: hashedPassword,
     });
 
     if (user) {
@@ -33,10 +36,19 @@ const register = async (username, email, password) => {
     }
 };
 
-const login = async (email, password) => {
-    const user = await User.findOne({ email });
+const login = async (usernameOrEmail, password) => {
+    const user = await User.findOne({
+        $or: [
+            { email: usernameOrEmail },
+            { username: usernameOrEmail }
+        ]
+    });
 
-    if (user && (await user.matchPassword(password))) {
+    if (!user) {
+        throw new Error('Invalid credentials');
+    }
+
+    if (await bcrypt.compare(password, user.password)) {
         return {
             _id: user._id,
             username: user.username,
@@ -44,7 +56,7 @@ const login = async (email, password) => {
             token: generateToken(user._id),
         };
     } else {
-        throw new Error('Invalid email or password');
+        throw new Error('Invalid credentials');
     }
 };
 
