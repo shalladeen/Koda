@@ -41,4 +41,37 @@ router.get('/', protect, async (req, res) => {
   }
 });
 
+// Update a note
+router.put('/:id', protect, async (req, res) => {
+  const { title, content, tag } = req.body;
+  const noteId = req.params.id;
+
+  try {
+    const updatedNote = await noteService.updateNote(noteId, title, content, tag);
+    if (!updatedNote) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+    res.status(200).json(updatedNote);
+  } catch (err) {
+    console.error('Error updating note:', err); // Log the error
+    res.status(400).json({ message: err.message });
+  }
+});
+
+// Delete a note
+router.delete('/:id', protect, async (req, res) => {
+  const noteId = req.params.id;
+
+  try {
+    const deletedNote = await noteService.deleteNote(noteId);
+    if (!deletedNote) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+    res.status(200).json({ message: 'Note deleted' });
+  } catch (err) {
+    console.error('Error deleting note:', err); // Log the error
+    res.status(400).json({ message: err.message });
+  }
+});
+
 module.exports = router;

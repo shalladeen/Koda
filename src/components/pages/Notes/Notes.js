@@ -61,7 +61,7 @@ function Notes() {
     }
 
     fetchNotes();
-  }, []); // Empty dependency array ensures this runs only once when the component mounts
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("customTags", JSON.stringify(customTags));
@@ -77,7 +77,6 @@ function Notes() {
 
   const handleSaveNote = async () => {
     setError("");
-    // You can enforce title requirement but allow optional content
     if (!title) {
       setError("Title cannot be empty");
       return;
@@ -88,9 +87,9 @@ function Notes() {
     console.log('Saving note:', { editNoteId, title, content, tag }); // Log note details
     try {
       if (editNoteId) {
-        await updateNote(editNoteId, title, content, tag);
+        const updatedNote = await updateNote(editNoteId, title, content, tag);
         updatedNotes = notes.map(note =>
-          note._id === editNoteId ? { ...note, title, content, tag, updatedAt: timestamp } : note
+          note._id === editNoteId ? updatedNote : note
         );
       } else {
         const newNote = await createNote(title, content, tag);
