@@ -25,10 +25,12 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 // Import routes
 const authRoutes = require('./routes/auth');
 const noteRoutes = require('./routes/note');
+const taskRoutes = require('./routes/task'); 
 
 // Use routes
 app.use('/api/auth', authRoutes);
-app.use('/api/notes', noteRoutes); // Register the note routes
+app.use('/api/notes', noteRoutes);
+app.use('/api/tasks', taskRoutes); 
 
 // Define a simple route
 app.get('/', (req, res) => {

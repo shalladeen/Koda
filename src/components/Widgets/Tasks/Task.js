@@ -6,7 +6,10 @@ import TaskList from './TaskList';
 import TaskModal from './TaskModal';
 import TaskListModal from './TaskListModal';
 import {
-  loadTasks, loadLists, saveTasks, saveLists, addOrUpdateTask, deleteTask, deleteList, addOrUpdateList
+  createTask, getTasks, updateTask, deleteTask
+} from '../../../services/taskService';
+import {
+  loadTasks, loadLists, saveTasks, saveLists, addOrUpdateTask, deleteTask as deleteLocalTask, deleteList, addOrUpdateList
 } from './TaskUtils';
 import { useTaskColors } from './TaskSettings';
 
@@ -25,7 +28,16 @@ const Task = forwardRef((props, ref) => {
   const { primaryColor, secondaryColor, buttonColor, hoverColor } = useTaskColors();
 
   useEffect(() => {
-    setTasks(loadTasks());
+    async function fetchTasks() {
+      try {
+        const fetchedTasks = await getTasks();
+        setTasks(fetchedTasks);
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+      }
+    }
+
+    fetchTasks();
     setLists(loadLists());
   }, []);
 
@@ -33,31 +45,55 @@ const Task = forwardRef((props, ref) => {
     openAddTaskModal: onAddOpen,
   }));
 
-  const saveTask = () => {
+  const saveTask = async () => {
     const taskToSave = {
-      id: currentTask ? currentTask.id : Date.now(),
+      id: currentTask ? currentTask.id : undefined,
       name: taskTitle,
       desc: taskDesc,
       completed: currentTask ? currentTask.completed : false,
       list: selectedList || '',
     };
-    const updatedTasks = addOrUpdateTask(tasks, taskToSave);
-    setTasks(updatedTasks);
-    onAddClose();
-    onEditClose();
-    resetTaskForm();
+
+    try {
+      let updatedTasks;
+      if (currentTask) {
+        const updatedTask = await updateTask(currentTask._id, taskTitle, taskDesc, taskToSave.completed, taskToSave.list);
+        updatedTasks = tasks.map(task => task._id === currentTask._id ? updatedTask : task);
+      } else {
+        const newTask = await createTask(taskTitle, taskDesc, taskToSave.completed, taskToSave.list);
+        updatedTasks = [...tasks, newTask];
+      }
+      setTasks(updatedTasks);
+      onAddClose();
+      onEditClose();
+      resetTaskForm();
+    } catch (error) {
+      console.error('Error saving task:', error);
+    }
   };
 
-  const deleteTaskHandler = (taskId) => {
-    const updatedTasks = deleteTask(tasks, taskId);
-    setTasks(updatedTasks);
-    onEditClose();
+  const deleteTaskHandler = async (taskId) => {
+    try {
+      await deleteTask(taskId);
+      const updatedTasks = tasks.filter(task => task._id !== taskId);
+      setTasks(updatedTasks);
+      onEditClose();
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
   };
 
-  const toggleTaskCompletion = (taskId) => {
-    const updatedTasks = tasks.map(task => task.id === taskId ? { ...task, completed: !task.completed } : task);
-    saveTasks(updatedTasks);
-    setTasks(updatedTasks);
+  const toggleTaskCompletion = async (taskId) => {
+    const task = tasks.find(task => task._id === taskId);
+    if (task) {
+      try {
+        const updatedTask = await updateTask(taskId, task.name, task.desc, !task.completed, task.list);
+        const updatedTasks = tasks.map(t => t._id === taskId ? updatedTask : t);
+        setTasks(updatedTasks);
+      } catch (error) {
+        console.error('Error toggling task completion:', error);
+      }
+    }
   };
 
   const openEditModal = (task) => {
@@ -111,7 +147,7 @@ const Task = forwardRef((props, ref) => {
   const completionPercent = filteredTasks.length ? Math.round((filteredTasks.filter(task => task.completed).length / filteredTasks.length) * 100) : 0;
 
   return (
-    <Box p={5}  maxWidth="500px">
+    <Box p={5} maxWidth="500px">
       <Heading as="h2" size="md" my={5} color={secondaryColor}>
         My Tasks | {completionPercent}%
       </Heading>

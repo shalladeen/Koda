@@ -10,16 +10,16 @@ const TaskList = ({
   tasks, toggleTaskCompletion, openEditModal, deleteTask,
 }) => {
   const {
-  secondaryColor, hoverColor, taskTextColor,
+    secondaryColor, hoverColor, taskTextColor,
   } = useTaskColors();
 
   return (
-    <Box p={4} borderRadius="lg" >
+    <Box p={4} borderRadius="lg">
       {tasks.map((task) => (
-        <Flex key={task.id}  alignItems="center" borderRadius="md">
+        <Flex key={task._id} alignItems="center" borderRadius="md">
           <Checkbox
             isChecked={task.completed}
-            onChange={() => toggleTaskCompletion(task.id)}
+            onChange={() => toggleTaskCompletion(task._id)}
             mr={2}
             colorScheme="blue"
           />
@@ -51,7 +51,7 @@ const TaskList = ({
             <MenuList>
               <MenuItem icon={<MdEdit />} onClick={() => openEditModal(task)}>Edit Task</MenuItem>
               <MenuDivider />
-              <MenuItem icon={<MdDelete />} color="red" onClick={() => deleteTask(task.id)}>
+              <MenuItem icon={<MdDelete />} color="red" onClick={() => deleteTask(task._id)}>
                 Delete Task
               </MenuItem>
             </MenuList>
