@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, ChakraProvider, useDisclosure, useColorMode } from '@chakra-ui/react';
+import { Box, ChakraProvider, useDisclosure, useColorMode, VStack, HStack, Text, IconButton } from '@chakra-ui/react';
+import { CalendarIcon } from '@chakra-ui/icons';
 import FullCalendar from '@fullcalendar/react';
 import { calendarPlugins, calendarToolbar, calendarInitialView } from './CalendarSettings';
 import { loadEvents, addOrUpdateEvent, deleteEvent } from './CalendarEvents';
 import CalendarEventList from './CalendarEventList';
 import MonthYearPickerModal from './MonthYearPickerModal';
 import CalendarEventModal from './CalendarEventModal';
+import TodaysEvents from './TodaysEvents';
 import '../Calendar/CalendarStyle.css';
 import moment from 'moment';
 
-const CalendarWidget = ({ events, onAddOrUpdateEvent, onDeleteEvent }) => {
+const CalendarWidget = ({ events, onAddOrUpdateEvent, onDeleteEvent, onToggleComplete }) => {
   const calendarRef = useRef(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isMonthYearPickerOpen, onOpen: onMonthYearPickerOpen, onClose: onMonthYearPickerClose } = useDisclosure();
@@ -179,12 +181,12 @@ const CalendarWidget = ({ events, onAddOrUpdateEvent, onDeleteEvent }) => {
       click: handleNext
     },
     customToday: {
-      text: 'Today',
+      text: moment().format('ddd, MMM DD, YYYY'),
       click: handleToday
     },
     customTitle: {
       text: moment(currentDate).format('MMMM YYYY'),
-      click: () => onMonthYearPickerOpen(),
+      click: () => handleToday(),
     }
   };
 
@@ -194,6 +196,16 @@ const CalendarWidget = ({ events, onAddOrUpdateEvent, onDeleteEvent }) => {
   return (
     <ChakraProvider>
       <Box className={colorMode === 'dark' ? 'dark-mode' : ''} p={5} maxWidth="800px" mx="auto">
+        <HStack mb={4} justifyContent="flex-end">
+          <Text fontSize="md">{moment().format('ddd, MMM DD, YYYY')}</Text>
+          <IconButton
+            icon={<CalendarIcon />}
+            aria-label="Open Calendar"
+            onClick={onMonthYearPickerOpen}
+            variant="ghost"
+            size="md"
+          />
+        </HStack>
         <FullCalendar
           ref={calendarRef}
           plugins={calendarPlugins}
@@ -237,6 +249,9 @@ const CalendarWidget = ({ events, onAddOrUpdateEvent, onDeleteEvent }) => {
           onDelete={handleDeleteEvent}
           isEditing={!!currentEvent}
         />
+        <Box mt={4}>
+          <TodaysEvents events={todaysEvents} onToggleComplete={onToggleComplete} />
+        </Box>
       </Box>
     </ChakraProvider>
   );

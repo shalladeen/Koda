@@ -1,14 +1,14 @@
 :root {
-  --fc-today-bg-light: #f0f0f0;
+  --fc-today-bg-light: #cde3ff;
   --fc-today-bg-dark: #2c2c2c;
   --fc-event-bg-light: #d0d0d0;
   --fc-event-bg-dark: #3c3c3c;
-  --fc-hover-bg-light: #e0e0e0;
+  --fc-hover-bg-light: #c4c0c0;
   --fc-hover-bg-dark: #4c4c4c;
   --fc-border-light: #dcdcdc;
   --fc-border-dark: #5c5c5c;
   
-  --fc-bg-light: #ffffff;
+  --fc-bg-light: #f0f0f0;
   --fc-bg-dark: #1c1c1c;
   --fc-text-light: #000000;
   --fc-text-dark: #ffffff;
@@ -22,6 +22,14 @@
 }
 
 /* General styling for the calendar */
+
+.fc {
+  font-size: 1em;
+  background-color: var(--fc-bg-light);
+  padding: 10px;
+  border-radius: 15px;
+}
+
 .fc .fc-day-today {
   background-color: var(--fc-today-bg-light) !important;
 }
@@ -40,15 +48,12 @@
   background-color: var(--fc-hover-bg-light);
 }
 
-.fc .fc-view-harness,
-.fc .fc-view-harness > * {
-  width: 100%;
-  max-width: 1400px;
-  margin: auto;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 0.5px solid var(--fc-border-light);
+.fc-daygrid-day-number,
+.fc-timegrid-axis-cushion {
+  font-size: 0.9em;
+  color: var(--fc-text-light);
 }
+
 
 /* Customize the timeGridWeek and timeGridDay views */
 .fc-timeGridWeek-view,
@@ -57,41 +62,21 @@
   overflow: hidden;
 }
 
-/* General Calendar Styling */
-.fc {
-  font-size: 1em;
-}
-
-.fc-toolbar-title {
-  font-size: 1.5em;
-  color: var(--fc-text-light);
-}
-
-.fc-daygrid-day-number,
-.fc-timegrid-axis-cushion {
-  font-size: 0.9em;
-  color: var(--fc-text-light);
-}
-
 /* Toolbar Styling */
-.fc-toolbar {
-  background-color: var(--fc-bg-light);
-  color: var(--fc-text-light);
-}
 
 .fc .fc-button{
-  background-color: var(--button-bg-light);
-  color: var(--button-text-light);
+  background-color: var(--fc-bg-light);
+  color: var(--fc-text-light);
   border: none;
   transition: background-color 0.2s ease, color 0.2s ease;
-
 }
+
 .fc .fc-button-primary:not(:disabled).fc-button-active{
-  background-color: var(--button-hover-bg-light);
+  background-color: var(--fc-hover-bg-light);
 }
 
 .fc .fc-button:hover {
-  background-color: var(--button-hover-bg-light);
+  background-color: var(--fc-hover-bg-light);
 }
 
 /* Dark Mode */
@@ -131,12 +116,12 @@
 }
 
 .dark-mode .fc-toolbar button {
-  background-color: var(--button-bg-dark);
-  color: var(--button-text-dark);
+  background-color: var(--fc-bg-dark);
+  color: var(--fc-text-dark);
 }
 
 .dark-mode .fc-toolbar button:hover {
-  background-color: var(--button-hover-bg-dark);
+  background-color: var(--fc-hover-bg-dark);
 }
 
 .dark-mode .fc-toolbar button:focus {

@@ -5,9 +5,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 export const calendarPlugins = [dayGridPlugin, timeGridPlugin, interactionPlugin];
 
 export const calendarToolbar = {
-  left: 'customToday',
-  center: 'customPrev,customTitle,customNext',
-  right: '',
+  left: 'customTitle',
+  center: '',
+  right: 'customPrev,customNext',
 };
 
 export const calendarInitialView = 'dayGridMonth';

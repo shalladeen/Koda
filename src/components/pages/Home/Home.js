@@ -6,12 +6,11 @@ import Recent from '../../Widgets/Recents/Recent';
 import Task from '../../Widgets/Tasks/Task';
 import Navbar from '../../nav/Navbar';
 import { useAuth } from '../../context/AuthContext';
-import TodaysEvents from '../../Widgets/Calendar/TodaysEvents';
-import UpcomingEventsWidget from '../../Widgets/Calendar/UpcomingEvents';
 import { loadEvents, saveEvents, addOrUpdateEvent, deleteEvent } from '../../Widgets/Calendar/CalendarEvents';
 import moment from 'moment';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from '@chakra-ui/react';
 import MyCalendarWidget from '../../Widgets/Calendar/CalendarWidget';
+import WelcomeGreeting from '../../Widgets/Greeting/Greeting';
 
 function Home() {
   const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
@@ -87,23 +86,8 @@ function Home() {
           bg={mainContentBgColor}
           color={textColor}
         >
-          {/* Date with Calendar Icon */}
-          <HStack mb={4}>
-            <Text fontSize="lg">{currentDate}</Text>
-            <IconButton
-              icon={<CalendarIcon />}
-              aria-label="Open Calendar"
-              onClick={onOpen}
-              variant="ghost"
-              size="md"
-            />
-          </HStack>
-
-          {/* Events Section */}
-          <VStack w="full" align="left">
-            <TodaysEvents events={events} onToggleComplete={handleToggleComplete} />
-            <UpcomingEventsWidget events={events} />
-          </VStack>
+          {/* Dashboard Greeting */}
+          <WelcomeGreeting isLoggedIn={isLoggedIn} compact={true} />
 
           {/* Main Layout */}
           <Flex
@@ -114,14 +98,22 @@ function Home() {
             gap={5}
             mt={5}
           >
-            {/* Left Column: Task */}
+            {/* Left Column: Task and Recent Notes */}
             <Stack spacing={5} w={{ base: "full", lg: "45%" }} flexShrink={0}>
               <Task />
+              <Box mt={4}>
+                <Recent />
+              </Box>
             </Stack>
 
-            {/* Right Column: Recent Notes */}
-            <Box flex={1} w={{ base: "full" }} mt={4}>
-              <Recent />
+            {/* Right Column: Calendar */}
+            <Box flex={1} w={{ base: "full" }} h="auto" minH="500px">
+              <MyCalendarWidget
+                events={events}
+                onAddOrUpdateEvent={handleAddOrUpdateEvent}
+                onDeleteEvent={handleDeleteEvent}
+                onToggleComplete={handleToggleComplete}
+              />
             </Box>
           </Flex>
         </Flex>
@@ -138,6 +130,8 @@ function Home() {
               events={events}
               onAddOrUpdateEvent={handleAddOrUpdateEvent}
               onDeleteEvent={handleDeleteEvent}
+              onToggleComplete={handleToggleComplete}
+              style={{ height: 'auto', minHeight: '400px' }} // Ensuring minimum height
             />
           </ModalBody>
         </ModalContent>
