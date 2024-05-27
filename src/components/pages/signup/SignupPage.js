@@ -24,8 +24,9 @@ function SignupPage() {
     const handleSignUpSubmit = async (event) => {
         event.preventDefault();
         try {
-            await register(username, email, password);
-            authLogin();
+            const response = await register(username, email, password);
+            console.log('Registration successful:', response);
+            authLogin(); // Ensure authLogin updates the state/context to indicate the user is logged in
             navigate('/ProfilePage');
         } catch (err) {
             if (err.response && err.response.data) {
@@ -39,8 +40,9 @@ function SignupPage() {
     const handleLoginSubmit = async (event) => {
         event.preventDefault();
         try {
-            await login(username, password);
-            authLogin();
+            const response = await login(email, password);
+            console.log('Login successful:', response);
+            authLogin(); // Ensure authLogin updates the state/context to indicate the user is logged in
             navigate('/ProfilePage');
         } catch (err) {
             if (err.response && err.response.data) {
@@ -128,7 +130,7 @@ function SignupPage() {
                             </HStack>
                             <Text>or use your email to login</Text>
                             <FormControl id="username">
-                                <FormLabel>Username</FormLabel>
+                                <FormLabel>Username/Email</FormLabel>
                                 <InputGroup>
                                     <InputLeftElement pointerEvents="none" children={<FaUser />} />
                                     <Input

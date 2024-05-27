@@ -4,6 +4,7 @@ import {
   Textarea, VStack, HStack, useColorModeValue
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
+import { getNotes, updateNote, deleteNote } from '../../../services/noteService'; // Import necessary functions
 
 const Recent = () => {
   const [recentNotes, setRecentNotes] = useState([]);
@@ -21,9 +22,17 @@ const Recent = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    const storedNotes = JSON.parse(localStorage.getItem('notes')) || [];
-    const sortedNotes = storedNotes.sort((a, b) => (b.updatedAt || b.createdAt) - (a.updatedAt || a.createdAt));
-    setRecentNotes(sortedNotes.slice(0, 6));
+    async function fetchRecentNotes() {
+      try {
+        const notes = await getNotes(); // Fetch notes from the database
+        const sortedNotes = notes.sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+        setRecentNotes(sortedNotes.slice(0, 5)); // Show up to the last 5 notes
+      } catch (error) {
+        console.error('Error fetching recent notes:', error);
+      }
+    }
+
+    fetchRecentNotes();
   }, []);
 
   const handleNoteClick = (note) => {
@@ -31,18 +40,26 @@ const Recent = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveEditedNote = (editedFields) => {
-    const updatedNotes = recentNotes.map(note => note.id === editingNote.id ? { ...note, ...editedFields, updatedAt: Date.now() } : note);
-    localStorage.setItem('notes', JSON.stringify(updatedNotes));
-    setRecentNotes(updatedNotes);
-    setIsEditModalOpen(false);
+  const handleSaveEditedNote = async (editedFields) => {
+    try {
+      await updateNote(editingNote._id, editedFields.title, editedFields.content, editingNote.tag);
+      const updatedNotes = recentNotes.map(note => note._id === editingNote._id ? { ...note, ...editedFields, updatedAt: Date.now() } : note);
+      setRecentNotes(updatedNotes);
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error('Error saving edited note:', error);
+    }
   };
 
-  const handleDeleteNote = (noteId) => {
-    const updatedNotes = recentNotes.filter(note => note.id !== noteId);
-    localStorage.setItem('notes', JSON.stringify(updatedNotes));
-    setRecentNotes(updatedNotes);
-    setIsEditModalOpen(false);
+  const handleDeleteNote = async (noteId) => {
+    try {
+      await deleteNote(noteId);
+      const updatedNotes = recentNotes.filter(note => note._id !== noteId);
+      setRecentNotes(updatedNotes);
+      setIsEditModalOpen(false);
+    } catch (error) {
+      console.error('Error deleting note:', error);
+    }
   };
 
   const getTagColor = (tagTitle) => {
@@ -83,7 +100,7 @@ const Recent = () => {
             <Button backgroundColor={buttonColor} color={buttonText} mr={3} onClick={() => handleSaveEditedNote({ title, content })}>
               Save
             </Button>
-            <Button colorScheme="red" mr={3} onClick={() => handleDeleteNote(note.id)}>
+            <Button colorScheme="red" mr={3} onClick={() => handleDeleteNote(note._id)}>
               Delete
             </Button>
             <Button onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
@@ -96,7 +113,7 @@ const Recent = () => {
   return (
     <>
       <HStack w="full" justifyContent="space-between" mb={4}>
-        <Heading size="md">Notes</Heading>
+        <Heading size="md">Recent Notes</Heading>
         <Button
           size="sm"
           onClick={() => navigate('/Notes')}
@@ -115,7 +132,7 @@ const Recent = () => {
       <VStack spacing="3" align="start" w="full">
         {recentNotes.map((note) => (
           <Box
-            key={note.id}
+            key={note._id}
             p={3}
             w="full"
             borderWidth="1px"

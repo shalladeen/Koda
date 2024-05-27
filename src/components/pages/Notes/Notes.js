@@ -9,22 +9,18 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 import Navbar from "../../nav/Navbar";
 import CustomTagModal from "./CustomTags";
 import { useAuth } from "../../context/AuthContext";
+import { createNote, getNotes, updateNote, deleteNote } from "../../../services/noteService";
 
-// Define default tags with pastel colors
 const defaultTags = [
-  { title: "Work", color: "#aec6cf" },  // Pastel blue
-  { title: "Personal", color: "#ccd5ae" },  // Pastel gray
-  { title: "School", color: "#77dd77" }   // Pastel green
+  { title: "Work", color: "#aec6cf" },
+  { title: "Personal", color: "#ccd5ae" },
+  { title: "School", color: "#77dd77" }
 ];
 
 function Notes() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {
-    isOpen: isCustomTagModalOpen,
-    onOpen: onCustomTagModalOpen,
-    onClose: onCustomTagModalClose
-  } = useDisclosure();
-  const [notes, setNotes] = useState(() => JSON.parse(localStorage.getItem("notes") || "[]"));
+  const { isOpen: isCustomTagModalOpen, onOpen: onCustomTagModalOpen, onClose: onCustomTagModalClose } = useDisclosure();
+  const [notes, setNotes] = useState([]);
   const [customTags, setCustomTags] = useState(() => {
     const storedTags = JSON.parse(localStorage.getItem("customTags"));
     if (!storedTags || storedTags.length === 0) {
@@ -38,6 +34,7 @@ function Notes() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("None");
+  const [error, setError] = useState("");
   const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
 
@@ -53,58 +50,78 @@ function Notes() {
   const hoverBgColor = useColorModeValue("gray.200", "gray.600");
 
   useEffect(() => {
-    setFilteredNotes(notes);
-  }, [notes]);
+    async function fetchNotes() {
+      try {
+        const fetchedNotes = await getNotes();
+        setNotes(fetchedNotes);
+        setFilteredNotes(fetchedNotes);
+      } catch (error) {
+        console.error('Error fetching notes:', error);
+      }
+    }
+
+    fetchNotes();
+  }, []); // Empty dependency array ensures this runs only once when the component mounts
 
   useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes));
     localStorage.setItem("customTags", JSON.stringify(customTags));
-  }, [notes, customTags]);
+  }, [customTags]);
 
   const handleProfileClick = () => {
     if (isLoggedIn) {
-        navigate("/ProfilePage");
+      navigate("/ProfilePage");
     } else {
-        navigate("/SignupPage");
+      navigate("/SignupPage");
     }
   };
 
-  const handleSaveNote = () => {
+  const handleSaveNote = async () => {
+    setError("");
+    // You can enforce title requirement but allow optional content
+    if (!title) {
+      setError("Title cannot be empty");
+      return;
+    }
+
     const timestamp = Date.now();
     let updatedNotes;
-    if (editNoteId) {
-      updatedNotes = notes.map(note =>
-        note.id === editNoteId ? { ...note, title, content, tag, updatedAt: timestamp } : note
-      );
-    } else {
-      const newNote = {
-        id: timestamp,
-        title,
-        content,
-        tag,
-        createdAt: timestamp
-      };
-      updatedNotes = [...notes, newNote];
+    console.log('Saving note:', { editNoteId, title, content, tag }); // Log note details
+    try {
+      if (editNoteId) {
+        await updateNote(editNoteId, title, content, tag);
+        updatedNotes = notes.map(note =>
+          note._id === editNoteId ? { ...note, title, content, tag, updatedAt: timestamp } : note
+        );
+      } else {
+        const newNote = await createNote(title, content, tag);
+        updatedNotes = [...notes, newNote];
+      }
+      setNotes(updatedNotes);
+      setFilteredNotes(updatedNotes);
+      resetForm();
+      onClose();
+    } catch (error) {
+      console.error('Error saving note:', error);
     }
-    setNotes(updatedNotes);
-    setFilteredNotes(updatedNotes);
-    resetForm();
-    onClose();
   };
 
   const handleEditNote = (note) => {
-    setEditNoteId(note.id);
+    setEditNoteId(note._id);
     setTitle(note.title);
     setContent(note.content);
     setTag(note.tag);
     onOpen();
   };
 
-  const handleDeleteNote = (id) => {
-    const updatedNotes = notes.filter(note => note.id !== id);
-    setNotes(updatedNotes);
-    setFilteredNotes(updatedNotes);
-    localStorage.setItem("notes", JSON.stringify(updatedNotes));
+  const handleDeleteNote = async (id) => {
+    try {
+      await deleteNote(id);
+      const updatedNotes = notes.filter(note => note._id !== id);
+      setNotes(updatedNotes);
+      setFilteredNotes(updatedNotes);
+    } catch (error) {
+      console.error('Error deleting note:', error);
+    }
   };
 
   const deleteTag = (indexToRemove) => {
@@ -194,7 +211,7 @@ function Notes() {
         </Box>
         <Flex wrap="wrap">
           {filteredNotes.map((note) => (
-            <Box key={note.id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m={2}
+            <Box key={note._id} p={4} borderWidth="1px" borderRadius="lg" w="300px" m={2}
               backgroundColor={getTagColor(note.tag)} boxShadow="md" h="250px" color={textColor} position="relative"
               _hover={{ bg: hoverBgColor, cursor: 'pointer' }}
               >
@@ -202,7 +219,7 @@ function Notes() {
               <Text mb={2}>{note.content}</Text>
               <ButtonGroup position="absolute" bottom={2} left={2}>
                 <Button size="sm" backgroundColor={buttonColor} color={buttonText} onClick={() => handleEditNote(note)}>Edit</Button>
-                <Button size="sm" backgroundColor="red.400" onClick={() => handleDeleteNote(note.id)}>Delete</Button>
+                <Button size="sm" backgroundColor="red.400" onClick={() => handleDeleteNote(note._id)}>Delete</Button>
               </ButtonGroup>
             </Box>
           ))}
@@ -255,6 +272,7 @@ function Notes() {
                   <MenuItem onClick={onCustomTagModalOpen}>+ Customize Tags</MenuItem>
                 </MenuList>
               </Menu>
+              {error && <Text color="red.500" mt={2}>{error}</Text>} {/* Display error message */}
             </ModalBody>
             <ModalFooter>
               <Button backgroundColor={buttonColor} color={buttonText} mr={3} onClick={handleSaveNote}>Save</Button>
