@@ -4,7 +4,6 @@ import { CalendarIcon } from '@chakra-ui/icons';
 import FullCalendar from '@fullcalendar/react';
 import { calendarPlugins, calendarToolbar, calendarInitialView } from './CalendarSettings';
 import eventService from '../../../services/eventService';
-import CalendarEventList from './CalendarEventList';
 import MonthYearPickerModal from './MonthYearPickerModal';
 import CalendarEventModal from './CalendarEventModal';
 import TodaysEvents from './TodaysEvents';
@@ -20,7 +19,7 @@ const CalendarWidget = () => {
   const [events, setEvents] = useState([]);
   const [currentEvent, setCurrentEvent] = useState(null);
   const [eventTitle, setEventTitle] = useState('');
-  const [allDay, setAllDay] = useState(false);
+  const [allDay, setAllDay] = useState(false); // Default to false
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [startTime, setStartTime] = useState('09:00');
@@ -46,13 +45,15 @@ const CalendarWidget = () => {
 
   const handleDateSelect = (selectInfo) => {
     setStartDate(moment(selectInfo.start).format('YYYY-MM-DD'));
-    setEndDate(moment(selectInfo.end).subtract(1, 'days').format('YYYY-MM-DD'));
+    setEndDate(selectInfo.end ? moment(selectInfo.end).subtract(1, 'days').format('YYYY-MM-DD') : moment(selectInfo.start).format('YYYY-MM-DD'));
     setAllDay(selectInfo.allDay);
     setEventTitle('');
     setCurrentEvent(null);
     if (!selectInfo.allDay) {
       setStartTime(moment(selectInfo.start).format('HH:mm'));
       setEndTime(moment(selectInfo.end).format('HH:mm'));
+    } else {
+      setEndTime('17:00'); // Default end time for all-day ranged events
     }
     onOpen();
   };
@@ -127,12 +128,14 @@ const CalendarWidget = () => {
   };
 
   const saveEvent = async () => {
+    const endTimeToUse = allDay ? '17:00' : (endTime || '23:59'); // Use 5 PM if allDay is true
+
     const newEvent = {
       title: eventTitle,
       start: allDay ? moment(startDate).startOf('day').toISOString() : moment(startDate + 'T' + startTime).toISOString(),
-      end: allDay ? moment(endDate).endOf('day').toISOString() : moment(endDate + 'T' + endTime).toISOString(),
+      end: allDay ? moment(endDate + 'T' + endTimeToUse).toISOString() : moment(endDate + 'T' + endTime).toISOString(),
       allDay: allDay,
-      userId: currentEvent ? currentEvent.userId : undefined // include userId if available
+      userId: currentEvent ? currentEvent.userId : undefined
     };
     console.log('Saving event:', newEvent);
     try {
@@ -232,8 +235,11 @@ const CalendarWidget = () => {
     }
   };
 
-  const todaysEvents = events.filter(event => moment().isSame(event.start, 'day'));
-  const upcomingEvents = events.filter(event => moment(event.start).isAfter(moment()));
+  const todaysEvents = events.filter(event => {
+    const start = moment(event.start).startOf('day');
+    const end = moment(event.end).endOf('day');
+    return moment().isBetween(start, end, null, '[]');
+  });
 
   return (
     <ChakraProvider>
