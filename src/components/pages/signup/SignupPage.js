@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import {
   Box, Button, FormControl, FormLabel, Input, Text, Link, Flex, IconButton,
-  VStack, HStack, useColorModeValue, InputGroup, InputLeftElement
+  VStack, HStack, useColorModeValue, InputGroup, InputLeftElement, InputRightElement
 } from '@chakra-ui/react';
-import { FaGoogle, FaFacebook, FaGithub, FaLinkedin, FaUser, FaLock, FaEnvelope } from 'react-icons/fa';
+import { FaGoogle, FaFacebook, FaGithub, FaLinkedin, FaUser, FaLock, FaEnvelope, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { register, login } from '../../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 
@@ -13,12 +13,14 @@ function SignupPage() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const formBackground = useColorModeValue('gray.50', 'gray.700');
   const navigate = useNavigate();
   const { login: authLogin } = useAuth();
 
   const toggleForm = () => setIsSignUpActive(!isSignUpActive);
+  const toggleShowPassword = () => setShowPassword(!showPassword);
 
   const handleSignUpSubmit = async (event) => {
     event.preventDefault();
@@ -55,11 +57,11 @@ function SignupPage() {
   return (
     <Flex h="100vh" direction="column" justifyContent="center" alignItems="center" bg={useColorModeValue("#f9fdff", "#1c1c1c")}>
       <Box textAlign="center" mb={6}>
-        <Text fontSize="5xl" fontWeight="bold" mb={2} color="#63A9BF">
+        <Text fontSize="5xl" fontWeight="bold" mb={2}>
           Welcome to Koda!
         </Text>
         <Text fontSize="xl">
-          Create An Account today or Sign In to get access to all our features.
+          Create an account today to get access to all our features.
         </Text>
       </Box>
       <Flex direction="column" align="center" justify="center" w="full" maxW="md" p={6} bg={formBackground} borderRadius="xl" boxShadow="lg">
@@ -102,19 +104,26 @@ function SignupPage() {
                 <InputGroup>
                   <InputLeftElement pointerEvents="none" children={<FaLock />} />
                   <Input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                  <InputRightElement>
+                    <IconButton
+                      icon={showPassword ? <FaEyeSlash /> : <FaEye />}
+                      onClick={toggleShowPassword}
+                      variant="ghost"
+                    />
+                  </InputRightElement>
                 </InputGroup>
               </FormControl>
-              <Button color="white" backgroundColor="#63A9BF" onClick={handleSignUpSubmit} w="full">Sign Up</Button>
+              <Button colorScheme="blue" onClick={handleSignUpSubmit} w="full">Sign Up</Button>
               <Button variant="link" onClick={toggleForm}>Already have an account? Sign In</Button>
             </>
           ) : (
             <>
-              <Text fontSize="2xl" fontWeight="bold" >Sign In</Text>
+              <Text fontSize="2xl" fontWeight="bold">Sign In</Text>
               <HStack spacing={2}>
                 <IconButton aria-label="Google" icon={<FaGoogle />} />
                 <IconButton aria-label="Facebook" icon={<FaFacebook />} />
@@ -139,15 +148,22 @@ function SignupPage() {
                 <InputGroup>
                   <InputLeftElement pointerEvents="none" children={<FaLock />} />
                   <Input
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
+                  <InputRightElement>
+                    <IconButton
+                      icon={showPassword ? <FaEyeSlash /> : <FaEye />}
+                      onClick={toggleShowPassword}
+                      variant="ghost"
+                    />
+                  </InputRightElement>
                 </InputGroup>
               </FormControl>
               <Link colorScheme="blue">Forget Your Password?</Link>
-              <Button color="white" backgroundColor="#63A9BF" onClick={handleLoginSubmit} w="full">Sign In</Button>
+              <Button colorScheme="blue" onClick={handleLoginSubmit} w="full">Sign In</Button>
               <Button variant="link" onClick={toggleForm}>Don't have an account? Sign Up</Button>
             </>
           )}

@@ -18,7 +18,6 @@ const UserSchema = new mongoose.Schema({
   },
 });
 
-// Pre-save hook to hash the password before saving the user
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
@@ -28,11 +27,9 @@ UserSchema.pre('save', async function (next) {
   next();
 });
 
-// Method to compare password for login
 UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
 const User = mongoose.model('User', UserSchema);
-
 module.exports = User;

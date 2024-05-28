@@ -4,7 +4,7 @@ const API_URL = 'http://localhost:5000/api/auth';
 
 export const register = async (username, email, password) => {
   const response = await axios.post(`${API_URL}/register`, { username, email, password });
-  console.log('Registration response:', response.data); // Log the response
+  console.log('Registration response:', response.data);
   if (response.data.token) {
     localStorage.setItem('token', response.data.token);
   }
@@ -13,7 +13,7 @@ export const register = async (username, email, password) => {
 
 export const login = async (email, password) => {
   const response = await axios.post(`${API_URL}/login`, { email, password });
-  console.log('Login response:', response.data); // Log the response
+  console.log('Login response:', response.data);
   if (response.data.token) {
     localStorage.setItem('token', response.data.token);
   }
