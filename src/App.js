@@ -13,6 +13,7 @@ import Settings from './components/pages/Settings/Settings';
 import TimeTracker from './components/pages/TimeTracker/TimeTracker';
 import ProfilePage from './components/pages/Profile/ProfilePage';
 import LogoutDialog from './components/Dialogs/LogoutDialog';
+import RequireAuth from './components/RequireAuth';
 
 function App() {
   return (
@@ -24,14 +25,14 @@ function App() {
             <AuthProvider>
               <div className="App">
                 <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/Notes/*" element={<Notes />} />
-                  <Route path="/TimeTracker" element={<TimeTracker />} />
+                  <Route path="/" element={<RequireAuth><Home /></RequireAuth>} />
+                  <Route path="/Notes/*" element={<RequireAuth><Notes /></RequireAuth>} />
+                  <Route path="/TimeTracker" element={<RequireAuth><TimeTracker /></RequireAuth>} />
+                  <Route path="/Friends" element={<RequireAuth><Friends /></RequireAuth>} />
+                  <Route path="/Settings" element={<RequireAuth><Settings /></RequireAuth>} />
+                  <Route path="/ProfilePage" element={<RequireAuth><ProfilePage /></RequireAuth>} />
+                  <Route path="/CalendarPage" element={<RequireAuth><CalendarPage /></RequireAuth>} />
                   <Route path="/SignupPage" element={<SignupPage />} />
-                  <Route path="/Friends" element={<Friends />} />
-                  <Route path="/Settings" element={<Settings />} />
-                  <Route path="/ProfilePage" element={<ProfilePage />} />
-                  <Route path="/CalendarPage" element={<CalendarPage />} />
                 </Routes>
                 <LogoutDialog />
               </div>
