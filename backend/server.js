@@ -26,11 +26,13 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 const authRoutes = require('./routes/auth');
 const noteRoutes = require('./routes/note');
 const taskRoutes = require('./routes/task'); 
+const eventRoutes = require('./routes/event'); // Add event routes
 
 // Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
-app.use('/api/tasks', taskRoutes); 
+app.use('/api/tasks', taskRoutes);
+app.use('/api/events', eventRoutes); // Use event routes
 
 // Define a simple route
 app.get('/', (req, res) => {

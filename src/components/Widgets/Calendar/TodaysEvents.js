@@ -1,9 +1,10 @@
 import React from 'react';
-import { Checkbox, useDisclosure } from '@chakra-ui/react';
-import { Box, Text, Button, useColorModeValue, HStack, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Stack, ModalFooter } from '@chakra-ui/react';
+import { Box, Text, Button, useColorModeValue, HStack, Modal, 
+  ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Stack, ModalFooter } from '@chakra-ui/react';
+import { useDisclosure} from '@chakra-ui/hooks';
 import moment from 'moment';
 
-const TodaysEvents = ({ events, onToggleComplete }) => {
+const TodaysEvents = ({ events }) => {
   const textColor = useColorModeValue('gray.800', 'gray.100');
   const bgColor = useColorModeValue('#f0f0f0', 'gray.700');
   const todayEvents = events.filter(event => moment().isSame(event.start, 'day'));
@@ -22,17 +23,12 @@ const TodaysEvents = ({ events, onToggleComplete }) => {
         </HStack>
         <Stack mt={2}>
           {todayEvents.length > 0 ? todayEvents.map(event => (
-            <Checkbox 
-              key={event.id} 
-              isChecked={event.completed} 
-              onChange={() => onToggleComplete(event.id)}
-              size={'sm'}
-              colorScheme="blue"
-            >
-              <Text as={event.completed ? 's' : 'span'} color={textColor}>
-                {event.title}
+            <Box key={event.id} p={2} borderRadius="md" bg={('white', 'gray.600')}>
+              <Text fontWeight="bold" color={textColor}>{event.title}</Text>
+              <Text color={textColor}>
+                {event.allDay ? 'All Day' : `${moment(event.start).format('h:mm A')} - ${moment(event.end).format('h:mm A')}`}
               </Text>
-            </Checkbox>
+            </Box>
           )) : (
             <Text color={textColor}>No events for today.</Text>
           )}
@@ -47,17 +43,12 @@ const TodaysEvents = ({ events, onToggleComplete }) => {
           <ModalBody>
             <Stack spacing={3}>
               {todayEvents.length > 0 ? todayEvents.map(event => (
-                <Checkbox 
-                  key={event.id} 
-                  isChecked={event.completed} 
-                  onChange={() => onToggleComplete(event.id)}
-                  size={'sm'}
-                  colorScheme="blue"
-                >
-                  <Text as={event.completed ? 's' : 'span'} color={textColor}>
-                    {event.title}
+                <Box key={event.id} p={2} borderRadius="md" bg={('white', 'gray.600')}>
+                  <Text fontWeight="bold" color={textColor}>{event.title}</Text>
+                  <Text color={textColor}>
+                    {event.allDay ? 'All Day' : `${moment(event.start).format('h:mm A')} - ${moment(event.end).format('h:mm A')}`}
                   </Text>
-                </Checkbox>
+                </Box>
               )) : (
                 <Text color={textColor}>No events for today.</Text>
               )}
