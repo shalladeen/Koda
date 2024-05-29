@@ -118,7 +118,7 @@ function SignupPage() {
                   </InputRightElement>
                 </InputGroup>
               </FormControl>
-              <Button colorScheme="blue" onClick={handleSignUpSubmit} w="full">Sign Up</Button>
+              <Button color="white" backgroundColor="#63A9BF" onClick={handleSignUpSubmit} w="full">Sign Up</Button>
               <Button variant="link" onClick={toggleForm}>Already have an account? Sign In</Button>
             </>
           ) : (
@@ -163,7 +163,7 @@ function SignupPage() {
                 </InputGroup>
               </FormControl>
               <Link colorScheme="blue">Forget Your Password?</Link>
-              <Button colorScheme="blue" onClick={handleLoginSubmit} w="full">Sign In</Button>
+              <Button color="white" backgroundColor="#63A9BF" onClick={handleLoginSubmit} w="full">Sign In</Button>
               <Button variant="link" onClick={toggleForm}>Don't have an account? Sign Up</Button>
             </>
           )}

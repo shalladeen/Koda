@@ -1,6 +1,5 @@
 import React from 'react';
-import { Box, Text, Button, useColorModeValue, HStack, Modal, 
-  ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Stack, ModalFooter } from '@chakra-ui/react';
+import { Box, Text, Button, useColorModeValue, HStack, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Stack, ModalFooter } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/hooks';
 import moment from 'moment';
 
@@ -13,6 +12,19 @@ const TodaysEvents = ({ events }) => {
     return moment().isBetween(start, end, null, '[]');
   });
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const formatEventDate = (event) => {
+    if (event.allDay) {
+      if (moment(event.start).isSame(moment(event.end), 'day')) {
+        return 'All Day';
+      }
+      return `${moment(event.start).format('MMM DD')} - ${moment(event.end).subtract(1, 'days').format('MMM DD')}`;
+    }
+    if (moment(event.start).isSame(moment(event.end), 'day')) {
+      return `${moment(event.start).format('h:mm A')} - ${moment(event.end).format('h:mm A')}`;
+    }
+    return `${moment(event.start).format('MMM DD, h:mm A')} - ${moment(event.end).format('MMM DD, h:mm A')}`;
+  };
 
   return (
     <>
@@ -30,9 +42,7 @@ const TodaysEvents = ({ events }) => {
             <Box key={event.id} p={2} borderRadius="md" bg={bgColor}>
               <Text fontWeight="bold" color={textColor}>{event.title}</Text>
               <Text color={textColor}>
-                {event.allDay 
-                  ? `${moment(event.start).format('MMM DD')} - ${moment(event.end).format('MMM DD')}` 
-                  : `${moment(event.start).format('h:mm A')} - ${moment(event.end).format('h:mm A')}`}
+                {formatEventDate(event)}
               </Text>
             </Box>
           )) : (
@@ -52,9 +62,7 @@ const TodaysEvents = ({ events }) => {
                 <Box key={event.id} p={2} borderRadius="md" bg={bgColor}>
                   <Text fontWeight="bold" color={textColor}>{event.title}</Text>
                   <Text color={textColor}>
-                    {event.allDay 
-                      ? `${moment(event.start).format('MMM DD')} - ${moment(event.end).format('MMM DD')}` 
-                      : `${moment(event.start).format('h:mm A')} - ${moment(event.end).format('h:mm A')}`}
+                    {formatEventDate(event)}
                   </Text>
                 </Box>
               )) : (

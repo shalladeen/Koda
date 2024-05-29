@@ -19,18 +19,19 @@ const CalendarWidget = () => {
   const [events, setEvents] = useState([]);
   const [currentEvent, setCurrentEvent] = useState(null);
   const [eventTitle, setEventTitle] = useState('');
-  const [allDay, setAllDay] = useState(false); // Default to false
+  const [allDay, setAllDay] = useState(false); // Default allDay to false
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
-  const [startTime, setStartTime] = useState('09:00');
-  const [endTime, setEndTime] = useState('17:00');
+  const [startTime, setStartTime] = useState('10:00');
+  const [endTime, setEndTime] = useState('11:00');
 
   useEffect(() => {
     const fetchEvents = async () => {
       const events = await eventService.getEvents();
       setEvents(events.map(event => ({
         ...event,
-        id: event._id
+        id: event._id,
+        end: event.allDay ? moment(event.end).add(1, 'days').toISOString() : event.end
       })));
       console.log('Events after fetching:', events);
     };
@@ -53,7 +54,8 @@ const CalendarWidget = () => {
       setStartTime(moment(selectInfo.start).format('HH:mm'));
       setEndTime(moment(selectInfo.end).format('HH:mm'));
     } else {
-      setEndTime('17:00'); // Default end time for all-day ranged events
+      setStartTime('00:00');
+      setEndTime('23:59');
     }
     onOpen();
   };
@@ -75,9 +77,9 @@ const CalendarWidget = () => {
     setEventTitle(event.title);
     setAllDay(event.allDay);
     setStartDate(moment(event.start).format('YYYY-MM-DD'));
-    setEndDate(event.end ? moment(event.end).format('YYYY-MM-DD') : moment(event.start).format('YYYY-MM-DD'));
-    setStartTime(moment(event.start).format('HH:mm'));
-    setEndTime(moment(event.end ? moment(event.end).format('HH:mm') : moment(event.start).format('HH:mm')));
+    setEndDate(event.end ? moment(event.end).subtract(event.allDay ? 1 : 0, 'days').format('YYYY-MM-DD') : moment(event.start).format('YYYY-MM-DD'));
+    setStartTime(event.allDay ? '00:00' : moment(event.start).format('HH:mm'));
+    setEndTime(event.allDay ? '23:59' : (event.end ? moment(event.end).format('HH:mm') : '11:00'));
     onOpen();
   };
 
@@ -87,7 +89,7 @@ const CalendarWidget = () => {
       id: event.id,
       title: event.title,
       start: event.start,
-      end: event.end,
+      end: event.allDay ? moment(event.end).subtract(1, 'days').endOf('day').toISOString() : event.end,
       allDay: event.allDay,
     };
     console.log('Event dropped:', updatedEvent);
@@ -96,7 +98,8 @@ const CalendarWidget = () => {
       const events = await eventService.getEvents();
       setEvents(events.map(event => ({
         ...event,
-        id: event._id
+        id: event._id,
+        end: event.allDay ? moment(event.end).add(1, 'days').toISOString() : event.end
       })));
       console.log('Events after update:', events);
     } catch (error) {
@@ -110,7 +113,7 @@ const CalendarWidget = () => {
       id: event.id,
       title: event.title,
       start: event.start,
-      end: event.end,
+      end: event.allDay ? moment(event.end).subtract(1, 'days').endOf('day').toISOString() : event.end,
       allDay: event.allDay,
     };
     console.log('Event resized:', updatedEvent);
@@ -119,7 +122,8 @@ const CalendarWidget = () => {
       const events = await eventService.getEvents();
       setEvents(events.map(event => ({
         ...event,
-        id: event._id
+        id: event._id,
+        end: event.allDay ? moment(event.end).add(1, 'days').toISOString() : event.end
       })));
       console.log('Events after resize:', events);
     } catch (error) {
@@ -128,16 +132,18 @@ const CalendarWidget = () => {
   };
 
   const saveEvent = async () => {
-    const endTimeToUse = allDay ? '17:00' : (endTime || '23:59'); // Use 5 PM if allDay is true
+    const isSingleDayEvent = startDate === endDate;
 
     const newEvent = {
       title: eventTitle,
       start: allDay ? moment(startDate).startOf('day').toISOString() : moment(startDate + 'T' + startTime).toISOString(),
-      end: allDay ? moment(endDate + 'T' + endTimeToUse).toISOString() : moment(endDate + 'T' + endTime).toISOString(),
+      end: allDay ? (isSingleDayEvent ? moment(startDate).endOf('day').toISOString() : moment(endDate).endOf('day').toISOString()) : moment(endDate + 'T' + endTime).toISOString(),
       allDay: allDay,
       userId: currentEvent ? currentEvent.userId : undefined
     };
+
     console.log('Saving event:', newEvent);
+
     try {
       if (currentEvent) {
         await eventService.updateEvent(currentEvent.id, newEvent);
@@ -148,7 +154,8 @@ const CalendarWidget = () => {
       const events = await eventService.getEvents();
       setEvents(events.map(event => ({
         ...event,
-        id: event._id
+        id: event._id,
+        end: event.allDay ? moment(event.end).add(1, 'days').toISOString() : event.end
       })));
       onClose();
     } catch (error) {
@@ -164,7 +171,8 @@ const CalendarWidget = () => {
         const events = await eventService.getEvents();
         setEvents(events.map(event => ({
           ...event,
-          id: event._id
+          id: event._id,
+          end: event.allDay ? moment(event.end).add(1, 'days').toISOString() : event.end
         })));
         onClose();
       } catch (error) {
@@ -203,9 +211,9 @@ const CalendarWidget = () => {
     const calendarApi = calendarRef.current.getApi();
 
     const handleDatesSet = (info) => {
-      const newDate = new Date(info.start); 
+      const newDate = new Date(info.start);
       if (newDate.getTime() !== currentDate.getTime()) {
-        setCurrentDate(newDate); 
+        setCurrentDate(newDate);
       }
     };
 
@@ -237,7 +245,7 @@ const CalendarWidget = () => {
 
   const todaysEvents = events.filter(event => {
     const start = moment(event.start).startOf('day');
-    const end = moment(event.end).endOf('day');
+    const end = event.allDay ? moment(event.end).subtract(1, 'days').endOf('day') : moment(event.end).endOf('day');
     return moment().isBetween(start, end, null, '[]');
   });
 
@@ -284,7 +292,16 @@ const CalendarWidget = () => {
           eventTitle={eventTitle}
           setEventTitle={setEventTitle}
           allDay={allDay}
-          setAllDay={setAllDay}
+          setAllDay={checked => {
+            setAllDay(checked);
+            if (checked) {
+              setStartTime('00:00');
+              setEndTime('23:59');
+            } else {
+              setStartTime('10:00');
+              setEndTime('11:00');
+            }
+          }}
           startDate={startDate}
           setStartDate={setStartDate}
           endDate={endDate}

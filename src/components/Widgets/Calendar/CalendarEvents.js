@@ -6,9 +6,11 @@ export const loadEvents = () => {
     ? JSON.parse(storedEvents).map((event) => ({
         ...event,
         start: event.allDay
-          ? moment(event.start).format('YYYY-MM-DD')
+          ? moment(event.start).toDate()
           : new Date(event.start),
-        end: event.end ? new Date(event.end) : null,
+        end: event.allDay
+          ? moment(event.start).endOf('day').toDate()
+          : (event.end ? new Date(event.end) : null),
         allDay: !!event.allDay,
         completed: !!event.completed,
       }))
@@ -18,8 +20,8 @@ export const loadEvents = () => {
 export const saveEvents = (events) => {
   const sanitizedEvents = events.map(({ __typename, ...event }) => ({
     ...event,
-    start: event.allDay ? event.start : moment(event.start).toISOString(),
-    end: event.end ? moment(event.end).toISOString() : null,
+    start: event.allDay ? moment(event.start).startOf('day').toISOString() : moment(event.start).toISOString(),
+    end: event.allDay ? moment(event.start).endOf('day').toISOString() : (event.end ? moment(event.end).toISOString() : null),
     completed: !!event.completed,
   }));
   localStorage.setItem('fullCalendarEvents', JSON.stringify(sanitizedEvents));
