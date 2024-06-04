@@ -1,17 +1,34 @@
 import React, { useState } from 'react';
 import {
-    Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton,
-    Button, Input, Select, FormControl, FormLabel, useColorModeValue, VStack
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Input,
+  Select,
+  FormControl,
+  FormLabel
 } from '@chakra-ui/react';
 
-function Preset({ isOpen, onClose, onSave }) {
-    const [presetName, setPresetName] = useState('');
-    const [presetFocusTime, setPresetFocusTime] = useState('25');
-    const [presetBreakTime, setPresetBreakTime] = useState('5');
+const Preset = ({ isOpen, onClose, onSave }) => {
+    const [name, setName] = useState('');
+    const [focusTime, setFocusTime] = useState('');
+    const [breakTime, setBreakTime] = useState('');
 
     const handleSave = () => {
-        onSave({ presetName, presetFocusTime, presetBreakTime });
-        onClose();
+        console.log(`Saving preset: Name: ${name}, Focus Time: ${focusTime}, Break Time: ${breakTime}`);
+        if (name && focusTime && breakTime) {
+            onSave(name, focusTime, breakTime);
+            setName('');
+            setFocusTime('');
+            setBreakTime('');
+        } else {
+            console.error('All fields are required to create a preset');
+        }
     };
 
     return (
@@ -21,40 +38,41 @@ function Preset({ isOpen, onClose, onSave }) {
                 <ModalHeader>Create New Preset</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    <VStack spacing={4}>
-                        <FormControl>
-                            <FormLabel>Name</FormLabel>
-                            <Input placeholder="Preset Name" value={presetName} onChange={(e) => setPresetName(e.target.value)} />
-                        </FormControl>
-                        <FormControl>
-                            <FormLabel>Focus Time</FormLabel>
-                            <Select value={presetFocusTime} onChange={(e) => setPresetFocusTime(e.target.value)}>
-                                <option value="15">15 minutes</option>
-                                <option value="25">25 minutes</option>
-                                <option value="30">30 minutes</option>
-                                <option value="45">45 minutes</option>
-                                <option value="60">1 hour</option>
-                                <option value="90">1.5 hours</option>
-                                <option value="120">2 hours</option>
-                            </Select>
-                        </FormControl>
-                        <FormControl>
-                            <FormLabel>Break Time</FormLabel>
-                            <Select value={presetBreakTime} onChange={(e) => setPresetBreakTime(e.target.value)}>
-                                <option value="5">5 minutes</option>
-                                <option value="10">10 minutes</option>
-                                <option value="15">15 minutes</option>
-                                <option value="30">30 minutes</option>
-                            </Select>
-                        </FormControl>
-                    </VStack>
+                    <FormControl id="name" mb={4}>
+                        <FormLabel>Preset Name</FormLabel>
+                        <Input value={name} onChange={(e) => setName(e.target.value)} />
+                    </FormControl>
+                    <FormControl id="focusTime" mb={4}>
+                        <FormLabel>Focus Time (minutes)</FormLabel>
+                        <Select value={focusTime} onChange={(e) => setFocusTime(e.target.value)}>
+                            <option value="15">15 minutes</option>
+                            <option value="25">25 minutes</option>
+                            <option value="30">30 minutes</option>
+                            <option value="45">45 minutes</option>
+                            <option value="60">1 hour</option>
+                            <option value="90">1.5 hours</option>
+                            <option value="120">2 hours</option>
+                        </Select>
+                    </FormControl>
+                    <FormControl id="breakTime" mb={4}>
+                        <FormLabel>Break Time (minutes)</FormLabel>
+                        <Select value={breakTime} onChange={(e) => setBreakTime(e.target.value)}>
+                            <option value="5">5 minutes</option>
+                            <option value="10">10 minutes</option>
+                            <option value="15">15 minutes</option>
+                            <option value="30">30 minutes</option>
+                        </Select>
+                    </FormControl>
                 </ModalBody>
                 <ModalFooter>
-                    <Button colorScheme="blue" onClick={handleSave}>Save Preset</Button>
+                    <Button colorScheme="blue" mr={3} onClick={handleSave}>
+                        Save
+                    </Button>
+                    <Button variant="ghost" onClick={onClose}>Cancel</Button>
                 </ModalFooter>
             </ModalContent>
         </Modal>
     );
-}
+};
 
 export default Preset;

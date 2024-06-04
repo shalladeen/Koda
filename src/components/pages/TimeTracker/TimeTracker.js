@@ -5,6 +5,7 @@ import Navbar from '../../nav/Navbar';
 import { Box, Flex, Center, VStack, HStack, useColorModeValue, Select, Button, Heading, Text, Switch, FormControl, FormLabel } from '@chakra-ui/react';
 import { useAuth } from '../../context/AuthContext';
 import Preset from './Preset';
+import { createPreset, getPresets } from '../../../services/presetService';
 
 function TimeTracker() {
     const navigate = useNavigate();
@@ -17,6 +18,7 @@ function TimeTracker() {
     const [startTimerInitially, setStartTimerInitially] = useState(false);
     const [timerStarted, setTimerStarted] = useState(false);
     const [isPresetModalOpen, setIsPresetModalOpen] = useState(false);
+    const [presets, setPresets] = useState([]);
 
     useEffect(() => {
         if (isFreeTimer) {
@@ -25,6 +27,17 @@ function TimeTracker() {
             setShowTimer(false);
         }
     }, [isFreeTimer, timerStarted]);
+
+    useEffect(() => {
+        // Fetch presets on component mount
+        const fetchPresets = async () => {
+            if (isLoggedIn) {
+                const userPresets = await getPresets();
+                setPresets(userPresets);
+            }
+        };
+        fetchPresets();
+    }, [isLoggedIn]);
 
     const handleProfileClick = () => {
         if (isLoggedIn) {
@@ -58,6 +71,16 @@ function TimeTracker() {
         setShowTimer(true);
         setStartTimerInitially(true);
         setTimerStarted(true); // Set timerStarted to true when the timer starts
+    };
+
+    const handleCreatePreset = async (name, focusTime, breakTime) => {
+        try {
+            const newPreset = await createPreset(name, focusTime, breakTime);
+            setPresets([...presets, newPreset]);
+            setIsPresetModalOpen(false);
+        } catch (error) {
+            console.error("Error creating preset:", error);
+        }
     };
 
     const sidebarWidth = { base: "60px", md: "150px" };
@@ -98,23 +121,20 @@ function TimeTracker() {
                                         startTimerInitially={startTimerInitially}
                                         setTimerStarted={setTimerStarted} // Pass setTimerStarted to Timer component
                                     />
-                                    <VStack spacing={4} align="stretch" p={4}>
-                                        <Box pb={4}>
-                                            <Heading size="md" textAlign="center">
+                                    <VStack spacing={2} align="stretch" p={2}>
+                                        <Box pb={2}>
+                                            <Heading size="sm" textAlign="center">
                                                 Presets
                                             </Heading>
                                         </Box>
-                                        <HStack spacing={4} pb={2}>
-                                            <Button bg="lightblue" onClick={() => handlePresetClick('15', '5')}>
-                                                15 min Read
-                                            </Button>
-                                            <Button bg="lightblue" onClick={() => handlePresetClick('30', '5')}>
-                                                30 min Work
-                                            </Button>
-                                            <Button bg="lightblue" onClick={() => handlePresetClick('60', '10')}>
-                                                1 hr Study
-                                            </Button>
-                                            <Button bg="white" onClick={() => setIsPresetModalOpen(true)}>
+                                        <HStack spacing={2} pb={2}>
+                                            {presets.map(preset => (
+                                                <Button key={preset._id} size="sm" bg="lightblue" onClick={() => handlePresetClick(preset.focusTime, preset.breakTime)}>
+                                                    <Text>{preset.name}</Text>
+                                                    <Text>{preset.focusTime} min</Text>
+                                                </Button>
+                                            ))}
+                                            <Button size="sm" bg="white" onClick={() => setIsPresetModalOpen(true)}>
                                                 + New Preset
                                             </Button>
                                         </HStack>
@@ -174,7 +194,7 @@ function TimeTracker() {
                     </Box>
                 </Center>
             </Box>
-            <Preset isOpen={isPresetModalOpen} onClose={() => setIsPresetModalOpen(false)} />
+            <Preset isOpen={isPresetModalOpen} onClose={() => setIsPresetModalOpen(false)} onSave={handleCreatePreset} />
         </Flex>
     );
 }

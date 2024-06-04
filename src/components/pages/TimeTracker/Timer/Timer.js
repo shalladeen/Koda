@@ -83,6 +83,7 @@ function Timer({ focusTime, breakTime, isFreeTimer, handleToggleMode, startTimer
               <CircularProgressLabel fontSize="4xl">
                 {`${Math.max(0, Math.floor((timeInMinutes * 60 - secondsElapsed) / 60))}m ${Math.max(0, Math.round((timeInMinutes * 60 - secondsElapsed) % 60))}s`}
               </CircularProgressLabel>
+              <Text fontSize="md">{focusTime ? `${focusTime} min` : ''}</Text>
             </CircularProgress>
             {!focusTime && (
               <Slider
@@ -111,14 +112,6 @@ function Timer({ focusTime, breakTime, isFreeTimer, handleToggleMode, startTimer
             </Text>
           )}
         </Flex>
-      </Box>
-      <Box bg={useColorModeValue('white', 'gray.800')} width="100%">
-        <FormControl display="flex" justifyContent="flex-end">
-          <FormLabel htmlFor="mode-toggle" mb="0">
-            {isFreeTimer ? 'Switch to Presets' : 'Switch to Timer'}
-          </FormLabel>
-          <Switch id="mode-toggle" isChecked={isFreeTimer} onChange={handleToggleMode} />
-        </FormControl>
       </Box>
       <TimerDialog isOpen={isDialogOpen} onClose={closeDialog} />
       <TimerDialog
