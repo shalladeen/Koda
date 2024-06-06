@@ -28,13 +28,12 @@ const noteRoutes = require('./routes/note');
 const taskRoutes = require('./routes/task'); 
 const eventRoutes = require('./routes/event');
 const presetRoutes = require('./routes/preset');
-
 // Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/events', eventRoutes);
-app.use('/api/presets', presetRoutes);
+app.use('/api/presets', presetRoutes); 
 
 // Define a simple route
 app.get('/', (req, res) => {

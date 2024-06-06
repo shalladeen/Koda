@@ -3,17 +3,10 @@ import {
   Button,
   CircularProgress,
   CircularProgressLabel,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
   VStack,
   Box,
   Flex,
   useColorModeValue,
-  FormControl,
-  FormLabel,
-  Switch,
   Text,
 } from '@chakra-ui/react';
 import { useTimer } from '../../../context/TimerContext';
@@ -24,11 +17,11 @@ function Timer({ focusTime, breakTime, isFreeTimer, handleToggleMode, startTimer
   const [isStopDialogOpen, setIsStopDialogOpen] = useState(false);
 
   useEffect(() => {
-    if (focusTime) {
+    if (focusTime && !isRunning) {
       setTimeInMinutes(focusTime);
       setSecondsElapsed(0);
     }
-  }, [focusTime, setTimeInMinutes, setSecondsElapsed]);
+  }, [focusTime, setTimeInMinutes, setSecondsElapsed, isRunning]);
 
   useEffect(() => {
     if (startTimerInitially && !isRunning) {
@@ -49,17 +42,11 @@ function Timer({ focusTime, breakTime, isFreeTimer, handleToggleMode, startTimer
   const stopTimer = () => {
     setIsRunning(false);
     setSecondsElapsed(0);
+    setTimeInMinutes(0); // Reset the timer to 0 minutes
     setTimerStarted(false);
   };
 
   const progress = 100 - ((secondsElapsed / (timeInMinutes * 60)) * 100);
-
-  const handleSliderChange = (val) => {
-    if (!isRunning) {
-      setTimeInMinutes(Math.max(0, val));
-      setSecondsElapsed(0);
-    }
-  };
 
   const handleStopClick = () => {
     setIsStopDialogOpen(true);
@@ -83,25 +70,7 @@ function Timer({ focusTime, breakTime, isFreeTimer, handleToggleMode, startTimer
               <CircularProgressLabel fontSize="4xl">
                 {`${Math.max(0, Math.floor((timeInMinutes * 60 - secondsElapsed) / 60))}m ${Math.max(0, Math.round((timeInMinutes * 60 - secondsElapsed) % 60))}s`}
               </CircularProgressLabel>
-              <Text fontSize="md">{focusTime ? `${focusTime} min` : ''}</Text>
             </CircularProgress>
-            {!focusTime && (
-              <Slider
-                aria-label="timer-slider"
-                defaultValue={0}
-                min={0}
-                max={120}
-                step={1}
-                onChange={handleSliderChange}
-                value={timeInMinutes}
-                size="md"
-              >
-                <SliderTrack>
-                  <SliderFilledTrack />
-                </SliderTrack>
-                <SliderThumb />
-              </Slider>
-            )}
             <Button onClick={isRunning ? pauseTimer : startTimer} isDisabled={timeInMinutes === 0} size="lg">
               {isRunning ? 'Pause' : 'Focus'}
             </Button>

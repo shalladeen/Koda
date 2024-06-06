@@ -7,7 +7,7 @@ const createPreset = async (name, focusTime, breakTime, userId) => {
         breakTime,
         user: userId
     });
-    console.log(`Creating preset: Name: ${name}, Focus Time: ${focusTime} min, Break Time: ${breakTime} min`);
+    console.log(`Creating preset: Name: ${name}, Focus Time: ${focusTime}, Break Time: ${breakTime}, User: ${userId}`);
     return await preset.save();
 };
 

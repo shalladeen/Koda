@@ -17,8 +17,21 @@ function TimeTracker() {
     const [isFreeTimer, setIsFreeTimer] = useState(true);
     const [startTimerInitially, setStartTimerInitially] = useState(false);
     const [timerStarted, setTimerStarted] = useState(false);
-    const [isPresetModalOpen, setIsPresetModalOpen] = useState(false);
     const [presets, setPresets] = useState([]);
+    const [isPresetModalOpen, setIsPresetModalOpen] = useState(false);
+
+    // Fetch presets when the component mounts
+    useEffect(() => {
+        const fetchPresets = async () => {
+            try {
+                const data = await getPresets();
+                setPresets(data);
+            } catch (error) {
+                console.error('Error fetching presets:', error);
+            }
+        };
+        fetchPresets();
+    }, []);
 
     useEffect(() => {
         if (isFreeTimer) {
@@ -27,17 +40,6 @@ function TimeTracker() {
             setShowTimer(false);
         }
     }, [isFreeTimer, timerStarted]);
-
-    useEffect(() => {
-        // Fetch presets on component mount
-        const fetchPresets = async () => {
-            if (isLoggedIn) {
-                const userPresets = await getPresets();
-                setPresets(userPresets);
-            }
-        };
-        fetchPresets();
-    }, [isLoggedIn]);
 
     const handleProfileClick = () => {
         if (isLoggedIn) {
@@ -79,7 +81,7 @@ function TimeTracker() {
             setPresets([...presets, newPreset]);
             setIsPresetModalOpen(false);
         } catch (error) {
-            console.error("Error creating preset:", error);
+            console.error('Error creating preset:', error);
         }
     };
 
@@ -121,20 +123,24 @@ function TimeTracker() {
                                         startTimerInitially={startTimerInitially}
                                         setTimerStarted={setTimerStarted} // Pass setTimerStarted to Timer component
                                     />
-                                    <VStack spacing={2} align="stretch" p={2}>
-                                        <Box pb={2}>
-                                            <Heading size="sm" textAlign="center">
+                                    <VStack spacing={4} align="stretch" p={4}>
+                                        <Box pb={4}>
+                                            <Heading size="md" textAlign="center">
                                                 Presets
                                             </Heading>
                                         </Box>
-                                        <HStack spacing={2} pb={2}>
-                                            {presets.map(preset => (
-                                                <Button key={preset._id} size="sm" bg="lightblue" onClick={() => handlePresetClick(preset.focusTime, preset.breakTime)}>
+                                        <HStack spacing={4} pb={2}>
+                                            {presets.map((preset) => (
+                                                <Button
+                                                    key={preset._id}
+                                                    bg="lightblue"
+                                                    onClick={() => handlePresetClick(preset.focusTime, preset.breakTime)}
+                                                >
                                                     <Text>{preset.name}</Text>
                                                     <Text>{preset.focusTime} min</Text>
                                                 </Button>
                                             ))}
-                                            <Button size="sm" bg="white" onClick={() => setIsPresetModalOpen(true)}>
+                                            <Button bg="white" onClick={() => setIsPresetModalOpen(true)}>
                                                 + New Preset
                                             </Button>
                                         </HStack>
@@ -190,13 +196,13 @@ function TimeTracker() {
                                 </FormLabel>
                                 <Switch id="mode-toggle" isChecked={isFreeTimer} onChange={handleToggleMode} />
                             </FormControl>
-                        </Flex>
-                    </Box>
-                </Center>
-            </Box>
-            <Preset isOpen={isPresetModalOpen} onClose={() => setIsPresetModalOpen(false)} onSave={handleCreatePreset} />
-        </Flex>
-    );
-}
+                            </Flex>
+                        </Box>
+                    </Center>
+                </Box>
+                <Preset isOpen={isPresetModalOpen} onClose={() => setIsPresetModalOpen(false)} onSave={handleCreatePreset} />
+            </Flex>
+        );
+    }
 
-export default TimeTracker;
+    export default TimeTracker;

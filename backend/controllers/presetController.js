@@ -4,7 +4,7 @@ const createPreset = async (req, res) => {
     const { name, focusTime, breakTime } = req.body;
     const userId = req.user._id;
 
-    console.log(`Received request to create preset: Name: ${name}, Focus Time: ${focusTime}, Break Time: ${breakTime}, User: ${userId}`);
+    console.log(`Creating preset: Name: ${name}, Focus Time: ${focusTime}, Break Time: ${breakTime}, User: ${userId}`);
 
     if (!name || !focusTime || !breakTime || !userId) {
         console.error('Missing required fields:', { name, focusTime, breakTime, userId });

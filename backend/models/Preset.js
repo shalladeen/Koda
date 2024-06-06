@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const presetSchema = new mongoose.Schema({
+const presetSchema = new Schema({
     name: {
         type: String,
         required: true
@@ -14,12 +15,10 @@ const presetSchema = new mongoose.Schema({
         required: true
     },
     user: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
     }
-}, {
-    timestamps: true
 });
 
 module.exports = mongoose.model('Preset', presetSchema);
