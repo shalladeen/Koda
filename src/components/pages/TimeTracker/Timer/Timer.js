@@ -107,9 +107,14 @@ function Timer({ focusTime, breakTime, isFreeTimer, startTimerInitially, setTime
 
   return (
     <Flex height="100%" direction="column" alignItems="start" justifyContent="center" width="100%">
-      <Box p={4} bg={useColorModeValue('white', 'gray.800')} borderRadius="lg" >
+      <Box p={4} bg={useColorModeValue('white', 'gray.800')} borderRadius="lg"  position="relative">
+        {isRunning && (
+          <Text color="red" cursor="pointer" onClick={handleStopClick} position="absolute" right={3} top={2}>
+            Stop
+          </Text>
+        )}
         <Flex direction="column" justifyContent="center" alignItems="center">
-          <CircularProgress value={progress} size="230px" thickness="12px" color={getProgressColor(100 - progress)} max={100}>
+          <CircularProgress value={progress} size="370px" thickness="12px" color={getProgressColor(100 - progress)} max={100}>
             <CircularProgressLabel fontSize="4xl">
               {`${Math.max(0, Math.floor((timeInMinutes * 60 - secondsElapsed) / 60))}m ${Math.max(0, Math.round((timeInMinutes * 60 - secondsElapsed) % 60))}s`}
             </CircularProgressLabel>
@@ -135,9 +140,6 @@ function Timer({ focusTime, breakTime, isFreeTimer, startTimerInitially, setTime
           <Button onClick={isRunning ? pauseTimer : startTimer} isDisabled={timeInMinutes === 0} size="lg" mt={4}>
             {isRunning ? 'Pause' : 'Start'}
           </Button>
-          <Text color="red" cursor="pointer" onClick={handleStopClick} mt={4}>
-            Stop
-          </Text>
         </Flex>
       </Box>
       <TimerDialog isOpen={isDialogOpen} onClose={closeDialog} type="complete" tag={tag} />

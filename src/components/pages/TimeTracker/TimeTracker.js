@@ -129,7 +129,7 @@ function TimeTracker() {
             {/* Main Content */}
             <Box flex="1" ml={sidebarWidth} p={{ base: 2, md: 5 }} color={textColor}>
                 <Center height="100%">
-                    <Box p={6} borderWidth={1} borderRadius="lg" bg={containerBgColor} boxShadow="lg" width={{ base: '90%', md: '60%' }} alignItems="start">
+                    <Box p={6} borderWidth={1} borderRadius="lg" bg={containerBgColor} boxShadow="lg" width={{ base: '90%', md: '50%' }} height={{ base: '60vh', md: '40vh' }} alignItems="start" position="relative">
                         <Flex height="100%" direction="column">
                             {showTimer ? (
                                 <Flex height="100%" direction="row" justifyContent="space-between">
@@ -146,22 +146,26 @@ function TimeTracker() {
                                                 Presets
                                             </Heading>
                                         </Box>
-                                        <HStack spacing={4} pb={2}>
+                                        <HStack spacing={4} pb={2} flexWrap="wrap" justifyContent="center">
                                             {presets.map((preset) => (
                                                 <Button
                                                     key={preset._id}
                                                     bg="lightblue"
                                                     onClick={() => handlePresetClick(preset.focusTime, preset.breakTime, preset.name)}
+                                                    justifyContent="center"
+                                                    alignItems="center"
+                                                    
                                                 >
-                                                    <Text>{preset.name}</Text>
-                                                    <Text>{preset.focusTime} min</Text>
+                                                    <VStack spacing={0} p={3}>
+                                                        <Text>{preset.name}</Text>
+                                                        <Text>{preset.focusTime} minutes</Text>
+                                                    </VStack>
                                                 </Button>
                                             ))}
-                                            <Button bg="white" onClick={() => setIsPresetModalOpen(true)}>
+                                            <Button bg="white" onClick={() => setIsPresetModalOpen(true)} flexBasis={{ base: '45%', md: '30%' }}>
                                                 + New Preset
                                             </Button>
                                         </HStack>
-                                       
                                     </VStack>
                                 </Flex>
                             ) : (
@@ -207,12 +211,14 @@ function TimeTracker() {
                                     </Button>
                                 </VStack>
                             )}
-                            <FormControl display="flex" alignItems="flex-end" justifyContent="flex-end" mt={4}>
-                                <FormLabel htmlFor="mode-toggle" mb="0">
-                                    {isFreeTimer ? 'Switch to Presets' : 'Switch to Timer'}
-                                </FormLabel>
-                                <Switch id="mode-toggle" isChecked={isFreeTimer} onChange={handleToggleMode} />
-                            </FormControl>
+                            <Box position="absolute" bottom={4} right={4}>
+                                <FormControl display="flex" alignItems="center">
+                                    <FormLabel htmlFor="mode-toggle" mb="0">
+                                        {isFreeTimer ? 'Switch to Presets' : 'Switch to Timer'}
+                                    </FormLabel>
+                                    <Switch id="mode-toggle" isChecked={isFreeTimer} onChange={handleToggleMode} />
+                                </FormControl>
+                            </Box>
                         </Flex>
                     </Box>
                 </Center>
