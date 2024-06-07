@@ -8,6 +8,7 @@ export const TimerProvider = ({ children }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [tag, setTag] = useState('none');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [timerStarted, setTimerStarted] = useState(false); // Ensure this state is provided by the context
 
   useEffect(() => {
     let interval;
@@ -31,6 +32,13 @@ export const TimerProvider = ({ children }) => {
 
   const closeDialog = () => setIsDialogOpen(false);
 
+  const resetTimer = () => {
+    setTimeInMinutes(0);
+    setSecondsElapsed(0);
+    setIsRunning(false);
+    setTimerStarted(false); // Reset timerStarted
+  };
+
   return (
     <TimerContext.Provider
       value={{
@@ -43,7 +51,11 @@ export const TimerProvider = ({ children }) => {
         tag,
         setTag,
         isDialogOpen,
-        closeDialog
+        setIsDialogOpen,
+        closeDialog,
+        resetTimer,
+        timerStarted,
+        setTimerStarted, // Provide setTimerStarted function
       }}
     >
       {children}
