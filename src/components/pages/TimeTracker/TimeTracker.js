@@ -154,7 +154,7 @@ function TimeTracker() {
                                                     onClick={() => handlePresetClick(preset.focusTime, preset.breakTime, preset.name)}
                                                     justifyContent="center"
                                                     alignItems="center"
-                                                    
+                                                    flexBasis={{ base: '45%', md: '30%' }}
                                                 >
                                                     <VStack spacing={0} p={3}>
                                                         <Text>{preset.name}</Text>
@@ -170,12 +170,12 @@ function TimeTracker() {
                                 </Flex>
                             ) : (
                                 <VStack spacing={4} align="stretch" p={10}>
-                                    <Box pb={10} borderBottomWidth={1} mb={4}>
+                                    <Box pb={10} borderBottomWidth={1} mb={10}>
                                         <Heading size="md" textAlign="center">
                                             What are we focusing on today?
                                         </Heading>
                                     </Box>
-                                    <HStack spacing={6} width="100%" pb={5}>
+                                    <HStack spacing={6} width="100%" pb={10} >
                                         <VStack align="center" flex="1">
                                             <Text>Category</Text>
                                             <Select placeholder="Category" onChange={(e) => setCategory(e.target.value)}>
@@ -187,7 +187,7 @@ function TimeTracker() {
                                         </VStack>
                                         <VStack align="center" flex="1">
                                             <Text>Focus Time</Text>
-                                            <Select placeholder="Focus time" value={focusTime} onChange={(e) => setFocusTime(e.target.value)}>
+                                            <Select placeholder="Focus" value={focusTime} onChange={(e) => setFocusTime(e.target.value)}>
                                                 <option value="25">25 minutes</option>
                                                 <option value="30">30 minutes</option>
                                                 <option value="45">45 minutes</option>
@@ -214,7 +214,7 @@ function TimeTracker() {
                             <Box position="absolute" bottom={4} right={4}>
                                 <FormControl display="flex" alignItems="center">
                                     <FormLabel htmlFor="mode-toggle" mb="0">
-                                        {isFreeTimer ? 'Switch to Presets' : 'Switch to Timer'}
+                                        {isFreeTimer ? 'Switch to Timer' : 'Switch to Presets'}
                                     </FormLabel>
                                     <Switch id="mode-toggle" isChecked={isFreeTimer} onChange={handleToggleMode} />
                                 </FormControl>

@@ -18,45 +18,71 @@ import TimerDialog from '../../../Dialogs/TimerDialog';
 
 function Timer({ focusTime, breakTime, isFreeTimer, startTimerInitially, setTimerStarted }) {
   const { timeInMinutes, setTimeInMinutes, secondsElapsed, setSecondsElapsed, isRunning, setIsRunning, isDialogOpen, closeDialog, resetTimer, tag, setIsDialogOpen } = useTimer();
+  const [isBreak, setIsBreak] = useState(false);
+  const [breakSecondsElapsed, setBreakSecondsElapsed] = useState(0);
   const [isStopDialogOpen, setIsStopDialogOpen] = useState(false);
 
+  // Ensure hooks are called unconditionally
+  const boxBg = useColorModeValue('white', 'gray.800');
+  const breakBoxBg = useColorModeValue('gray.100', 'gray.700');
+
   useEffect(() => {
-    if (focusTime) {
+    if (focusTime && !isRunning) {
       setTimeInMinutes(focusTime);
       setSecondsElapsed(0);
-      setIsRunning(false); // Ensure timer is not running initially
+      setBreakSecondsElapsed(0);
+      setIsBreak(false);
       console.log('Timer initialized with focusTime:', focusTime);
     }
-  }, [focusTime, setTimeInMinutes, setSecondsElapsed, setIsRunning]);
+  }, [focusTime, setTimeInMinutes, setSecondsElapsed, setBreakSecondsElapsed, setIsRunning]);
 
   useEffect(() => {
     if (startTimerInitially && !isRunning) {
-      setIsRunning(true);
-      setTimerStarted(true);
-      console.log('Timer started initially');
+      startTimer();
     }
-  }, [startTimerInitially, isRunning, setIsRunning, setTimerStarted]);
+  }, [startTimerInitially, isRunning]);
 
   useEffect(() => {
     let interval;
-    if (isRunning) {
+    if (isRunning && !isBreak) {
       interval = setInterval(() => {
         setSecondsElapsed(prev => {
           const newElapsed = prev + 1;
           if (newElapsed >= timeInMinutes * 60) {
             clearInterval(interval);
             setIsRunning(false);
-            setIsDialogOpen(true); // Show completion dialog
-            console.log('Timer completed');
+            setIsBreak(true);
+            setBreakSecondsElapsed(0);
+            console.log('Focus time completed, break started');
           }
           return newElapsed;
         });
       }, 1000);
-    } else if (!isRunning && secondsElapsed !== 0) {
-      clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [isRunning, secondsElapsed, timeInMinutes, setIsDialogOpen]);
+  }, [isRunning, timeInMinutes, isBreak]);
+
+  useEffect(() => {
+    let interval;
+    if (isRunning && isBreak) {
+      interval = setInterval(() => {
+        setBreakSecondsElapsed(prev => {
+          const newElapsed = prev + 1;
+          if (newElapsed >= breakTime * 60) {
+            clearInterval(interval);
+            setIsRunning(false);
+            setIsBreak(false);
+            setSecondsElapsed(0);
+            setTimeInMinutes(focusTime);
+            setTimerStarted(false);
+            console.log('Break completed, focus time resumed');
+          }
+          return newElapsed;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isRunning, breakTime, isBreak, focusTime, setTimerStarted]);
 
   const startTimer = () => {
     if (!isRunning && timeInMinutes > 0) {
@@ -74,12 +100,15 @@ function Timer({ focusTime, breakTime, isFreeTimer, startTimerInitially, setTime
   const stopTimer = () => {
     setIsRunning(false);
     setSecondsElapsed(0);
+    setBreakSecondsElapsed(0);
     setTimeInMinutes(focusTime); // Reset the timer to the initial focus time
     setTimerStarted(false);
     console.log('Timer stopped and reset');
   };
 
-  const progress = 100 - ((secondsElapsed / (timeInMinutes * 60)) * 100);
+  const progress = isBreak
+    ? 100 - ((breakSecondsElapsed / (breakTime * 60)) * 100)
+    : 100 - ((secondsElapsed / (timeInMinutes * 60)) * 100);
 
   const handleSliderChange = (val) => {
     if (!isRunning) {
@@ -105,21 +134,25 @@ function Timer({ focusTime, breakTime, isFreeTimer, startTimerInitially, setTime
     console.log('Stop cancelled');
   };
 
+  const progressColor = getProgressColor(100 - progress);
+
   return (
     <Flex height="100%" direction="column" alignItems="start" justifyContent="center" width="100%">
-      <Box p={4} bg={useColorModeValue('white', 'gray.800')} borderRadius="lg"  position="relative">
+      <Box p={4} bg={boxBg} borderRadius="lg" position="relative">
         {isRunning && (
           <Text color="red" cursor="pointer" onClick={handleStopClick} position="absolute" right={3} top={2}>
             Stop
           </Text>
         )}
         <Flex direction="column" justifyContent="center" alignItems="center">
-          <CircularProgress value={progress} size="370px" thickness="12px" color={getProgressColor(100 - progress)} max={100}>
+          <CircularProgress value={progress} size="230px" thickness="12px" color={progressColor} max={100}>
             <CircularProgressLabel fontSize="4xl">
-              {`${Math.max(0, Math.floor((timeInMinutes * 60 - secondsElapsed) / 60))}m ${Math.max(0, Math.round((timeInMinutes * 60 - secondsElapsed) % 60))}s`}
+              {isBreak
+                ? `${Math.max(0, Math.floor((breakTime * 60 - breakSecondsElapsed) / 60))}m ${Math.max(0, Math.round((breakTime * 60 - breakSecondsElapsed) % 60))}s`
+                : `${Math.max(0, Math.floor((timeInMinutes * 60 - secondsElapsed) / 60))}m ${Math.max(0, Math.round((timeInMinutes * 60 - secondsElapsed) % 60))}s`}
             </CircularProgressLabel>
           </CircularProgress>
-          {!focusTime && (
+          {!focusTime && !isBreak && (
             <Slider
               aria-label="timer-slider"
               defaultValue={0}
@@ -141,6 +174,13 @@ function Timer({ focusTime, breakTime, isFreeTimer, startTimerInitially, setTime
             {isRunning ? 'Pause' : 'Start'}
           </Button>
         </Flex>
+      </Box>
+      <Box p={4} bg={breakBoxBg} borderRadius="lg" boxShadow="lg" width="100%" textAlign="center" mt={4}>
+        {isBreak ? (
+          <Text fontSize="lg">Break Time: {`${Math.max(0, Math.floor((breakTime * 60 - breakSecondsElapsed) / 60))}m ${Math.max(0, Math.round((breakTime * 60 - breakSecondsElapsed) % 60))}s`}</Text>
+        ) : (
+          <Text fontSize="lg">Next Break in {Math.ceil((breakTime * 60 - secondsElapsed) / 60)} minutes</Text>
+        )}
       </Box>
       <TimerDialog isOpen={isDialogOpen} onClose={closeDialog} type="complete" tag={tag} />
       <TimerDialog
