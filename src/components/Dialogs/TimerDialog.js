@@ -11,7 +11,7 @@ import {
   Text
 } from '@chakra-ui/react';
 
-const TimerDialog = ({ isOpen, onClose, onConfirm, type, tag }) => {
+const TimerDialog = ({ isOpen, onClose, onConfirm, type, tag, breakTime }) => {
   const renderContent = () => {
     switch (type) {
       case 'stop':
@@ -32,18 +32,20 @@ const TimerDialog = ({ isOpen, onClose, onConfirm, type, tag }) => {
             </ModalFooter>
           </>
         );
-      case 'complete':
-      default:
+      case 'continue':
         return (
           <>
-            <ModalHeader>Timer Completed</ModalHeader>
+            <ModalHeader>Focus Time Completed</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <Text>Your {tag === 'none' ? 'timer' : `${tag} timer`} is done!</Text>
+              <Text>Would you like to take a break for {breakTime} minutes?</Text>
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="blue" onClick={onClose}>
-                Close
+              <Button colorScheme="blue" onClick={onConfirm}>
+                Yes
+              </Button>
+              <Button colorScheme="red" onClick={onClose}>
+                No
               </Button>
             </ModalFooter>
           </>

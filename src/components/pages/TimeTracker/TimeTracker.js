@@ -13,8 +13,10 @@ function TimeTracker() {
     const { isLoggedIn } = useAuth();
     const { resetTimer, setTimeInMinutes, setSecondsElapsed, setTag, setIsRunning, setTimerStarted, isRunning } = useTimer();
     const [category, setCategory] = useState('');
-    const [focusTime, setFocusTime] = useState('25');
-    const [breakTime, setBreakTime] = useState('5');
+    const [focusTime, setFocusTime] = useState(25);
+    const [breakTime, setBreakTime] = useState(5);
+    const [presetFocusTime, setPresetFocusTime] = useState(null);
+    const [presetBreakTime, setPresetBreakTime] = useState(null);
     const [showTimer, setShowTimer] = useState(true); // Default to showing the timer
     const [isFreeTimer, setIsFreeTimer] = useState(true);
     const [startTimerInitially, setStartTimerInitially] = useState(false);
@@ -63,8 +65,8 @@ function TimeTracker() {
         console.log('Preset clicked:', { presetFocusTime, presetBreakTime, presetName });
         setIsRunning(false); // Pause any running timer
         resetTimer();
-        setFocusTime(presetFocusTime);
-        setBreakTime(presetBreakTime);
+        setPresetFocusTime(presetFocusTime);
+        setPresetBreakTime(presetBreakTime);
         setTag(presetName);
         setTimeInMinutes(presetFocusTime);
         setSecondsElapsed(0);
@@ -72,24 +74,6 @@ function TimeTracker() {
         setStartTimerInitially(false); // Ensure it doesn't trigger a start from initial state
         setTimerStarted(false);
         console.log('Preset applied and timer reset');
-    };
-
-    const handlePresetStart = () => {
-        setIsRunning(true);
-        setTimerStarted(true);
-        console.log('Preset timer started');
-    };
-
-    const handlePresetPause = () => {
-        setIsRunning(false);
-        console.log('Preset timer paused');
-    };
-
-    const handlePresetStop = () => {
-        setIsRunning(false);
-        setSecondsElapsed(0);
-        setTimerStarted(false);
-        console.log('Preset timer stopped');
     };
 
     const handleCreatePreset = async (name, focusTime, breakTime) => {
@@ -136,6 +120,8 @@ function TimeTracker() {
                                     <Timer
                                         focusTime={isFreeTimer ? null : focusTime}
                                         breakTime={isFreeTimer ? null : breakTime}
+                                        presetFocusTime={isFreeTimer ? null : presetFocusTime}
+                                        presetBreakTime={isFreeTimer ? null : presetBreakTime}
                                         isFreeTimer={isFreeTimer}
                                         startTimerInitially={startTimerInitially}
                                         setTimerStarted={setTimerStarted}
@@ -188,6 +174,7 @@ function TimeTracker() {
                                         <VStack align="center" flex="1">
                                             <Text>Focus Time</Text>
                                             <Select placeholder="Focus" value={focusTime} onChange={(e) => setFocusTime(e.target.value)}>
+                                                <option value="0.5">30 seconds</option>
                                                 <option value="25">25 minutes</option>
                                                 <option value="30">30 minutes</option>
                                                 <option value="45">45 minutes</option>
@@ -199,6 +186,7 @@ function TimeTracker() {
                                         <VStack align="center" flex="1">
                                             <Text>Break</Text>
                                             <Select placeholder="Break" value={breakTime} onChange={(e) => setBreakTime(e.target.value)}>
+                                                <option value="0.25">15 seconds</option>
                                                 <option value="5">5 minutes</option>
                                                 <option value="10">10 minutes</option>
                                                 <option value="15">15 minutes</option>

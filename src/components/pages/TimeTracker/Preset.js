@@ -45,6 +45,7 @@ const Preset = ({ isOpen, onClose, onSave }) => {
                     <FormControl id="focusTime" mb={4}>
                         <FormLabel>Focus Time (minutes)</FormLabel>
                         <Select placeholder="Select focus time" value={focusTime} onChange={(e) => setFocusTime(e.target.value)}>
+                            <option value="0.5">30 seconds</option>
                             <option value="15">15 minutes</option>
                             <option value="25">25 minutes</option>
                             <option value="30">30 minutes</option>
@@ -57,6 +58,7 @@ const Preset = ({ isOpen, onClose, onSave }) => {
                     <FormControl id="breakTime" mb={4}>
                         <FormLabel>Break Time (minutes)</FormLabel>
                         <Select placeholder="Select break time" value={breakTime} onChange={(e) => setBreakTime(e.target.value)}>
+                            <option value="0.25">15 seconds</option>
                             <option value="5">5 minutes</option>
                             <option value="10">10 minutes</option>
                             <option value="15">15 minutes</option>
