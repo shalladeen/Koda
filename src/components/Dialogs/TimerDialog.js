@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -12,6 +12,10 @@ import {
 } from '@chakra-ui/react';
 
 const TimerDialog = ({ isOpen, onClose, onConfirm, type, tag, breakTime }) => {
+  useEffect(() => {
+    console.log('TimerDialog isOpen state:', isOpen);
+  }, [isOpen]);
+
   const renderContent = () => {
     switch (type) {
       case 'stop':

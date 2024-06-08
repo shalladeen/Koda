@@ -6,9 +6,10 @@ export const TimerProvider = ({ children }) => {
   const [timeInMinutes, setTimeInMinutes] = useState(0);
   const [secondsElapsed, setSecondsElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [isBreak, setIsBreak] = useState(false); // New state for break time
   const [tag, setTag] = useState('none');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [timerStarted, setTimerStarted] = useState(false); // Ensure this state is provided by the context
+  const [timerStarted, setTimerStarted] = useState(false);
 
   useEffect(() => {
     let interval;
@@ -19,7 +20,11 @@ export const TimerProvider = ({ children }) => {
           if (newElapsed >= timeInMinutes * 60) {
             clearInterval(interval);
             setIsRunning(false);
-            setIsDialogOpen(true);
+            if (!isBreak) {
+              console.log('This line is opening the dialog in TimerContext');
+              setIsDialogOpen(true); // Ensure this is the desired logic
+              console.log('Timer finished. Setting dialog open.');
+            }
           }
           return newElapsed;
         });
@@ -28,15 +33,18 @@ export const TimerProvider = ({ children }) => {
       clearInterval(interval);
     }
     return () => clearInterval(interval);
-  }, [isRunning, timeInMinutes]);
+  }, [isRunning, timeInMinutes, isBreak]);
 
-  const closeDialog = () => setIsDialogOpen(false);
+  const closeDialog = () => {
+    console.log('Dialog closed.');
+    setIsDialogOpen(false);
+  };
 
   const resetTimer = () => {
     setTimeInMinutes(0);
     setSecondsElapsed(0);
     setIsRunning(false);
-    setTimerStarted(false); // Reset timerStarted
+    setTimerStarted(false);
   };
 
   return (
@@ -48,6 +56,8 @@ export const TimerProvider = ({ children }) => {
         setSecondsElapsed,
         isRunning,
         setIsRunning,
+        isBreak,
+        setIsBreak,
         tag,
         setTag,
         isDialogOpen,
@@ -55,7 +65,7 @@ export const TimerProvider = ({ children }) => {
         closeDialog,
         resetTimer,
         timerStarted,
-        setTimerStarted, // Provide setTimerStarted function
+        setTimerStarted,
       }}
     >
       {children}
