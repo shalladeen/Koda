@@ -16,67 +16,77 @@ import {
 import { useTimer } from '../../../context/TimerContext';
 import TimerDialog from '../../../Dialogs/TimerDialog';
 
-function Timer({ focusTime, breakTime, presetBreakTime, isFreeTimer, startTimerInitially, setTimerStarted }) {
+function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeTimer, startTimerInitially, setTimerStarted }) {
   const { timeInMinutes, setTimeInMinutes, secondsElapsed, setSecondsElapsed, isRunning, setIsRunning, isDialogOpen, closeDialog, resetTimer, tag, setIsDialogOpen } = useTimer();
   const [isBreak, setIsBreak] = useState(false);
   const [breakSecondsElapsed, setBreakSecondsElapsed] = useState(0);
   const [isStopDialogOpen, setIsStopDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState('continue'); // New state to handle dialog type
   const [currentBreakTime, setCurrentBreakTime] = useState(presetBreakTime || breakTime); // Set currentBreakTime
+  const [focusCompleted, setFocusCompleted] = useState(false); // State to track focus completion
 
   // Ensure hooks are called unconditionally
   const boxBg = useColorModeValue('white', 'gray.800');
   const breakBoxBg = useColorModeValue('gray.100', 'gray.700');
 
+  // Effect to initialize timer
   useEffect(() => {
-    if (focusTime && !isRunning && !isBreak) {
-      setTimeInMinutes(focusTime);
+    if ((presetFocusTime || focusTime) && !isRunning && !isBreak) {
+      setTimeInMinutes(presetFocusTime || focusTime);
       setSecondsElapsed(0);
       setBreakSecondsElapsed(0);
       setIsBreak(false);
       setCurrentBreakTime(presetBreakTime || breakTime); // Set currentBreakTime
-      console.log('Timer initialized with focusTime:', focusTime, 'and breakTime:', currentBreakTime);
+      setFocusCompleted(false); // Reset focus completion state
+      console.log('Timer initialized with focusTime:', presetFocusTime || focusTime, 'and breakTime:', currentBreakTime);
     }
-  }, [focusTime, presetBreakTime, breakTime, setTimeInMinutes, setSecondsElapsed, setBreakSecondsElapsed, setIsRunning, isBreak]);
+  }, [presetFocusTime, presetBreakTime, focusTime, breakTime, isRunning, isBreak, setTimeInMinutes, setSecondsElapsed, setBreakSecondsElapsed]);
 
+  // Effect to handle initial timer start
   useEffect(() => {
     if (startTimerInitially && !isRunning && !isBreak) {
       startTimer();
     }
   }, [startTimerInitially, isRunning, isBreak]);
 
+  // Effect to run focus timer
   useEffect(() => {
     let interval;
     if (isRunning && !isBreak) {
       interval = setInterval(() => {
         setSecondsElapsed(prev => {
-          const newElapsed = prev;
-          if (newElapsed >= timeInMinutes * 60) {
+          const newElapsed = prev + 1;
+          if (newElapsed >= (presetFocusTime || focusTime) * 60) {
             clearInterval(interval);
             setIsRunning(false);
-            setDialogType('continue'); // Set dialog type to continue
-            setIsDialogOpen(true); // Open dialog
-            setBreakSecondsElapsed(0);
-            console.log('Focus time completed, break started');
+            if (!focusCompleted) {
+              setDialogType('continue'); // Set dialog type to continue
+              setIsDialogOpen(true); // Open dialog only when focus time ends
+              setFocusCompleted(true); // Mark focus as completed
+              setBreakSecondsElapsed(0);
+              console.log('Focus time completed, break started');
+            }
           }
           return newElapsed;
         });
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isRunning, timeInMinutes, isBreak, setIsDialogOpen]);
+  }, [isRunning, presetFocusTime, focusTime, isBreak, setIsDialogOpen, setSecondsElapsed, focusCompleted]);
 
+  // Effect to run break timer
   useEffect(() => {
     let interval;
     if (isBreak && isRunning) {
       interval = setInterval(() => {
         setBreakSecondsElapsed(prev => {
-          const newElapsed = prev;
-          if (newElapsed >= currentBreakTime * 60) {
+          const newElapsed = prev + 1;
+          if (newElapsed >= (presetBreakTime || breakTime) * 60) {
             clearInterval(interval);
             setIsBreak(false);
             setSecondsElapsed(0);
-            setTimeInMinutes(focusTime);
+            setTimeInMinutes(presetFocusTime || focusTime);
+            setFocusCompleted(false); // Reset focus completion state for the next cycle
             setTimerStarted(true);
             startTimer(); // Automatically start the focus timer after the break
             console.log('Break completed, focus time resumed');
@@ -86,8 +96,7 @@ function Timer({ focusTime, breakTime, presetBreakTime, isFreeTimer, startTimerI
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isBreak, currentBreakTime, focusTime, isRunning, setTimeInMinutes, setSecondsElapsed, setTimerStarted]);
-  
+  }, [isBreak, presetBreakTime, breakTime, presetFocusTime, focusTime, isRunning, setTimeInMinutes, setSecondsElapsed, setTimerStarted]);
 
   const startTimer = () => {
     if (!isRunning && timeInMinutes > 0) {
@@ -122,13 +131,13 @@ function Timer({ focusTime, breakTime, presetBreakTime, isFreeTimer, startTimerI
     setIsRunning(false);
     setSecondsElapsed(0);
     setBreakSecondsElapsed(0);
-    setTimeInMinutes(focusTime); // Reset the timer to the initial focus time
+    setTimeInMinutes(presetFocusTime || focusTime); // Reset the timer to the initial focus time
     setTimerStarted(false);
     setIsBreak(false); // Reset break status
+    setFocusCompleted(false); // Reset focus completion state
     console.log('Timer stopped and reset');
   };
 
- 
   const handleContinueConfirm = () => {
     setIsDialogOpen(false);
     setIsBreak(true);
@@ -137,7 +146,6 @@ function Timer({ focusTime, breakTime, presetBreakTime, isFreeTimer, startTimerI
     console.log('Break started');
     startBreakTimer(); // Start the break timer after setting the state
   };
-  
 
   const handleContinueCancel = () => {
     setIsDialogOpen(false);
@@ -147,7 +155,7 @@ function Timer({ focusTime, breakTime, presetBreakTime, isFreeTimer, startTimerI
 
   const progress = isBreak
     ? 100 - ((breakSecondsElapsed / (currentBreakTime * 60)) * 100)
-    : 100 - ((secondsElapsed / (timeInMinutes * 60)) * 100);
+    : 100 - ((secondsElapsed / ((presetFocusTime || focusTime) * 60)) * 100);
 
   const handleSliderChange = (val) => {
     if (!isRunning) {
@@ -174,7 +182,7 @@ function Timer({ focusTime, breakTime, presetBreakTime, isFreeTimer, startTimerI
   };
 
   const progressColor = getProgressColor(100 - progress);
-  const nextBreakIn = !isBreak ? Math.ceil((timeInMinutes * 60 - secondsElapsed) / 60) : Math.ceil((currentBreakTime * 60 - breakSecondsElapsed) / 60);
+  const nextBreakIn = !isBreak ? Math.ceil(((presetFocusTime || focusTime) * 60 - secondsElapsed) / 60) : Math.ceil((currentBreakTime * 60 - breakSecondsElapsed) / 60);
 
   return (
     <Flex height="100%" direction="column" alignItems="start" justifyContent="center" width="100%">
@@ -189,7 +197,7 @@ function Timer({ focusTime, breakTime, presetBreakTime, isFreeTimer, startTimerI
             <CircularProgressLabel fontSize="4xl">
               {isBreak
                 ? `${Math.max(0, Math.floor((currentBreakTime * 60 - breakSecondsElapsed) / 60))}m ${Math.max(0, Math.round((currentBreakTime * 60 - breakSecondsElapsed) % 60))}s`
-                : `${Math.max(0, Math.floor((timeInMinutes * 60 - secondsElapsed) / 60))}m ${Math.max(0, Math.round((timeInMinutes * 60 - secondsElapsed) % 60))}s`}
+                : `${Math.max(0, Math.floor(((presetFocusTime || focusTime) * 60 - secondsElapsed) / 60))}m ${Math.max(0, Math.round(((presetFocusTime || focusTime) * 60 - secondsElapsed) % 60))}s`}
             </CircularProgressLabel>
           </CircularProgress>
           {!focusTime && !isBreak && (
