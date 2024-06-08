@@ -120,8 +120,8 @@ function TimeTracker() {
                                     <Timer
                                         focusTime={isFreeTimer ? null : focusTime}
                                         breakTime={isFreeTimer ? null : breakTime}
-                                        presetFocusTime={isFreeTimer ? null : presetFocusTime}
-                                        presetBreakTime={isFreeTimer ? null : presetBreakTime}
+                                        presetFocusTime={presetFocusTime}
+                                        presetBreakTime={presetBreakTime}
                                         isFreeTimer={isFreeTimer}
                                         startTimerInitially={startTimerInitially}
                                         setTimerStarted={setTimerStarted}
@@ -173,7 +173,7 @@ function TimeTracker() {
                                         </VStack>
                                         <VStack align="center" flex="1">
                                             <Text>Focus Time</Text>
-                                            <Select placeholder="Focus" value={focusTime} onChange={(e) => setFocusTime(e.target.value)}>
+                                            <Select placeholder="Focus" value={focusTime} onChange={(e) => setFocusTime(Number(e.target.value))}>
                                                 <option value="0.5">30 seconds</option>
                                                 <option value="25">25 minutes</option>
                                                 <option value="30">30 minutes</option>
@@ -185,7 +185,7 @@ function TimeTracker() {
                                         </VStack>
                                         <VStack align="center" flex="1">
                                             <Text>Break</Text>
-                                            <Select placeholder="Break" value={breakTime} onChange={(e) => setBreakTime(e.target.value)}>
+                                            <Select placeholder="Break" value={breakTime} onChange={(e) => setBreakTime(Number(e.target.value))}>
                                                 <option value="0.25">15 seconds</option>
                                                 <option value="5">5 minutes</option>
                                                 <option value="10">10 minutes</option>
