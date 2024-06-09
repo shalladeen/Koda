@@ -33,7 +33,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
     const effectiveFocusTime = presetFocusTime || focusTime || 0; // default to 0 if none provided
     const effectiveBreakTime = presetBreakTime || breakTime || 0; // default to 0 if none provided
 
-    if (!isRunning && !isBreak && !isPaused && secondsElapsed === 0) {
+    if (!isRunning && !isBreak && !isPaused) {
       setTimeInMinutes(effectiveFocusTime);
       setSecondsElapsed(0);
       setBreakSecondsElapsed(0);
