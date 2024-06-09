@@ -23,9 +23,9 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
   const [dialogType, setDialogType] = useState('continue'); // New state to handle dialog type
   const [currentBreakTime, setCurrentBreakTime] = useState(breakTime); // Set currentBreakTime
   const [isPaused, setIsPaused] = useState(false); // New state to handle pause state
+  const [isPresetActive, setIsPresetActive] = useState(false); // State to track if a preset is active
 
   // Ensure hooks are called unconditionally
-  const boxBg = useColorModeValue('white', 'gray.800');
   const breakBoxBg = useColorModeValue('gray.100', 'gray.700');
 
   // Effect to initialize timer
@@ -39,6 +39,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
       setBreakSecondsElapsed(0);
       setIsBreak(false);
       setCurrentBreakTime(effectiveBreakTime); // Set currentBreakTime
+      setIsPresetActive(!!presetFocusTime && !!presetBreakTime); // Set preset active if both preset times are provided
       console.log('Timer initialized with focusTime:', effectiveFocusTime, 'and breakTime:', effectiveBreakTime);
     }
   }, [presetFocusTime, presetBreakTime, focusTime, breakTime, isRunning, isBreak, isPaused, secondsElapsed, setTimeInMinutes, setSecondsElapsed, setBreakSecondsElapsed]);
@@ -129,6 +130,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
     setTimeInMinutes(0); // Reset the timer to 0
     setTimerStarted(false);
     setIsBreak(false); // Reset break status
+    setIsPresetActive(false); // Reset preset active status
     console.log('Timer stopped and reset');
   };
 
@@ -155,6 +157,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
     if (!isRunning) {
       setTimeInMinutes(Math.max(0, val));
       setSecondsElapsed(0);
+      setIsPresetActive(false); // Reset preset active status when slider is used
       console.log('Slider changed to:', val);
     }
   };
@@ -179,7 +182,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
 
   return (
     <Flex height="100%" direction="column" alignItems="center" justifyContent="center" width="100%">
-      <Box p={4} bg={boxBg} borderRadius="lg" position="relative" width="100%">
+      <Box p={4} borderRadius="lg" position="relative" width="100%">
         {isRunning && !isBreak && (
           <Text color="red" cursor="pointer" onClick={handleStopClick} position="absolute" right={3} top={2}>
             Stop
@@ -217,13 +220,15 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
           </Button>
         </Flex>
       </Box>
-      <Box p={4} bg={breakBoxBg} borderRadius="lg" width={{ base: '90%', md: '80%' }} textAlign="center" mt={4}>
-        {isBreak ? (
-          <Text fontSize="lg">Timer will start again in {`${Math.max(0, Math.floor((currentBreakTime * 60 - breakSecondsElapsed) / 60))}m ${Math.max(0, Math.round((currentBreakTime * 60 - breakSecondsElapsed) % 60))}s`}. Enjoy your break!</Text>
-        ) : (
-          <Text fontSize="lg">Next Break in {nextBreakIn} minutes</Text>
-        )}
-      </Box>
+      {isPresetActive && (
+        <Box p={4} bg={breakBoxBg} borderRadius="lg" width={{ base: '90%', md: '80%' }} textAlign="center" mt={4}>
+          {isBreak ? (
+            <Text fontSize="md">Timer will start again in {`${Math.max(0, Math.floor((currentBreakTime * 60 - breakSecondsElapsed) / 60))}m ${Math.max(0, Math.round((currentBreakTime * 60 - breakSecondsElapsed) % 60))}s`}. Enjoy your break!</Text>
+          ) : (
+            <Text fontSize="md">Next Break in {nextBreakIn} minutes</Text>
+          )}
+        </Box>
+      )}
       <TimerDialog
         isOpen={isDialogOpen}
         onClose={handleContinueCancel}

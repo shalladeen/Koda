@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import Preset from './Preset';
 import { createPreset, getPresets } from '../../../services/presetService';
 import { useTimer } from '../../context/TimerContext';
+import './Focus.css';  // Import the CSS file
 
 function TimeTracker() {
     // Color mode values
@@ -15,10 +16,13 @@ function TimeTracker() {
     const sidebarBgColor = useColorModeValue("gray.200", "gray.700");
     const textColor = useColorModeValue("black", "white");
     const containerBgColor = useColorModeValue('white', 'gray.800');
-    const buttonBgColor = useColorModeValue('lightblue', '#74808D');
+    const buttonBgColor = useColorModeValue('#63A9BF', '#74808D');
     const buttonText = useColorModeValue('black', 'white');
     const newPresetBgColor = useColorModeValue('white', 'gray.700');
     const newPresetText = useColorModeValue('black', 'white');
+    const gradientBg = useColorModeValue('linear(to-r, #EDF2F7, #e0f4ff)', 'linear(to-r, #2a2a2a, #424242)');
+    const progressColor = useColorModeValue('lightBlue', '#A1C3C7');
+    const emptySpaceColor = useColorModeValue('white', '#1a1a1a'); // Adding color for the empty space in dark mode
 
     // Hooks
     const navigate = useNavigate();
@@ -97,11 +101,13 @@ function TimeTracker() {
         }
     };
 
-    
-   
-
     return (
-        <Flex direction={{ base: "column", md: "row" }} bg={bgColor} minHeight="100vh">
+        <Flex direction={{ base: "column", md: "row" }} bg={bgColor} minHeight="100vh" position="relative" overflow="hidden">
+            {/* Add blurred circles in the background */}
+            <Box className="circle circle1" />
+            <Box className="circle circle2" />
+            <Box className="circle circle3" />
+            
             {/* Sidebar */}
             <Box
                 position={{ base: "static", md: "fixed" }}
@@ -120,7 +126,19 @@ function TimeTracker() {
             {/* Main Content */}
             <Box flex="1" ml={{ base: 0, md: sidebarWidth }} p={{ base: 2, md: 5 }} color={textColor}>
                 <Center height="100%">
-                    <Box p={6} borderWidth={1} borderRadius="lg" bg={containerBgColor} boxShadow="lg" width={{ base: '90%', md: '80%' }} maxWidth="1000px" alignItems="start" position="relative">
+                    <Box
+                        p={6}
+                        borderRadius="lg"
+                        bg={containerBgColor}
+                        width={{ base: '90%', md: '80%' }}
+                        maxWidth="1000px"
+                        alignItems="start"
+                        position="relative"
+                        zIndex="1"
+                        bgGradient={gradientBg}
+                        className="subtle-pattern"
+                        borderColor={useColorModeValue('gray.200', 'gray.700')}
+                    >
                         <Flex height="100%" direction={{ base: "column", md: "row" }} justifyContent="space-between" alignItems="start">
                             {showTimer ? (
                                 <>
@@ -133,6 +151,8 @@ function TimeTracker() {
                                             isFreeTimer={isFreeTimer}
                                             startTimerInitially={startTimerInitially}
                                             setTimerStarted={setTimerStarted}
+                                            progressColor={progressColor} // Pass progress color to the Timer component
+                                            emptySpaceColor={emptySpaceColor} // Pass empty space color to the Timer component
                                         />
                                     </Box>
                                     <VStack flex={{ base: '1', md: '1' }} spacing={4} align="stretch" p={4}>
