@@ -46,10 +46,8 @@ function TimeTracker() {
     };
 
     const handleStartTimer = () => {
-        if (isFreeTimer || (category && focusTime && breakTime)) {
+        if (isFreeTimer || (focusTime && breakTime)) {
             setShowTimer(true);
-            setStartTimerInitially(true);
-            setTimerStarted(true);
             console.log('Timer started manually');
         }
     };
