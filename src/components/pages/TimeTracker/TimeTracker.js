@@ -9,6 +9,18 @@ import { createPreset, getPresets } from '../../../services/presetService';
 import { useTimer } from '../../context/TimerContext';
 
 function TimeTracker() {
+    // Color mode values
+    const sidebarWidth = { base: "60px", md: "150px" };
+    const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
+    const sidebarBgColor = useColorModeValue("gray.200", "gray.700");
+    const textColor = useColorModeValue("black", "white");
+    const containerBgColor = useColorModeValue('white', 'gray.800');
+    const buttonBgColor = useColorModeValue('lightblue', '#74808D');
+    const buttonText = useColorModeValue('black', 'white');
+    const newPresetBgColor = useColorModeValue('white', 'gray.700');
+    const newPresetText = useColorModeValue('black', 'white');
+
+    // Hooks
     const navigate = useNavigate();
     const { isLoggedIn } = useAuth();
     const { resetTimer, setTimeInMinutes, setSecondsElapsed, setTag, setIsRunning, setTimerStarted, isRunning } = useTimer();
@@ -17,7 +29,7 @@ function TimeTracker() {
     const [breakTime, setBreakTime] = useState(5);
     const [presetFocusTime, setPresetFocusTime] = useState(null);
     const [presetBreakTime, setPresetBreakTime] = useState(null);
-    const [showTimer, setShowTimer] = useState(true); // Default to showing the timer
+    const [showTimer, setShowTimer] = useState(true);
     const [isFreeTimer, setIsFreeTimer] = useState(true);
     const [startTimerInitially, setStartTimerInitially] = useState(false);
     const [presets, setPresets] = useState([]);
@@ -85,23 +97,20 @@ function TimeTracker() {
         }
     };
 
-    const sidebarWidth = { base: "60px", md: "150px" };
-    const sidebarBgColor = useColorModeValue("gray.200", "gray.700");
-    const mainContentBgColor = useColorModeValue("#f9fdff", "#1c1c1c");
-    const textColor = useColorModeValue("black", "white");
-    const containerBgColor = useColorModeValue('white', 'gray.800');
+    
+   
 
     return (
-        <Flex direction="row" bg={mainContentBgColor} height="100vh">
+        <Flex direction={{ base: "column", md: "row" }} bg={bgColor} minHeight="100vh">
             {/* Sidebar */}
             <Box
-                position="fixed"
+                position={{ base: "static", md: "fixed" }}
                 left="0"
                 top="0"
                 bottom="0"
                 width={sidebarWidth}
                 bg={sidebarBgColor}
-                height="100vh"
+                height={{ base: "auto", md: "100vh" }}
                 color={textColor}
                 zIndex="10"
             >
@@ -109,22 +118,24 @@ function TimeTracker() {
             </Box>
 
             {/* Main Content */}
-            <Box flex="1" ml={sidebarWidth} p={{ base: 2, md: 5 }} color={textColor}>
+            <Box flex="1" ml={{ base: 0, md: sidebarWidth }} p={{ base: 2, md: 5 }} color={textColor}>
                 <Center height="100%">
-                    <Box p={6} borderWidth={1} borderRadius="lg" bg={containerBgColor} boxShadow="lg" width={{ base: '90%', md: '50%' }} height={{ base: '60vh', md: '40vh' }} alignItems="start" position="relative">
-                        <Flex height="100%" direction="column">
+                    <Box p={6} borderWidth={1} borderRadius="lg" bg={containerBgColor} boxShadow="lg" width={{ base: '90%', md: '80%' }} maxWidth="1000px" alignItems="start" position="relative">
+                        <Flex height="100%" direction={{ base: "column", md: "row" }} justifyContent="space-between" alignItems="start">
                             {showTimer ? (
-                                <Flex height="100%" direction="row" justifyContent="space-between">
-                                    <Timer
-                                        focusTime={isFreeTimer ? null : focusTime}
-                                        breakTime={isFreeTimer ? null : breakTime}
-                                        presetFocusTime={presetFocusTime}
-                                        presetBreakTime={presetBreakTime}
-                                        isFreeTimer={isFreeTimer}
-                                        startTimerInitially={startTimerInitially}
-                                        setTimerStarted={setTimerStarted}
-                                    />
-                                    <VStack spacing={4} align="stretch" p={4}>
+                                <>
+                                    <Box flex={{ base: '1', md: '2' }} mb={{ base: 6, md: 0 }}>
+                                        <Timer
+                                            focusTime={isFreeTimer ? null : focusTime}
+                                            breakTime={isFreeTimer ? null : breakTime}
+                                            presetFocusTime={presetFocusTime}
+                                            presetBreakTime={presetBreakTime}
+                                            isFreeTimer={isFreeTimer}
+                                            startTimerInitially={startTimerInitially}
+                                            setTimerStarted={setTimerStarted}
+                                        />
+                                    </Box>
+                                    <VStack flex={{ base: '1', md: '1' }} spacing={4} align="stretch" p={4}>
                                         <Box pb={4}>
                                             <Heading size="md" textAlign="center">
                                                 Presets
@@ -134,68 +145,71 @@ function TimeTracker() {
                                             {presets.map((preset) => (
                                                 <Button
                                                     key={preset._id}
-                                                    bg="lightblue"
+                                                    bg={buttonBgColor}
+                                                    color={buttonText}
                                                     onClick={() => handlePresetClick(preset.focusTime, preset.breakTime, preset.name)}
                                                     justifyContent="center"
                                                     alignItems="center"
-                                                    flexBasis={{ base: '45%', md: '30%' }}
+                                                    flexBasis={{ base: '45%', md: '45%' }}
                                                 >
                                                     <VStack spacing={0} p={3}>
-                                                        <Text>{preset.name}</Text>
-                                                        <Text>{preset.focusTime} minutes</Text>
+                                                        <Text fontSize={{ base: 'sm', md: 'md' }}>{preset.name}</Text>
+                                                        <Text fontSize={{ base: 'sm', md: 'md' }}>{preset.focusTime} minutes</Text>
                                                     </VStack>
                                                 </Button>
                                             ))}
-                                            <Button bg="white" onClick={() => setIsPresetModalOpen(true)} flexBasis={{ base: '45%', md: '30%' }}>
-                                                + New Preset
+                                            <Button bg={newPresetBgColor} color={newPresetText} onClick={() => setIsPresetModalOpen(true)} flexBasis={{ base: '45%', md: '45%' }}>
+                                                <Text fontSize={{ base: 'sm', md: 'md' }}>+ New Preset</Text>
                                             </Button>
                                         </HStack>
                                     </VStack>
-                                </Flex>
+                                </>
                             ) : (
-                                <VStack spacing={4} align="stretch" p={10}>
-                                    <Box pb={10} borderBottomWidth={1} mb={10}>
-                                        <Heading size="md" textAlign="center">
-                                            What are we focusing on today?
-                                        </Heading>
-                                    </Box>
-                                    <HStack spacing={6} width="100%" pb={10} >
-                                        <VStack align="center" flex="1">
-                                            <Text>Category</Text>
-                                            <Select placeholder="Category" onChange={(e) => setCategory(e.target.value)}>
-                                                <option value="work">Work</option>
-                                                <option value="study">Study</option>
-                                                <option value="exercise">Exercise</option>
-                                                <option value="leisure">Leisure</option>
-                                            </Select>
-                                        </VStack>
-                                        <VStack align="center" flex="1">
-                                            <Text>Focus Time</Text>
-                                            <Select placeholder="Focus" value={focusTime} onChange={(e) => setFocusTime(Number(e.target.value))}>
-                                                <option value="0.5">30 seconds</option>
-                                                <option value="25">25 minutes</option>
-                                                <option value="30">30 minutes</option>
-                                                <option value="45">45 minutes</option>
-                                                <option value="60">1 hour</option>
-                                                <option value="90">1.5 hours</option>
-                                                <option value="120">2 hours</option>
-                                            </Select>
-                                        </VStack>
-                                        <VStack align="center" flex="1">
-                                            <Text>Break</Text>
-                                            <Select placeholder="Break" value={breakTime} onChange={(e) => setBreakTime(Number(e.target.value))}>
-                                                <option value="0.25">15 seconds</option>
-                                                <option value="5">5 minutes</option>
-                                                <option value="10">10 minutes</option>
-                                                <option value="15">15 minutes</option>
-                                                <option value="30">30 minutes</option>
-                                            </Select>
-                                        </VStack>
-                                    </HStack>
-                                    <Button colorScheme="blue" onClick={handleStartTimer}>
-                                        Start Focus
-                                    </Button>
-                                </VStack>
+                                <Flex flex="1" justifyContent="center" alignItems="center">
+                                    <VStack spacing={4} align="stretch" p={10} width="100%">
+                                        <Box pb={10} borderBottomWidth={1} mb={10}>
+                                            <Heading size="md" textAlign="center">
+                                                What are we focusing on today?
+                                            </Heading>
+                                        </Box>
+                                        <HStack spacing={6} width="100%" pb={10} flexWrap="wrap">
+                                            <VStack align="center" flex="1">
+                                                <Text>Category</Text>
+                                                <Select placeholder="Category" onChange={(e) => setCategory(e.target.value)}>
+                                                    <option value="work">Work</option>
+                                                    <option value="study">Study</option>
+                                                    <option value="exercise">Exercise</option>
+                                                    <option value="leisure">Leisure</option>
+                                                </Select>
+                                            </VStack>
+                                            <VStack align="center" flex="1">
+                                                <Text>Focus Time</Text>
+                                                <Select placeholder="Focus" value={focusTime} onChange={(e) => setFocusTime(Number(e.target.value))}>
+                                                    <option value="0.5">30 seconds</option>
+                                                    <option value="25">25 minutes</option>
+                                                    <option value="30">30 minutes</option>
+                                                    <option value="45">45 minutes</option>
+                                                    <option value="60">1 hour</option>
+                                                    <option value="90">1.5 hours</option>
+                                                    <option value="120">2 hours</option>
+                                                </Select>
+                                            </VStack>
+                                            <VStack align="center" flex="1">
+                                                <Text>Break</Text>
+                                                <Select placeholder="Break" value={breakTime} onChange={(e) => setBreakTime(Number(e.target.value))}>
+                                                    <option value="0.25">15 seconds</option>
+                                                    <option value="5">5 minutes</option>
+                                                    <option value="10">10 minutes</option>
+                                                    <option value="15">15 minutes</option>
+                                                    <option value="30">30 minutes</option>
+                                                </Select>
+                                            </VStack>
+                                        </HStack>
+                                        <Button colorScheme="blue" onClick={handleStartTimer}>
+                                            Start Focus
+                                        </Button>
+                                    </VStack>
+                                </Flex>
                             )}
                             <Box position="absolute" bottom={4} right={4}>
                                 <FormControl display="flex" alignItems="center">

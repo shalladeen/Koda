@@ -8,13 +8,21 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  Text
+  Text,
+  useColorModeValue
 } from '@chakra-ui/react';
 
 const TimerDialog = ({ isOpen, onClose, onConfirm, type, tag, breakTime }) => {
   useEffect(() => {
     console.log('TimerDialog isOpen state:', isOpen);
   }, [isOpen]);
+
+  const modalBgColor = useColorModeValue('white', 'gray.800');
+  const modalTextColor = useColorModeValue('black', 'white');
+  const buttonCancel = useColorModeValue('black', 'gray.300');
+  const buttonCancelText = useColorModeValue('white', 'black');
+  const buttonBgColor = useColorModeValue('#63A9BF', '#4E8098');
+  const buttonTextColor = useColorModeValue('white', 'black');
 
   const renderContent = () => {
     switch (type) {
@@ -27,10 +35,10 @@ const TimerDialog = ({ isOpen, onClose, onConfirm, type, tag, breakTime }) => {
               <Text>Are you sure you want to stop this timer?</Text>
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="red" onClick={onConfirm}>
+              <Button backgroundColor={buttonBgColor} color={buttonTextColor} onClick={onConfirm} mr={3}>
                 Yes
               </Button>
-              <Button colorScheme="blue" onClick={onClose}>
+              <Button backgroundColor={buttonCancel} color={buttonCancelText} onClick={onClose}>
                 No
               </Button>
             </ModalFooter>
@@ -45,10 +53,10 @@ const TimerDialog = ({ isOpen, onClose, onConfirm, type, tag, breakTime }) => {
               <Text>Would you like to take a break for {breakTime} minutes?</Text>
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="blue" onClick={onConfirm}>
+              <Button backgroundColor={buttonBgColor} color={buttonTextColor} onClick={onConfirm} mr={3}>
                 Yes
               </Button>
-              <Button colorScheme="red" onClick={onClose}>
+              <Button backgroundColor={buttonCancel} color={buttonCancelText} onClick={onClose}>
                 No
               </Button>
             </ModalFooter>
@@ -57,10 +65,12 @@ const TimerDialog = ({ isOpen, onClose, onConfirm, type, tag, breakTime }) => {
     }
   };
 
+  
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent bg={modalBgColor} color={modalTextColor} borderRadius="lg">
         {renderContent()}
       </ModalContent>
     </Modal>

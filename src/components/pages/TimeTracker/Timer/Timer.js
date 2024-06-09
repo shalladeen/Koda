@@ -16,7 +16,7 @@ import {
 import { useTimer } from '../../../context/TimerContext';
 import TimerDialog from '../../../Dialogs/TimerDialog';
 
-function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeTimer, startTimerInitially, setTimerStarted }) {
+function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeTimer, startTimerInitially, setTimerStarted, progressColor }) {
   const { timeInMinutes, setTimeInMinutes, secondsElapsed, setSecondsElapsed, isRunning, setIsRunning, isBreak, setIsBreak, isDialogOpen, closeDialog, resetTimer, tag, setIsDialogOpen } = useTimer();
   const [breakSecondsElapsed, setBreakSecondsElapsed] = useState(0);
   const [isStopDialogOpen, setIsStopDialogOpen] = useState(false);
@@ -175,12 +175,11 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
     console.log('Stop cancelled');
   };
 
-  const progressColor = getProgressColor(100 - progress);
   const nextBreakIn = !isBreak ? Math.ceil((timeInMinutes * 60 - secondsElapsed) / 60) : Math.ceil((currentBreakTime * 60 - breakSecondsElapsed) / 60);
 
   return (
-    <Flex height="100%" direction="column" alignItems="start" justifyContent="center" width="100%">
-      <Box p={4} bg={boxBg} borderRadius="lg" position="relative">
+    <Flex height="100%" direction="column" alignItems="center" justifyContent="center" width="100%">
+      <Box p={4} bg={boxBg} borderRadius="lg" position="relative" width="100%">
         {isRunning && !isBreak && (
           <Text color="red" cursor="pointer" onClick={handleStopClick} position="absolute" right={3} top={2}>
             Stop
@@ -205,6 +204,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
               value={timeInMinutes}
               size="md"
               mt={4}
+              width="80%"
             >
               <SliderTrack>
                 <SliderFilledTrack />
@@ -217,7 +217,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
           </Button>
         </Flex>
       </Box>
-      <Box p={4} bg={breakBoxBg} borderRadius="lg" boxShadow="lg" width="100%" textAlign="center" mt={4}>
+      <Box p={4} bg={breakBoxBg} borderRadius="lg" width={{ base: '90%', md: '80%' }} textAlign="center" mt={4}>
         {isBreak ? (
           <Text fontSize="lg">Timer will start again in {`${Math.max(0, Math.floor((currentBreakTime * 60 - breakSecondsElapsed) / 60))}m ${Math.max(0, Math.round((currentBreakTime * 60 - breakSecondsElapsed) % 60))}s`}. Enjoy your break!</Text>
         ) : (
@@ -240,12 +240,6 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
       />
     </Flex>
   );
-}
-
-function getProgressColor(inverseProgress) {
-  if (inverseProgress < 33) return "green.400";
-  if (inverseProgress < 66) return "yellow.400";
-  return "red.400";
 }
 
 export default Timer;
