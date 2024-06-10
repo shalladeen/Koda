@@ -2,27 +2,28 @@ import React, { useState, useEffect } from 'react';
 import Timer from './Timer/Timer';
 import { useNavigate } from "react-router-dom";
 import Navbar from '../../nav/Navbar';
-import { Box, Flex, Center, VStack, HStack, useColorModeValue, Select, Button, Heading, Text, Switch, FormControl, FormLabel } from '@chakra-ui/react';
+import { Box, Flex, Center, VStack, HStack, useColorModeValue, Select, Button, Heading, Text, Switch, FormControl, FormLabel, IconButton } from '@chakra-ui/react';
 import { useAuth } from '../../context/AuthContext';
 import Preset from './Preset';
 import { createPreset, getPresets } from '../../../services/presetService';
 import { useTimer } from '../../context/TimerContext';
-import './Focus.css';  // Import the CSS file
+import './Focus.css'; 
 
 function TimeTracker() {
     // Color mode values
     const sidebarWidth = { base: "60px", md: "150px" };
+    const presetBorder = useColorModeValue('gray.400', 'gray.300');
     const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
     const sidebarBgColor = useColorModeValue("gray.200", "gray.700");
     const textColor = useColorModeValue("black", "white");
     const containerBgColor = useColorModeValue('white', 'gray.800');
-    const buttonBgColor = useColorModeValue('#63A9BF', '#74808D');
+    const buttonBgColor = useColorModeValue('lightblue', '#63A9BF');
     const buttonText = useColorModeValue('black', 'white');
     const newPresetBgColor = useColorModeValue('white', 'gray.700');
     const newPresetText = useColorModeValue('black', 'white');
-    const gradientBg = useColorModeValue('linear(to-r, #EDF2F7, #e0f4ff)', 'linear(to-r, #2a2a2a, #424242)');
+    const gradientBg = useColorModeValue('linear(to-r, #EEF9FF, #EEF9FF)', 'linear(to-r, #2a2a2a, #424242)');
     const progressColor = useColorModeValue('lightBlue', '#A1C3C7');
-    const emptySpaceColor = useColorModeValue('white', '#1a1a1a'); // Adding color for the empty space in dark mode
+    const emptySpaceColor = useColorModeValue('white', '#1a1a1a'); 
 
     // Hooks
     const navigate = useNavigate();
@@ -107,6 +108,10 @@ function TimeTracker() {
             <Box className="circle circle1" />
             <Box className="circle circle2" />
             <Box className="circle circle3" />
+            <Box className="circle circle4" />
+            <Box className="circle circle5" />
+            <Box className="circle circle6" />
+            <Box className="circle circle7" />
             
             {/* Sidebar */}
             <Box
@@ -124,14 +129,17 @@ function TimeTracker() {
             </Box>
 
             {/* Main Content */}
-            <Box flex="1" ml={{ base: 0, md: sidebarWidth }} p={{ base: 2, md: 5 }} color={textColor}>
-                <Center height="100%">
+            <Box flex="1" ml={{ base: 0, md: sidebarWidth }} p={{ base: 2, md: 5 }} color={textColor} display="flex" flexDirection="column" mt={{ base: 4, md: 8 }}>
+                <Box ml={4}>
+                    <Heading size="lg">Focus</Heading>
+                </Box>
+                <Center flex="1" mt={{ base: 0, md: -20 }}>
                     <Box
-                        p={6}
+                        p={10}
                         borderRadius="lg"
                         bg={containerBgColor}
-                        width={{ base: '90%', md: '80%' }}
-                        maxWidth="1000px"
+                        width={{ base: '90%', md: '80%', lg: '70%', xl: '60%' }}
+                        maxWidth="1200px"
                         alignItems="start"
                         position="relative"
                         zIndex="1"
@@ -195,7 +203,7 @@ function TimeTracker() {
                                         <HStack spacing={6} width="100%" pb={10} flexWrap="wrap">
                                             <VStack align="center" flex="1">
                                                 <Text>Category</Text>
-                                                <Select placeholder="Category" onChange={(e) => setCategory(e.target.value)}>
+                                                <Select placeholder="Category" borderColor={presetBorder} onChange={(e) => setCategory(e.target.value)}>
                                                     <option value="work">Work</option>
                                                     <option value="study">Study</option>
                                                     <option value="exercise">Exercise</option>
@@ -204,7 +212,7 @@ function TimeTracker() {
                                             </VStack>
                                             <VStack align="center" flex="1">
                                                 <Text>Focus Time</Text>
-                                                <Select placeholder="Focus" value={focusTime} onChange={(e) => setFocusTime(Number(e.target.value))}>
+                                                <Select placeholder="Focus" borderColor={presetBorder} value={focusTime} onChange={(e) => setFocusTime(Number(e.target.value))}>
                                                     <option value="0.5">30 seconds</option>
                                                     <option value="25">25 minutes</option>
                                                     <option value="30">30 minutes</option>
@@ -216,7 +224,7 @@ function TimeTracker() {
                                             </VStack>
                                             <VStack align="center" flex="1">
                                                 <Text>Break</Text>
-                                                <Select placeholder="Break" value={breakTime} onChange={(e) => setBreakTime(Number(e.target.value))}>
+                                                <Select placeholder="Break" borderColor={presetBorder} value={breakTime} onChange={(e) => setBreakTime(Number(e.target.value))}>
                                                     <option value="0.25">15 seconds</option>
                                                     <option value="5">5 minutes</option>
                                                     <option value="10">10 minutes</option>
@@ -225,7 +233,7 @@ function TimeTracker() {
                                                 </Select>
                                             </VStack>
                                         </HStack>
-                                        <Button colorScheme="blue" onClick={handleStartTimer}>
+                                        <Button backgroundColor={buttonBgColor} onClick={handleStartTimer}>
                                             Start Focus
                                         </Button>
                                     </VStack>

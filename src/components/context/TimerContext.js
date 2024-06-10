@@ -6,7 +6,7 @@ export const TimerProvider = ({ children }) => {
   const [timeInMinutes, setTimeInMinutes] = useState(0);
   const [secondsElapsed, setSecondsElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const [isBreak, setIsBreak] = useState(false); // New state for break time
+  const [isBreak, setIsBreak] = useState(false); 
   const [tag, setTag] = useState('none');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [timerStarted, setTimerStarted] = useState(false);
@@ -22,7 +22,7 @@ export const TimerProvider = ({ children }) => {
             setIsRunning(false);
             if (!isBreak) {
               console.log('This line is opening the dialog in TimerContext');
-              setIsDialogOpen(true); // Ensure this is the desired logic
+              setIsDialogOpen(true); 
               console.log('Timer finished. Setting dialog open.');
             }
           }

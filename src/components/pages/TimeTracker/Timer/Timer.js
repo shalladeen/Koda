@@ -1,18 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Button,
-  CircularProgress,
-  CircularProgressLabel,
-  Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  VStack,
-  Box,
-  Flex,
-  useColorModeValue,
-  Text,
-} from '@chakra-ui/react';
+  Button, CircularProgress, CircularProgressLabel, Slider, SliderTrack, SliderFilledTrack, SliderThumb,
+  Box, Flex, useColorModeValue, Text} from '@chakra-ui/react';
 import { useTimer } from '../../../context/TimerContext';
 import TimerDialog from '../../../Dialogs/TimerDialog';
 
@@ -20,26 +9,27 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
   const { timeInMinutes, setTimeInMinutes, secondsElapsed, setSecondsElapsed, isRunning, setIsRunning, isBreak, setIsBreak, isDialogOpen, closeDialog, resetTimer, tag, setIsDialogOpen } = useTimer();
   const [breakSecondsElapsed, setBreakSecondsElapsed] = useState(0);
   const [isStopDialogOpen, setIsStopDialogOpen] = useState(false);
-  const [dialogType, setDialogType] = useState('continue'); // New state to handle dialog type
-  const [currentBreakTime, setCurrentBreakTime] = useState(breakTime); // Set currentBreakTime
-  const [isPaused, setIsPaused] = useState(false); // New state to handle pause state
-  const [isPresetActive, setIsPresetActive] = useState(false); // State to track if a preset is active
+  const [dialogType, setDialogType] = useState('continue'); 
+  const [currentBreakTime, setCurrentBreakTime] = useState(breakTime); 
+  const [isPaused, setIsPaused] = useState(false); 
+  const [isPresetActive, setIsPresetActive] = useState(false); 
 
   // Ensure hooks are called unconditionally
   const breakBoxBg = useColorModeValue('gray.100', 'gray.700');
+  const emptySpaceColor = useColorModeValue('white', '#1a1a1a'); 
 
   // Effect to initialize timer
   useEffect(() => {
-    const effectiveFocusTime = presetFocusTime || focusTime || 0; // default to 0 if none provided
-    const effectiveBreakTime = presetBreakTime || breakTime || 0; // default to 0 if none provided
+    const effectiveFocusTime = presetFocusTime || focusTime || 0; 
+    const effectiveBreakTime = presetBreakTime || breakTime || 0; 
 
     if (!isRunning && !isBreak && !isPaused) {
       setTimeInMinutes(effectiveFocusTime);
       setSecondsElapsed(0);
       setBreakSecondsElapsed(0);
       setIsBreak(false);
-      setCurrentBreakTime(effectiveBreakTime); // Set currentBreakTime
-      setIsPresetActive(!!presetFocusTime && !!presetBreakTime); // Set preset active if both preset times are provided
+      setCurrentBreakTime(effectiveBreakTime); 
+      setIsPresetActive(!!presetFocusTime && !!presetBreakTime); 
       console.log('Timer initialized with focusTime:', effectiveFocusTime, 'and breakTime:', effectiveBreakTime);
     }
   }, [presetFocusTime, presetBreakTime, focusTime, breakTime, isRunning, isBreak, isPaused, secondsElapsed, setTimeInMinutes, setSecondsElapsed, setBreakSecondsElapsed]);
@@ -64,8 +54,8 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
             setIsRunning(false);
             if (!isBreak) {
               console.log('This line is opening the dialog in Timer component focus timer');
-              setDialogType('continue'); // Set dialog type to continue
-              setIsDialogOpen(true); // Open dialog only when focus time ends
+              setDialogType('continue'); 
+              setIsDialogOpen(true); 
               setBreakSecondsElapsed(0);
               console.log('Focus time completed, break started');
             }
@@ -91,7 +81,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
             setSecondsElapsed(0);
             setTimeInMinutes(presetFocusTime || focusTime);
             setTimerStarted(true);
-            startFocusTimer(); // Automatically start the focus timer after the break
+            startFocusTimer(); 
             console.log('Break completed, focus time resumed');
           }
           return newElapsed;
@@ -112,14 +102,14 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
   const startBreakTimer = () => {
     if (!isRunning) {
       setIsRunning(true);
-      setTimerStarted(true); // Ensure timerStarted is set to true to prevent dialog from reappearing
+      setTimerStarted(true); 
       console.log('Break timer started');
     }
   };
 
   const pauseTimer = () => {
     setIsRunning(false);
-    setIsPaused(true); // Set pause state
+    setIsPaused(true); 
     console.log(`Timer paused at ${secondsElapsed} seconds (Time In Minutes: ${timeInMinutes} minutes)`);
   };
 
@@ -127,10 +117,10 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
     setIsRunning(false);
     setSecondsElapsed(0);
     setBreakSecondsElapsed(0);
-    setTimeInMinutes(0); // Reset the timer to 0
+    setTimeInMinutes(0);
     setTimerStarted(false);
-    setIsBreak(false); // Reset break status
-    setIsPresetActive(false); // Reset preset active status
+    setIsBreak(false); 
+    setIsPresetActive(false); 
     console.log('Timer stopped and reset');
   };
 
@@ -138,9 +128,9 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
     setIsDialogOpen(false);
     setIsBreak(true);
     setBreakSecondsElapsed(0);
-    setCurrentBreakTime(presetBreakTime || breakTime); // Set the break time for the timer
+    setCurrentBreakTime(presetBreakTime || breakTime); 
     console.log('Break started');
-    startBreakTimer(); // Start the break timer after setting the state
+    startBreakTimer(); 
   };
 
   const handleContinueCancel = () => {
@@ -157,7 +147,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
     if (!isRunning) {
       setTimeInMinutes(Math.max(0, val));
       setSecondsElapsed(0);
-      setIsPresetActive(false); // Reset preset active status when slider is used
+      setIsPresetActive(false);
       console.log('Slider changed to:', val);
     }
   };
@@ -184,12 +174,12 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
     <Flex height="100%" direction="column" alignItems="center" justifyContent="center" width="100%">
       <Box p={4} borderRadius="lg" position="relative" width="100%">
         {isRunning && !isBreak && (
-          <Text color="red" cursor="pointer" onClick={handleStopClick} position="absolute" right={3} top={2}>
-            Stop
+          <Text color="red" cursor="pointer" onClick={handleStopClick} position="absolute" ml={10} top={2}>
+            Reset
           </Text>
         )}
         <Flex direction="column" justifyContent="center" alignItems="center">
-          <CircularProgress value={progress} size="230px" thickness="12px" color={progressColor} max={100}>
+          <CircularProgress value={progress} size="230px" thickness="12px" color={progressColor} trackColor={emptySpaceColor} max={100}>
             <CircularProgressLabel fontSize="4xl">
               {isBreak
                 ? `${Math.max(0, Math.floor((currentBreakTime * 60 - breakSecondsElapsed) / 60))}m ${Math.max(0, Math.round((currentBreakTime * 60 - breakSecondsElapsed) % 60))}s`
