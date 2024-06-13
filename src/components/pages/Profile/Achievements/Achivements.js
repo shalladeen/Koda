@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Heading,
   HStack,
   IconButton,
-  Icon,
   useDisclosure,
   Modal,
   ModalOverlay,
@@ -12,87 +11,65 @@ import {
   ModalHeader,
   ModalCloseButton,
   ModalBody,
-  VStack,
   Grid,
-  GridItem
+  GridItem,
 } from '@chakra-ui/react';
-import { FaClock, FaCalendarDay, FaCalendarAlt, FaChevronRight, FaCalendarWeek } from 'react-icons/fa';
-import AchievementCard from '../Achievements/AchievmentCard';
+import { FaChevronRight } from 'react-icons/fa';
+import AchievementCard from './AchievmentCard';
+import { getAchievements, completeAchievement, getCompletedAchievements } from '../../../../services/achievementService';
 
 const Achievements = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [page, setPage] = useState(0);
+  const [achievements, setAchievements] = useState([]);
+  const [completedAchievements, setCompletedAchievements] = useState([]);
 
-  const achievements = [
-    {
-      icon: FaClock,
-      title: 'First Milestone',
-      description: 'Focused for 50 hours in total. Great start!',
-    },
-    {
-      icon: FaClock,
-      title: 'Steady Progress',
-      description: 'Focused for 100 hours in total. Keep it up!',
-    },
-    {
-      icon: FaClock,
-      title: 'Halfway There',
-      description: 'Focused for 200 hours in total. Impressive!',
-    },
-    {
-      icon: FaCalendarDay,
-      title: 'Daily Grind',
-      description: 'Studied for 7 days straight. Building habits!',
-    },
-    {
-      icon: FaCalendarAlt,
-      title: 'Consistency King',
-      description: 'Studied for 30 days straight. You’re unstoppable!',
-    },
-    // Add more achievements here if needed
-  ];
+  useEffect(() => {
+    const fetchAchievements = async () => {
+      try {
+        const data = await getAchievements();
+        setAchievements(data);
+      } catch (error) {
+        console.error('Error fetching achievements:', error);
+      }
+    };
 
-  const additionalAchievements = [
-    {
-      icon: FaClock,
-      title: 'Marathoner',
-      description: 'Focused for 500 hours in total. Outstanding!',
-    },
-    {
-      icon: FaCalendarWeek,
-      title: 'Weekly Warrior',
-      description: 'Studied for 4 weeks straight. Fantastic commitment!',
-    },
-    {
-      icon: FaCalendarAlt,
-      title: 'Monthly Master',
-      description: 'Studied for 6 months straight. Incredible!',
-    },
-    {
-      icon: FaCalendarAlt,
-      title: 'Yearly Hero',
-      description: 'Studied for a year straight. You’re a legend!',
-    },
-    {
-      icon: FaCalendarAlt,
-      title: 'Ultimate Achiever',
-      description: 'Unlocked all achievements. You’ve reached the pinnacle!',
-    },
-  ];
+    const fetchCompletedAchievements = async () => {
+      try {
+        const data = await getCompletedAchievements();
+        setCompletedAchievements(data.map(achievement => achievement._id));
+      } catch (error) {
+        console.error('Error fetching completed achievements:', error);
+      }
+    };
 
-  const itemsPerPage = 5;
-  const displayedAchievements = achievements.slice(0, itemsPerPage);
+    fetchAchievements();
+    fetchCompletedAchievements();
+  }, []);
+
+  const handleCompleteAchievement = async (achievementId) => {
+    try {
+      const updatedCompletedAchievements = await completeAchievement(achievementId);
+      setCompletedAchievements(updatedCompletedAchievements);
+    } catch (error) {
+      console.error('Error completing achievement:', error);
+    }
+  };
+
+  const isAchievementCompleted = (achievementId) => {
+    return completedAchievements.includes(achievementId);
+  };
 
   return (
     <Box w="full" p={4} borderRadius="md" bg="gray.200">
       <Heading as="h3" size="lg" mb={4}>Achievements</Heading>
-      <HStack spacing="100px" justify="center">
-        {displayedAchievements.map((achievement, index) => (
+      <HStack spacing="20px" justify="center">
+        {achievements.slice(0, 5).map((achievement, index) => (
           <AchievementCard
             key={index}
             icon={achievement.icon}
             title={achievement.title}
             description={achievement.description}
+            isCompleted={isAchievementCompleted(achievement._id)}
           />
         ))}
         <IconButton
@@ -111,14 +88,15 @@ const Achievements = () => {
         <ModalContent maxH="80vh" overflowY="auto">
           <ModalHeader>All Achievements</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Grid templateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap={10}>
-              {[...achievements, ...additionalAchievements].map((achievement, index) => (
+          <ModalBody p={6}>
+            <Grid templateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap={6}>
+              {achievements.map((achievement, index) => (
                 <GridItem key={index}>
                   <AchievementCard
                     icon={achievement.icon}
                     title={achievement.title}
                     description={achievement.description}
+                    isCompleted={isAchievementCompleted(achievement._id)}
                   />
                 </GridItem>
               ))}

@@ -1,20 +1,24 @@
 import React from 'react';
 import { Box, Heading, Text, Icon } from '@chakra-ui/react';
 
-const AchievementCard = ({ icon, title, description }) => {
+const AchievementCard = ({ icon, title, description, isCompleted, onClick }) => {
+  const cardBgColor = isCompleted ? 'pastelGreen.500' : 'gray.100';
+  const textColor = isCompleted ? 'black' : 'gray.500';
+
   return (
     <Box
-      p={5}
+      p={4}
       borderWidth={1}
       borderRadius="md"
-      bg="gray.100"
+      bg={cardBgColor}
       textAlign="center"
       boxShadow="md"
-      width="250px"
+      cursor="pointer"
+      onClick={onClick}
     >
-      <Icon as={icon} w={12} h={12} mb={2} color="blue.500" />
-      <Heading as="h4" size="md" mb={2}>{title}</Heading>
-      <Text>{description}</Text>
+      <Icon as={icon} w={12} h={12} mb={2} color={isCompleted ? 'blue.500' : 'gray.500'} />
+      <Heading as="h4" size="md" mb={2} color={textColor}>{title}</Heading>
+      <Text color={textColor}>{description}</Text>
     </Box>
   );
 };

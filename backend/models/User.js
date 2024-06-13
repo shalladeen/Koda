@@ -16,6 +16,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  completedAchievements: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Achievement',
+  }],
 });
 
 UserSchema.pre('save', async function (next) {

@@ -6,4 +6,5 @@ const { protect } = require('../middlewares/authMiddleware');
 router.post('/', protect, focusController.createFocusSession);
 router.get('/', protect, focusController.getFocusSessions);
 
+
 module.exports = router;
