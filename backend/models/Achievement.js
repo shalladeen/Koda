@@ -1,30 +1,35 @@
 const mongoose = require('mongoose');
 
 const AchievementSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false
+  },
   title: {
     type: String,
-    required: true,
+    required: true
   },
   description: {
     type: String,
-    required: true,
+    required: true
   },
   icon: {
-    type: String, // URL or icon name
-    required: true,
-  },
-  threshold: {
-    type: Number, // e.g., hours needed to complete this achievement
-    required: true,
+    type: String,
+    required: true
   },
   type: {
-    type: String, // e.g., 'focus', 'streak'
-    required: true,
+    type: String,
+    required: true
+  },
+  threshold: {
+    type: Number,
+    required: true
   },
   completed: {
     type: Boolean,
-    default: false,
-  },
+    default: false
+  }
 });
 
 const Achievement = mongoose.model('Achievement', AchievementSchema);

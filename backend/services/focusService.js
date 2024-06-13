@@ -1,4 +1,5 @@
-const FocusSession = require('../models/Focus.js');
+const FocusSession = require('../models/Focus');
+const { updateAchievements } = require('./achievementService');
 
 const createFocusSession = async (userId, startTime, endTime, duration) => {
   const session = new FocusSession({
@@ -8,6 +9,10 @@ const createFocusSession = async (userId, startTime, endTime, duration) => {
     duration
   });
   await session.save();
+
+  // Update achievements after saving the focus session
+  await updateAchievements(userId, duration);
+
   return session;
 };
 

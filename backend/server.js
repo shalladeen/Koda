@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const initializeAchievements = require('./scripts/initializeAchievements');
 
 dotenv.config();
 
@@ -13,8 +14,12 @@ app.use(cors({
   origin: 'http://localhost:3000'
 }));
 
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected'))
+  .then(async () => {
+    console.log('MongoDB connected');
+    await initializeAchievements(); 
+  })
   .catch((err) => console.error('MongoDB connection error:', err));
 
 // Import routes
@@ -33,9 +38,8 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/presets', presetRoutes);
 app.use('/api/focus', focusRoutes); 
-app.use('/api/achievements', achievementRoutes); 
+app.use('/api/achievements', achievementRoutes);
 
-// Define a simple route
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });

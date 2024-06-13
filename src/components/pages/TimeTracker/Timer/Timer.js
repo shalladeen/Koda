@@ -5,6 +5,7 @@ import {
 } from '@chakra-ui/react';
 import { useTimer } from '../../../context/TimerContext';
 import TimerDialog from '../../../Dialogs/TimerDialog';
+import { createFocusSession } from '../../../../services/focusService';
 
 function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeTimer, startTimerInitially, setTimerStarted, progressColor }) {
   const { timeInMinutes, setTimeInMinutes, secondsElapsed, setSecondsElapsed, isRunning, setIsRunning, isBreak, setIsBreak, isDialogOpen, closeDialog, resetTimer, tag, setIsDialogOpen, setStartTime, startTime, saveFocusSession } = useTimer();
@@ -58,7 +59,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
       }
       focusIntervalRef.current = setInterval(() => {
         setSecondsElapsed(prev => {
-          const newElapsed = prev; // Took out the +1 to prevent timer progressing by 2 seconds
+          const newElapsed = prev;
           if (newElapsed >= timeInMinutes * 60) {
             clearInterval(focusIntervalRef.current);
             setIsRunning(false);
@@ -66,8 +67,15 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
             setBreakSecondsElapsed(0);
             if (!hasSavedFocusSession.current) {
               const endTime = new Date();
-              saveFocusSession(startTime, endTime, newElapsed);
-              hasSavedFocusSession.current = true; 
+              // Save the focus session to the backend
+              createFocusSession(startTime, endTime, newElapsed)
+                .then(() => {
+                  hasSavedFocusSession.current = true; 
+                  console.log('Focus session saved to backend');
+                })
+                .catch(error => {
+                  console.error('Error saving focus session:', error);
+                });
               console.log('Focus time completed, break started');
             }
           }
@@ -80,7 +88,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
         clearInterval(focusIntervalRef.current);
       }
     };
-  }, [isRunning, timeInMinutes, isBreak, setIsDialogOpen, setSecondsElapsed, startTime, saveFocusSession]);
+  }, [isRunning, timeInMinutes, isBreak, setIsDialogOpen, setSecondsElapsed, startTime]);
 
   // Use effect for handling the break timer
   useEffect(() => {

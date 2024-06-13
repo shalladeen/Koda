@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const { sendWelcomeEmail } = require('./emailService'); // Import the email service
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -25,6 +26,9 @@ const register = async (username, email, password) => {
   });
 
   if (user) {
+    // Send welcome email
+    await sendWelcomeEmail(email, username);
+
     return {
       _id: user._id,
       username: user.username,
