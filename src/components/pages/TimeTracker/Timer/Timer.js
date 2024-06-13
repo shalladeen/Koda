@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Button, CircularProgress, CircularProgressLabel, Slider, SliderTrack, SliderFilledTrack, SliderThumb,
-  Box, Flex, useColorModeValue, Text} from '@chakra-ui/react';
+  Box, Flex, useColorModeValue, Text
+} from '@chakra-ui/react';
 import { useTimer } from '../../../context/TimerContext';
 import TimerDialog from '../../../Dialogs/TimerDialog';
 
 function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeTimer, startTimerInitially, setTimerStarted, progressColor }) {
-  const { timeInMinutes, setTimeInMinutes, secondsElapsed, setSecondsElapsed, isRunning, setIsRunning, isBreak, setIsBreak, isDialogOpen, closeDialog, resetTimer, tag, setIsDialogOpen } = useTimer();
+  const { timeInMinutes, setTimeInMinutes, secondsElapsed, setSecondsElapsed, isRunning, setIsRunning, isBreak, setIsBreak, isDialogOpen, closeDialog, resetTimer, tag, setIsDialogOpen, setStartTime, startTime, saveFocusSession } = useTimer();
   const [breakSecondsElapsed, setBreakSecondsElapsed] = useState(0);
   const [isStopDialogOpen, setIsStopDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState('continue'); 
@@ -14,11 +15,17 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
   const [isPaused, setIsPaused] = useState(false); 
   const [isPresetActive, setIsPresetActive] = useState(false); 
 
-  // Ensure hooks are called unconditionally
   const breakBoxBg = useColorModeValue('gray.100', 'gray.700');
   const emptySpaceColor = useColorModeValue('white', '#1a1a1a'); 
 
-  // Effect to initialize timer
+  // Refs to store interval IDs
+  const focusIntervalRef = useRef(null);
+  const breakIntervalRef = useRef(null);
+
+  // Ref to track if the focus session has been saved
+  const hasSavedFocusSession = useRef(false);
+
+  // Use effect for resetting the timer
   useEffect(() => {
     const effectiveFocusTime = presetFocusTime || focusTime || 0; 
     const effectiveBreakTime = presetBreakTime || breakTime || 0; 
@@ -30,33 +37,37 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
       setIsBreak(false);
       setCurrentBreakTime(effectiveBreakTime); 
       setIsPresetActive(!!presetFocusTime && !!presetBreakTime); 
+      hasSavedFocusSession.current = false; 
       console.log('Timer initialized with focusTime:', effectiveFocusTime, 'and breakTime:', effectiveBreakTime);
     }
-  }, [presetFocusTime, presetBreakTime, focusTime, breakTime, isRunning, isBreak, isPaused, secondsElapsed, setTimeInMinutes, setSecondsElapsed, setBreakSecondsElapsed]);
+  }, [presetFocusTime, presetBreakTime, focusTime, breakTime, isRunning, isBreak, isPaused, setTimeInMinutes, setSecondsElapsed, setBreakSecondsElapsed]);
 
-  // Effect to handle initial timer start
+  // Use effect for starting the timer
   useEffect(() => {
     if (startTimerInitially && !isRunning && !isBreak) {
       startFocusTimer();
     }
   }, [startTimerInitially, isRunning, isBreak]);
 
-  // Effect to run focus timer
+  // Use effect for handling the timer
   useEffect(() => {
-    let interval;
     if (isRunning && !isBreak) {
-      interval = setInterval(() => {
+      // Clear any existing interval
+      if (focusIntervalRef.current) {
+        clearInterval(focusIntervalRef.current);
+      }
+      focusIntervalRef.current = setInterval(() => {
         setSecondsElapsed(prev => {
-          const newElapsed = prev + 1;
-          console.log(`Elapsed Time: ${newElapsed} seconds, Time In Minutes: ${timeInMinutes} minutes`);
+          const newElapsed = prev; // Took out the +1 to prevent timer progressing by 2 seconds
           if (newElapsed >= timeInMinutes * 60) {
-            clearInterval(interval);
+            clearInterval(focusIntervalRef.current);
             setIsRunning(false);
-            if (!isBreak) {
-              console.log('This line is opening the dialog in Timer component focus timer');
-              setDialogType('continue'); 
-              setIsDialogOpen(true); 
-              setBreakSecondsElapsed(0);
+            setIsDialogOpen(true); 
+            setBreakSecondsElapsed(0);
+            if (!hasSavedFocusSession.current) {
+              const endTime = new Date();
+              saveFocusSession(startTime, endTime, newElapsed);
+              hasSavedFocusSession.current = true; 
               console.log('Focus time completed, break started');
             }
           }
@@ -64,37 +75,48 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
         });
       }, 1000);
     }
-    return () => clearInterval(interval);
-  }, [isRunning, timeInMinutes, isBreak, setIsDialogOpen, setSecondsElapsed]);
+    return () => {
+      if (focusIntervalRef.current) {
+        clearInterval(focusIntervalRef.current);
+      }
+    };
+  }, [isRunning, timeInMinutes, isBreak, setIsDialogOpen, setSecondsElapsed, startTime, saveFocusSession]);
 
-  // Effect to run break timer
+  // Use effect for handling the break timer
   useEffect(() => {
-    let interval;
     if (isBreak && isRunning) {
-      interval = setInterval(() => {
+      // Clear any existing interval
+      if (breakIntervalRef.current) {
+        clearInterval(breakIntervalRef.current);
+      }
+      breakIntervalRef.current = setInterval(() => {
         setBreakSecondsElapsed(prev => {
           const newElapsed = prev + 1;
-          console.log(`Break Elapsed Time: ${newElapsed} seconds, Break Time In Minutes: ${currentBreakTime} minutes`);
           if (newElapsed >= currentBreakTime * 60) {
-            clearInterval(interval);
+            clearInterval(breakIntervalRef.current);
             setIsBreak(false);
             setSecondsElapsed(0);
             setTimeInMinutes(presetFocusTime || focusTime);
             setTimerStarted(true);
-            startFocusTimer(); 
+            startFocusTimer();
             console.log('Break completed, focus time resumed');
           }
           return newElapsed;
         });
       }, 1000);
     }
-    return () => clearInterval(interval);
-  }, [isBreak, currentBreakTime, presetBreakTime, breakTime, presetFocusTime, focusTime, isRunning, setTimeInMinutes, setSecondsElapsed, setTimerStarted]);
+    return () => {
+      if (breakIntervalRef.current) {
+        clearInterval(breakIntervalRef.current);
+      }
+    };
+  }, [isBreak, isRunning, currentBreakTime, presetFocusTime, focusTime, setTimeInMinutes, setSecondsElapsed, setTimerStarted]);
 
   const startFocusTimer = () => {
     if (!isRunning && !isBreak) {
       setIsRunning(true);
       setTimerStarted(true);
+      setStartTime(new Date()); // Capture the start time
       console.log('Focus timer started');
     }
   };
@@ -121,6 +143,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
     setTimerStarted(false);
     setIsBreak(false); 
     setIsPresetActive(false); 
+    hasSavedFocusSession.current = false; 
     console.log('Timer stopped and reset');
   };
 

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createFocusSession } from '../../services/focusService';
 
 const TimerContext = createContext();
 
@@ -10,6 +11,7 @@ export const TimerProvider = ({ children }) => {
   const [tag, setTag] = useState('none');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [timerStarted, setTimerStarted] = useState(false);
+  const [startTime, setStartTime] = useState(null);
 
   useEffect(() => {
     let interval;
@@ -21,9 +23,9 @@ export const TimerProvider = ({ children }) => {
             clearInterval(interval);
             setIsRunning(false);
             if (!isBreak) {
-              console.log('This line is opening the dialog in TimerContext');
               setIsDialogOpen(true); 
-              console.log('Timer finished. Setting dialog open.');
+              const endTime = new Date();
+              saveFocusSession(startTime, endTime, newElapsed);
             }
           }
           return newElapsed;
@@ -36,7 +38,6 @@ export const TimerProvider = ({ children }) => {
   }, [isRunning, timeInMinutes, isBreak]);
 
   const closeDialog = () => {
-    console.log('Dialog closed.');
     setIsDialogOpen(false);
   };
 
@@ -45,6 +46,15 @@ export const TimerProvider = ({ children }) => {
     setSecondsElapsed(0);
     setIsRunning(false);
     setTimerStarted(false);
+  };
+
+  const saveFocusSession = async (start, end, duration) => {
+    try {
+      await createFocusSession(start, end, duration);
+      console.log('Focus session saved successfully');
+    } catch (error) {
+      console.error('Error saving focus session:', error);
+    }
   };
 
   return (
@@ -66,6 +76,7 @@ export const TimerProvider = ({ children }) => {
         resetTimer,
         timerStarted,
         setTimerStarted,
+        setStartTime, // Add setStartTime to the context
       }}
     >
       {children}

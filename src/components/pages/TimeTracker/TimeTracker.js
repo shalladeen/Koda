@@ -78,15 +78,15 @@ function TimeTracker() {
 
     const handlePresetClick = (presetFocusTime, presetBreakTime, presetName) => {
         console.log('Preset clicked:', { presetFocusTime, presetBreakTime, presetName });
-        setIsRunning(false); // Pause any running timer
+        setIsRunning(false); 
         resetTimer();
         setPresetFocusTime(presetFocusTime);
         setPresetBreakTime(presetBreakTime);
         setTag(presetName);
         setTimeInMinutes(presetFocusTime);
         setSecondsElapsed(0);
-        setShowTimer(true); // Ensure timer container is shown
-        setStartTimerInitially(false); // Ensure it doesn't trigger a start from initial state
+        setShowTimer(true);
+        setStartTimerInitially(false); 
         setTimerStarted(false);
         console.log('Preset applied and timer reset');
     };
