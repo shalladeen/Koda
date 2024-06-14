@@ -31,6 +31,7 @@ const presetRoutes = require('./routes/preset');
 const focusRoutes = require('./routes/focus');
 const achievementRoutes = require('./routes/achievement');
 const friendRoutes = require('./routes/friend');
+const userRoutes = require('./routes/user');
 
 // Use routes
 app.use('/api/auth', authRoutes);
@@ -41,6 +42,7 @@ app.use('/api/presets', presetRoutes);
 app.use('/api/focus', focusRoutes); 
 app.use('/api/achievements', achievementRoutes);
 app.use('/api/friends', friendRoutes);
+app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

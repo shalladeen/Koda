@@ -1,19 +1,32 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { getToken, logout } from '../../services/authService';
+import { getToken, logout, fetchUser, authLogin } from '../../services/authService';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!getToken());
+  const [user, setUser] = useState(null);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
   useEffect(() => {
-    setIsLoggedIn(!!getToken());
+    const initializeAuth = async () => {
+      if (getToken()) {
+        const userData = await fetchUser();
+        if (userData) {
+          setUser(userData);
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      }
+    };
+    initializeAuth();
   }, []);
 
   const handleLogout = () => {
     logout();
     setIsLoggedIn(false);
+    setUser(null);
     setIsLogoutDialogOpen(true);
   };
 
@@ -21,12 +34,17 @@ export const AuthProvider = ({ children }) => {
     setIsLogoutDialogOpen(false);
   };
 
-  const login = () => {
-    setIsLoggedIn(true);
+  const login = async (email, password) => {
+    const response = await authLogin(email, password);
+    if (response.token) {
+      const userData = await fetchUser();
+      setUser(userData);
+      setIsLoggedIn(true);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, handleLogout, login, isLogoutDialogOpen, closeLogoutDialog }}>
+    <AuthContext.Provider value={{ isLoggedIn, handleLogout, login, isLogoutDialogOpen, closeLogoutDialog, user }}>
       {children}
     </AuthContext.Provider>
   );

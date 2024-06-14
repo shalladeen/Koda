@@ -5,7 +5,7 @@ import {
   VStack, HStack, useColorModeValue, InputGroup, InputLeftElement, InputRightElement
 } from '@chakra-ui/react';
 import { FaGoogle, FaFacebook, FaGithub, FaLinkedin, FaUser, FaLock, FaEnvelope, FaEye, FaEyeSlash } from 'react-icons/fa';
-import { register, login } from '../../../services/authService';
+import { register, authLogin } from '../../../services/authService';
 import { useAuth } from '../../context/AuthContext';
 
 function SignupPage() {
@@ -17,7 +17,7 @@ function SignupPage() {
   const [error, setError] = useState('');
   const formBackground = useColorModeValue('gray.50', 'gray.700');
   const navigate = useNavigate();
-  const { login: authLogin } = useAuth();
+  const { login } = useAuth(); // Use the login function from AuthContext
 
   const toggleForm = () => setIsSignUpActive(!isSignUpActive);
   const toggleShowPassword = () => setShowPassword(!showPassword);
@@ -27,7 +27,7 @@ function SignupPage() {
     try {
       const response = await register(username, email, password);
       console.log('Registration successful:', response);
-      authLogin(); // Update auth context with user data
+      await login(email, password); // Update auth context with user data
       navigate('/');
     } catch (err) {
       if (err.response && err.response.data) {
@@ -41,9 +41,9 @@ function SignupPage() {
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await login(email, password);
+      const response = await authLogin(email, password);
       console.log('Login successful:', response);
-      authLogin(); // Update auth context with user data
+      await login(email, password); // Update auth context with user data
       navigate('/');
     } catch (err) {
       if (err.response && err.response.data) {
