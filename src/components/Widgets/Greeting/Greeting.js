@@ -6,7 +6,7 @@ function WelcomeGreeting({ compact = false }) {
 
     return (
         <Box textAlign="left" py={compact ? 1 : 10} px={compact ? 2 : 10} borderRadius="lg">
-            <Heading color={textColor} size={compact ? 'sm' : 'lg'}>
+            <Heading color={textColor} size={compact ? 'lg' : 'lg'} mt={16}>
                 Dashboard
             </Heading>
         </Box>

@@ -99,9 +99,9 @@ function Home() {
             mt={5}
           >
             {/* Left Column: Task and Recent Notes */}
-            <Stack spacing={5} w={{ base: "full", lg: "45%" }} flexShrink={0}>
+            <Stack spacing={5} w={{ base: "full", lg: "45%" }} flexShrink={0} mt={10}>
               <Task />
-              <Box mt={4}>
+              <Box mt={7}>
                 <Recent />
               </Box>
             </Stack>
