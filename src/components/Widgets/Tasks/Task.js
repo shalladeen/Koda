@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import {
-  Box, Button, Heading, Text, useDisclosure,
+  Box, Button, Heading, Text, useDisclosure, IconButton,
 } from '@chakra-ui/react';
+import { FiMoreHorizontal } from 'react-icons/fi';
 import TaskList from './TaskList';
 import TaskModal from './TaskModal';
 import TaskListModal from './TaskListModal';
@@ -9,8 +10,8 @@ import {
   createTask, getTasks, updateTask, deleteTask
 } from '../../../services/taskService';
 import {
-  loadTasks, loadLists, saveTasks, saveLists, addOrUpdateTask, deleteTask as deleteLocalTask, deleteList, addOrUpdateList
-} from './TaskUtils';
+  createList, getLists, updateList, deleteList
+} from '../../../services/listService';
 import { useTaskColors } from './TaskSettings';
 
 const Task = forwardRef((props, ref) => {
@@ -28,17 +29,18 @@ const Task = forwardRef((props, ref) => {
   const { primaryColor, secondaryColor, buttonColor, hoverColor } = useTaskColors();
 
   useEffect(() => {
-    async function fetchTasks() {
+    async function fetchData() {
       try {
         const fetchedTasks = await getTasks();
+        const fetchedLists = await getLists();
         setTasks(fetchedTasks);
+        setLists(fetchedLists);
       } catch (error) {
-        console.error('Error fetching tasks:', error);
+        console.error('Error fetching data:', error);
       }
     }
 
-    fetchTasks();
-    setLists(loadLists());
+    fetchData();
   }, []);
 
   useImperativeHandle(ref, () => ({
@@ -110,28 +112,44 @@ const Task = forwardRef((props, ref) => {
     onListOpen();
   };
 
-  const saveList = () => {
+  const saveList = async () => {
     if (!listName.trim()) {
       return;
     }
-    const updatedLists = addOrUpdateList(lists, listName);
-    setLists(updatedLists);
-    saveLists(updatedLists);
-    onListClose();
-    setListName('');
+    try {
+      let updatedLists;
+      if (currentList) {
+        const updatedList = await updateList(currentList._id, listName);
+        updatedLists = lists.map(list => list._id === currentList._id ? updatedList : list);
+      } else {
+        const newList = await createList(listName);
+        updatedLists = [...lists, newList];
+      }
+      setLists(updatedLists);
+      onListClose();
+      setListName('');
+    } catch (error) {
+      console.error('Error saving list:', error);
+    }
   };
 
-  const deleteListHandler = (listName) => {
-    const { updatedLists, updatedTasks } = deleteList(lists, tasks, listName);
-    setLists(updatedLists);
-    setTasks(updatedTasks);
-    if (selectedList === listName) setSelectedList(null);
-    onListClose();
+  const deleteListHandler = async (listId) => {
+    try {
+      await deleteList(listId);
+      const updatedLists = lists.filter(list => list._id !== listId);
+      const updatedTasks = tasks.filter(task => task.list !== listId);
+      setLists(updatedLists);
+      setTasks(updatedTasks);
+      if (selectedList === listId) setSelectedList(null);
+      onListClose();
+    } catch (error) {
+      console.error('Error deleting list:', error);
+    }
   };
 
-  const openEditListModal = (listName) => {
-    setCurrentList(listName);
-    setListName(listName);
+  const openEditListModal = (list) => {
+    setCurrentList(list);
+    setListName(list.name);
     onListOpen();
   };
 
@@ -152,7 +170,7 @@ const Task = forwardRef((props, ref) => {
         My Tasks | {completionPercent}%
       </Heading>
       <Text mb={4} color={secondaryColor} size="sm">
-        {['All', ...lists].map((listName, index) => (
+        {['All', ...lists.map(list => list.name)].map((listName, index) => (
           <Button
             key={index}
             variant="link"
@@ -164,6 +182,13 @@ const Task = forwardRef((props, ref) => {
             {listName}
           </Button>
         )).reduce((acc, x) => acc === null ? [x] : [...acc, '|', x], null)}
+        <IconButton
+          icon={<FiMoreHorizontal />}
+          variant="link"
+          color={secondaryColor}
+          onClick={onListOpen}
+          ml={2}
+        />
       </Text>
 
       <TaskList
