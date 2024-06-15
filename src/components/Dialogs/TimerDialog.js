@@ -62,6 +62,24 @@ const TimerDialog = ({ isOpen, onClose, onConfirm, type, tag, breakTime }) => {
             </ModalFooter>
           </>
         );
+        case 'slider':
+          return (
+            <>
+              <ModalHeader>Set Focus Time</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <Text>Timer's Up! Would you like to start another session?</Text>
+              </ModalBody>
+              <ModalFooter>
+                <Button backgroundColor={buttonBgColor} color={buttonTextColor} onClick={onConfirm} mr={3}>
+                  Yes
+                </Button>
+                <Button backgroundColor={buttonCancel} color={buttonCancelText} onClick={onClose}>
+                  No
+                </Button>
+              </ModalFooter>
+            </>
+          );
     }
   };
 

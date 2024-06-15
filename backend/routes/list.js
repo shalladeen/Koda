@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const List = require('../models/List');
 const listService = require('../services/listService');
 const { protect } = require('../middlewares/authMiddleware');
 
@@ -17,16 +18,15 @@ router.post('/', protect, async (req, res) => {
 });
 
 // Get all lists for the authenticated user
-router.get('/', protect, async (req, res) => {
-  const userId = req.user._id;
-
+router.get('/', async (req, res) => {
   try {
-    const lists = await listService.getLists(userId);
-    res.status(200).json(lists);
+    const lists = await List.find({});
+    res.json(lists);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
+
 
 // Update a list
 router.put('/:id', protect, async (req, res) => {
