@@ -33,9 +33,9 @@ const TaskList = ({
             <Text as={task.completed ? 's' : 'span'} fontWeight="bold" color={taskTextColor}>
               {task.name}
             </Text>
-            {task.list && (
+            {task.list && task.list.name && ( // Ensure task.list and task.list.name are defined
               <Text as={task.completed ? 's' : 'span'} color={secondaryColor}>
-                {' '}| {task.list}
+                {' '}| {task.list.name} {/* Render list name */}
               </Text>
             )}
           </Box>

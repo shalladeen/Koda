@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Task = require('../models/Task');
-const List = require('../models/List');
 
 const createTask = async (userId, name, desc, completed, listId) => {
   console.log('Creating task with data:', { userId, name, desc, completed, listId });
@@ -14,13 +13,26 @@ const createTask = async (userId, name, desc, completed, listId) => {
   }
 
   const task = new Task({ name, desc, completed, list: listId, user: userId });
-  await task.save();
-  return task.populate('list', 'name user'); // Populate list name and user
+  try {
+    await task.save();
+    console.log('Task created successfully:', task); // Log the created task
+    return task.populate('list', 'name'); // Populate list name
+  } catch (error) {
+    console.error('Error creating task:', error); // Log the error
+    throw error;
+  }
 };
 
 const getTasks = async (userId) => {
   console.log('Fetching tasks for user:', userId);
-  return await Task.find({ user: userId }).populate('list', 'name user'); // Populate list name and user
+  try {
+    const tasks = await Task.find({ user: userId }).populate('list', 'name'); // Populate list name
+    console.log('Fetched tasks:', tasks); // Log fetched tasks
+    return tasks;
+  } catch (error) {
+    console.error('Error fetching tasks:', error); // Log the error
+    throw error;
+  }
 };
 
 const updateTask = async (taskId, name, desc, completed, listId) => {
@@ -41,14 +53,28 @@ const updateTask = async (taskId, name, desc, completed, listId) => {
     task.completed = completed;
     task.list = listId;
     task.updatedAt = Date.now();
-    await task.save();
+    try {
+      await task.save();
+      console.log('Task updated successfully:', task); // Log updated task
+      return task.populate('list', 'name'); // Populate list name
+    } catch (error) {
+      console.error('Error updating task:', error); // Log the error
+      throw error;
+    }
   }
-  return task.populate('list', 'name user'); // Populate list name and user
+  return null;
 };
 
 const deleteTask = async (taskId) => {
   console.log('Deleting task with ID:', taskId);
-  return await Task.findByIdAndDelete(taskId);
+  try {
+    const task = await Task.findByIdAndDelete(taskId);
+    console.log('Task deleted successfully:', task); // Log deleted task
+    return task;
+  } catch (error) {
+    console.error('Error deleting task:', error); // Log the error
+    throw error;
+  }
 };
 
 module.exports = {

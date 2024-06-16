@@ -9,8 +9,12 @@ import TaskListModal from './TaskListModal';
 import { createTask, getTasks, updateTask, deleteTask } from '../../../services/taskService';
 import { getLists, createList, deleteList } from '../../../services/listService';
 import { useTaskColors } from './TaskSettings';
+import { useAuth } from '../../context/AuthContext'; // Import useAuth
 
 const Task = forwardRef((props, ref) => {
+  const { user } = useAuth(); // Access the user from AuthContext
+  console.log('Task component received user:', user); // Log user object
+
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const { isOpen: isListOpen, onOpen: onListOpen, onClose: onListClose } = useDisclosure();
@@ -27,17 +31,21 @@ const Task = forwardRef((props, ref) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const fetchedTasks = await getTasks();
+        const fetchedTasks = await getTasks(user._id); // Use user._id
+        console.log('Fetched tasks:', fetchedTasks); // Log fetched tasks
         setTasks(fetchedTasks);
-        const fetchedLists = await getLists();
+        const fetchedLists = await getLists(user._id); // Use user._id
+        console.log('Fetched lists:', fetchedLists); // Log fetched lists
         setLists(fetchedLists);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     }
 
-    fetchData();
-  }, []);
+    if (user) {
+      fetchData();
+    }
+  }, [user]);
 
   useImperativeHandle(ref, () => ({
     openAddTaskModal: onAddOpen,
@@ -49,7 +57,7 @@ const Task = forwardRef((props, ref) => {
       name: taskTitle,
       desc: taskDesc,
       completed: currentTask ? currentTask.completed : false,
-      list: selectedList._id || selectedList, // Ensure correct handling of list ID
+      list: selectedList._id || selectedList,
     };
 
     console.log('Saving task with data:', taskToSave);
@@ -60,7 +68,8 @@ const Task = forwardRef((props, ref) => {
         const updatedTask = await updateTask(currentTask._id, taskTitle, taskDesc, taskToSave.completed, taskToSave.list);
         updatedTasks = tasks.map(task => task._id === currentTask._id ? updatedTask : task);
       } else {
-        const newTask = await createTask(props.user._id, taskTitle, taskDesc, taskToSave.completed, taskToSave.list);
+        console.log('Creating task with user ID:', user._id); // Log user ID
+        const newTask = await createTask(user._id, taskTitle, taskDesc, taskToSave.completed, taskToSave.list);
         updatedTasks = [...tasks, newTask];
       }
       setTasks(updatedTasks);
@@ -115,7 +124,7 @@ const Task = forwardRef((props, ref) => {
       return;
     }
     try {
-      const newList = await createList(props.user._id, listName);
+      const newList = await createList(user._id, listName); // Use user._id
       setLists([...lists, newList]);
       onListClose();
       setListName('');

@@ -10,10 +10,12 @@ axios.interceptors.request.use(config => {
   return Promise.reject(error);
 });
 
-export const createTask = async (name, desc, completed, list) => {
+export const createTask = async (userId, name, desc, completed, list) => {
   const token = getToken();
   if (!token) throw new Error("No token found");
-  const response = await axios.post(API_URL, { name, desc, completed, list }, {
+  const taskData = { userId, name, desc, completed, list };
+  console.log('Creating task with:', taskData); // Log data
+  const response = await axios.post(API_URL, taskData, { // Pass userId
     headers: { Authorization: `Bearer ${token}` }
   });
   return response.data;
@@ -31,7 +33,9 @@ export const getTasks = async () => {
 export const updateTask = async (id, name, desc, completed, list) => {
   const token = getToken();
   if (!token) throw new Error("No token found");
-  const response = await axios.put(`${API_URL}/${id}`, { name, desc, completed, list }, {
+  const taskData = { name, desc, completed, list };
+  console.log('Updating task with:', taskData); // Log data
+  const response = await axios.put(`${API_URL}/${id}`, taskData, {
     headers: { Authorization: `Bearer ${token}` }
   });
   return response.data;

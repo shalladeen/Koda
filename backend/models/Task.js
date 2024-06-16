@@ -1,41 +1,37 @@
 const mongoose = require('mongoose');
 
-const TaskSchema = new mongoose.Schema({
+const taskSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
   desc: {
     type: String,
-    default: ''
   },
   completed: {
     type: Boolean,
-    default: false
+    required: true,
+    default: false,
   },
   list: {
-    type: String,
-    default: ''
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'List',
+    required: true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   updatedAt: {
-    type: Date
-  }
+    type: Date,
+  },
 });
 
-TaskSchema.pre('save', function (next) {
-  this.updatedAt = Date.now();
-  next();
-});
-
-const Task = mongoose.model('Task', TaskSchema);
+const Task = mongoose.model('Task', taskSchema);
 
 module.exports = Task;
