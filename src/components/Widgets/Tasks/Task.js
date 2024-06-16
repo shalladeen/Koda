@@ -1,17 +1,13 @@
 import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import {
-  Box, Button, Heading, Text, useDisclosure, IconButton,
+  Box, Button, Heading, Text, useDisclosure, IconButton, Menu, MenuButton, MenuList, MenuItem, MenuDivider,
 } from '@chakra-ui/react';
-import { FiMoreHorizontal } from 'react-icons/fi';
+import { MdMoreVert, MdEdit, MdDelete } from 'react-icons/md';
 import TaskList from './TaskList';
 import TaskModal from './TaskModal';
 import TaskListModal from './TaskListModal';
-import {
-  createTask, getTasks, updateTask, deleteTask
-} from '../../../services/taskService';
-import {
-  createList, getLists, updateList, deleteList
-} from '../../../services/listService';
+import { createTask, getTasks, updateTask, deleteTask } from '../../../services/taskService';
+import { getLists, createList, deleteList, updateList } from '../../../services/listService';
 import { useTaskColors } from './TaskSettings';
 
 const Task = forwardRef((props, ref) => {
@@ -32,8 +28,8 @@ const Task = forwardRef((props, ref) => {
     async function fetchData() {
       try {
         const fetchedTasks = await getTasks();
-        const fetchedLists = await getLists();
         setTasks(fetchedTasks);
+        const fetchedLists = await getLists();
         setLists(fetchedLists);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -102,7 +98,7 @@ const Task = forwardRef((props, ref) => {
     setCurrentTask(task);
     setTaskTitle(task.name);
     setTaskDesc(task.desc);
-    setSelectedList(task.list);
+    setSelectedList(task.list._id || task.list); // Ensure correct handling of list object
     onEditOpen();
   };
 
@@ -117,19 +113,12 @@ const Task = forwardRef((props, ref) => {
       return;
     }
     try {
-      let updatedLists;
-      if (currentList) {
-        const updatedList = await updateList(currentList._id, listName);
-        updatedLists = lists.map(list => list._id === currentList._id ? updatedList : list);
-      } else {
-        const newList = await createList(listName);
-        updatedLists = [...lists, newList];
-      }
-      setLists(updatedLists);
+      const newList = await createList(listName);
+      setLists([...lists, newList]);
       onListClose();
       setListName('');
     } catch (error) {
-      console.error('Error saving list:', error);
+      console.error('Error creating list:', error);
     }
   };
 
@@ -137,10 +126,7 @@ const Task = forwardRef((props, ref) => {
     try {
       await deleteList(listId);
       const updatedLists = lists.filter(list => list._id !== listId);
-      const updatedTasks = tasks.filter(task => task.list !== listId);
       setLists(updatedLists);
-      setTasks(updatedTasks);
-      if (selectedList === listId) setSelectedList(null);
       onListClose();
     } catch (error) {
       console.error('Error deleting list:', error);
@@ -160,8 +146,7 @@ const Task = forwardRef((props, ref) => {
     setSelectedList(null);
   };
 
-  // Calculate completion percentage based on selected list
-  const filteredTasks = selectedList ? tasks.filter(task => task.list === selectedList) : tasks;
+  const filteredTasks = selectedList ? tasks.filter(task => task.list && (task.list._id || task.list) === selectedList) : tasks;
   const completionPercent = filteredTasks.length ? Math.round((filteredTasks.filter(task => task.completed).length / filteredTasks.length) * 100) : 0;
 
   return (
@@ -176,19 +161,25 @@ const Task = forwardRef((props, ref) => {
             variant="link"
             textDecoration={selectedList === listName || (listName === 'All' && selectedList === null) ? 'underline' : 'none'}
             color={selectedList === listName || (listName === 'All' && selectedList === null) ? buttonColor : secondaryColor}
-            onClick={() => setSelectedList(listName === 'All' ? null : listName)}
+            onClick={() => setSelectedList(listName === 'All' ? null : lists.find(list => list.name === listName)._id)}
             mx={1}
           >
             {listName}
           </Button>
         )).reduce((acc, x) => acc === null ? [x] : [...acc, '|', x], null)}
-        <IconButton
-          icon={<FiMoreHorizontal />}
-          variant="link"
-          color={secondaryColor}
-          onClick={onListOpen}
-          ml={2}
-        />
+        <Menu>
+          <MenuButton
+            as={IconButton}
+            icon={<MdMoreVert />}
+            aria-label="Options"
+            size="sm"
+            _hover={{ backgroundColor: hoverColor }}
+            mr={2}
+          />
+          <MenuList>
+            <MenuItem onClick={openListModal}>Manage Lists</MenuItem>
+          </MenuList>
+        </Menu>
       </Text>
 
       <TaskList

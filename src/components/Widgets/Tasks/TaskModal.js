@@ -49,15 +49,15 @@ const TaskModal = ({
           <FormControl mt={4}>
             <FormLabel>Task List</FormLabel>
             <Select
-              value={selectedList}
+              value={selectedList || ''}
               onChange={handleListChange}
               placeholder="Select list"
               backgroundColor={hoverColor}
               color={taskTextColor}
               className="custom-select"
             >
-              {lists.map((list, index) => (
-                <option key={index} value={list}>{list}</option>
+              {lists.map((list) => (
+                <option key={list._id} value={list._id}>{list.name}</option>
               ))}
               <option value="createNew" className="create-new-option">Create new list</option>
             </Select>

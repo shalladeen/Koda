@@ -22,15 +22,13 @@ const TaskListModal = ({
       });
       return;
     }
-    console.log('Saving list:', listName);
     onSave();
     onClose();
   };
 
   const handleDelete = (list, e) => {
     e.stopPropagation();
-    console.log('Deleting list:', list);
-    onDelete(list);
+    onDelete(list._id);
   };
 
   return (
@@ -52,9 +50,9 @@ const TaskListModal = ({
           </FormControl>
           <Box mt={4}>
             <Text fontWeight="bold">{title === 'Edit List' ? 'Delete Existing Lists:' : 'Existing Lists:'}</Text>
-            {lists.map((list, index) => (
+            {lists.map((list) => (
               <Flex
-                key={index}
+                key={list._id}
                 alignItems="center"
                 mt={2}
                 borderRadius="md"
@@ -64,9 +62,9 @@ const TaskListModal = ({
                   _hover={{ backgroundColor: hoverColor, cursor: 'pointer' }}
                   p={2}
                   borderRadius="md"
-                  onClick={() => setListName(list)}
+                  onClick={() => setListName(list.name)}
                 >
-                  <Text color={taskTextColor}>{list}</Text>
+                  <Text color={taskTextColor}>{list.name}</Text>
                 </Box>
                 {title === 'Add List' && (
                   <IconButton

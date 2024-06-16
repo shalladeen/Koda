@@ -3,7 +3,11 @@ export const loadTasks = () => {
 };
 
 export const loadLists = () => {
-  return JSON.parse(localStorage.getItem('lists')) || ['Work', 'School', 'Personal'];
+  return JSON.parse(localStorage.getItem('lists')) || [
+    { _id: '1', name: 'Work' },
+    { _id: '2', name: 'School' },
+    { _id: '3', name: 'Personal' }
+  ];
 };
 
 export const saveTasks = (tasks) => {
@@ -15,8 +19,8 @@ export const saveLists = (lists) => {
 };
 
 export const addOrUpdateTask = (tasks, newTask) => {
-  const updatedTasks = tasks.map(task => task.id === newTask.id ? newTask : task);
-  if (!updatedTasks.some(task => task.id === newTask.id)) {
+  const updatedTasks = tasks.map(task => task._id === newTask._id ? newTask : task);
+  if (!updatedTasks.some(task => task._id === newTask._id)) {
     updatedTasks.push(newTask);
   }
   saveTasks(updatedTasks);
@@ -24,20 +28,23 @@ export const addOrUpdateTask = (tasks, newTask) => {
 };
 
 export const deleteTask = (tasks, taskId) => {
-  const updatedTasks = tasks.filter(task => task.id !== taskId);
+  const updatedTasks = tasks.filter(task => task._id !== taskId);
   saveTasks(updatedTasks);
   return updatedTasks;
 };
 
-export const addOrUpdateList = (lists, newListName) => {
-  const updatedLists = lists.includes(newListName) ? lists : [...lists, newListName];
+export const addOrUpdateList = (lists, newList) => {
+  const updatedLists = lists.map(list => list._id === newList._id ? newList : list);
+  if (!updatedLists.some(list => list._id === newList._id)) {
+    updatedLists.push(newList);
+  }
   saveLists(updatedLists);
   return updatedLists;
 };
 
-export const deleteList = (lists, tasks, listName) => {
-  const updatedLists = lists.filter(list => list !== listName);
-  const updatedTasks = tasks.map(task => task.list === listName ? { ...task, list: '' } : task);
+export const deleteList = (lists, tasks, listId) => {
+  const updatedLists = lists.filter(list => list._id !== listId);
+  const updatedTasks = tasks.map(task => task.list === listId ? { ...task, list: '' } : task);
   saveLists(updatedLists);
   saveTasks(updatedTasks);
   return { updatedLists, updatedTasks };
