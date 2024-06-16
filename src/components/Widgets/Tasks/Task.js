@@ -7,7 +7,7 @@ import TaskList from './TaskList';
 import TaskModal from './TaskModal';
 import TaskListModal from './TaskListModal';
 import { createTask, getTasks, updateTask, deleteTask } from '../../../services/taskService';
-import { getLists, createList, deleteList } from '../../../services/listService';
+import { getLists, createList, updateList, deleteList } from '../../../services/listService'; // Added updateList import
 import { useTaskColors } from './TaskSettings';
 import { useAuth } from '../../context/AuthContext'; // Import useAuth
 
@@ -57,7 +57,7 @@ const Task = forwardRef((props, ref) => {
       name: taskTitle,
       desc: taskDesc,
       completed: currentTask ? currentTask.completed : false,
-      list: selectedList._id || selectedList,
+      list: selectedList ? selectedList._id || selectedList : null,
     };
 
     console.log('Saving task with data:', taskToSave);
@@ -96,7 +96,7 @@ const Task = forwardRef((props, ref) => {
     const task = tasks.find(task => task._id === taskId);
     if (task) {
       try {
-        const updatedTask = await updateTask(taskId, task.name, task.desc, !task.completed, task.list._id || task.list);
+        const updatedTask = await updateTask(taskId, task.name, task.desc, !task.completed, task.list ? task.list._id || task.list : null);
         const updatedTasks = tasks.map(t => t._id === taskId ? updatedTask : t);
         setTasks(updatedTasks);
       } catch (error) {
@@ -109,7 +109,7 @@ const Task = forwardRef((props, ref) => {
     setCurrentTask(task);
     setTaskTitle(task.name);
     setTaskDesc(task.desc);
-    setSelectedList(task.list); // Ensure correct handling of list object
+    setSelectedList(task.list || null); // Ensure correct handling of list object
     onEditOpen();
   };
 
@@ -124,12 +124,18 @@ const Task = forwardRef((props, ref) => {
       return;
     }
     try {
-      const newList = await createList(user._id, listName); // Use user._id
-      setLists([...lists, newList]);
+      if (currentList) {
+        const updatedList = await updateList(currentList._id, listName);
+        setLists(lists.map(list => list._id === currentList._id ? updatedList : list));
+      } else {
+        const newList = await createList(user._id, listName); 
+        setLists([...lists, newList]);
+      }
       onListClose();
       setListName('');
+      setCurrentList(null); 
     } catch (error) {
-      console.error('Error creating list:', error);
+      console.error('Error saving list:', error);
     }
   };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter,
   ModalBody, ModalCloseButton, FormControl, FormLabel, Input, Button, Select,
@@ -11,11 +11,15 @@ const TaskModal = ({
 }) => {
   const { modalBgColor, modalTextColor, taskTextColor, buttonColor, hoverColor } = useTaskColors();
 
+  useEffect(() => {
+    console.log('Selected List:', selectedList); // Log selected list to ensure it's being set
+  }, [selectedList]);
+
   const handleListChange = (e) => {
     if (e.target.value === 'createNew') {
       onCreateNewList();
     } else {
-      setSelectedList(e.target.value);
+      setSelectedList(lists.find(list => list._id === e.target.value));
     }
   };
 
@@ -49,15 +53,15 @@ const TaskModal = ({
           <FormControl mt={4}>
             <FormLabel>Task List</FormLabel>
             <Select
-              value={selectedList || ''}
+              value={selectedList ? selectedList._id : ''}
               onChange={handleListChange}
               placeholder="Select list"
               backgroundColor={hoverColor}
               color={taskTextColor}
               className="custom-select"
             >
-              {lists.map((list) => (
-                <option key={list._id} value={list._id}>{list.name}</option>
+              {lists.map((list, index) => (
+                <option key={index} value={list._id}>{list.name}</option>
               ))}
               <option value="createNew" className="create-new-option">Create new list</option>
             </Select>
