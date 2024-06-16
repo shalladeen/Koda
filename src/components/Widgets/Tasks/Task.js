@@ -2,12 +2,12 @@ import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'rea
 import {
   Box, Button, Heading, Text, useDisclosure, IconButton, Menu, MenuButton, MenuList, MenuItem, MenuDivider,
 } from '@chakra-ui/react';
-import { MdMoreVert, MdEdit, MdDelete } from 'react-icons/md';
+import { MdMoreVert } from 'react-icons/md';
 import TaskList from './TaskList';
 import TaskModal from './TaskModal';
 import TaskListModal from './TaskListModal';
 import { createTask, getTasks, updateTask, deleteTask } from '../../../services/taskService';
-import { getLists, createList, deleteList, updateList } from '../../../services/listService';
+import { getLists, createList, deleteList } from '../../../services/listService';
 import { useTaskColors } from './TaskSettings';
 
 const Task = forwardRef((props, ref) => {
@@ -49,8 +49,10 @@ const Task = forwardRef((props, ref) => {
       name: taskTitle,
       desc: taskDesc,
       completed: currentTask ? currentTask.completed : false,
-      list: selectedList || '',
+      list: selectedList._id || selectedList, // Ensure correct handling of list ID
     };
+
+    console.log('Saving task with data:', taskToSave);
 
     try {
       let updatedTasks;
@@ -58,7 +60,7 @@ const Task = forwardRef((props, ref) => {
         const updatedTask = await updateTask(currentTask._id, taskTitle, taskDesc, taskToSave.completed, taskToSave.list);
         updatedTasks = tasks.map(task => task._id === currentTask._id ? updatedTask : task);
       } else {
-        const newTask = await createTask(taskTitle, taskDesc, taskToSave.completed, taskToSave.list);
+        const newTask = await createTask(props.user._id, taskTitle, taskDesc, taskToSave.completed, taskToSave.list);
         updatedTasks = [...tasks, newTask];
       }
       setTasks(updatedTasks);
@@ -66,7 +68,7 @@ const Task = forwardRef((props, ref) => {
       onEditClose();
       resetTaskForm();
     } catch (error) {
-      console.error('Error saving task:', error);
+      console.error('Error saving task:', error.response ? error.response.data : error.message);
     }
   };
 
@@ -85,7 +87,7 @@ const Task = forwardRef((props, ref) => {
     const task = tasks.find(task => task._id === taskId);
     if (task) {
       try {
-        const updatedTask = await updateTask(taskId, task.name, task.desc, !task.completed, task.list);
+        const updatedTask = await updateTask(taskId, task.name, task.desc, !task.completed, task.list._id || task.list);
         const updatedTasks = tasks.map(t => t._id === taskId ? updatedTask : t);
         setTasks(updatedTasks);
       } catch (error) {
@@ -98,7 +100,7 @@ const Task = forwardRef((props, ref) => {
     setCurrentTask(task);
     setTaskTitle(task.name);
     setTaskDesc(task.desc);
-    setSelectedList(task.list._id || task.list); // Ensure correct handling of list object
+    setSelectedList(task.list); // Ensure correct handling of list object
     onEditOpen();
   };
 
@@ -113,7 +115,7 @@ const Task = forwardRef((props, ref) => {
       return;
     }
     try {
-      const newList = await createList(listName);
+      const newList = await createList(props.user._id, listName);
       setLists([...lists, newList]);
       onListClose();
       setListName('');
@@ -146,7 +148,7 @@ const Task = forwardRef((props, ref) => {
     setSelectedList(null);
   };
 
-  const filteredTasks = selectedList ? tasks.filter(task => task.list && (task.list._id || task.list) === selectedList) : tasks;
+  const filteredTasks = selectedList ? tasks.filter(task => task.list && task.list._id === selectedList._id) : tasks;
   const completionPercent = filteredTasks.length ? Math.round((filteredTasks.filter(task => task.completed).length / filteredTasks.length) * 100) : 0;
 
   return (
@@ -159,9 +161,9 @@ const Task = forwardRef((props, ref) => {
           <Button
             key={index}
             variant="link"
-            textDecoration={selectedList === listName || (listName === 'All' && selectedList === null) ? 'underline' : 'none'}
-            color={selectedList === listName || (listName === 'All' && selectedList === null) ? buttonColor : secondaryColor}
-            onClick={() => setSelectedList(listName === 'All' ? null : lists.find(list => list.name === listName)._id)}
+            textDecoration={selectedList && selectedList.name === listName || (!selectedList && listName === 'All') ? 'underline' : 'none'}
+            color={selectedList && selectedList.name === listName || (!selectedList && listName === 'All') ? buttonColor : secondaryColor}
+            onClick={() => setSelectedList(listName === 'All' ? null : lists.find(list => list.name === listName))}
             mx={1}
           >
             {listName}
@@ -174,7 +176,7 @@ const Task = forwardRef((props, ref) => {
             aria-label="Options"
             size="sm"
             _hover={{ backgroundColor: hoverColor }}
-            mr={2}
+            ml={2}
           />
           <MenuList>
             <MenuItem onClick={openListModal}>Manage Lists</MenuItem>
