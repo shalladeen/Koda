@@ -16,7 +16,12 @@ const getLists = async (userId) => {
     throw new Error('Invalid user ID format');
   }
 
-  return await List.find({ user: userId });
+  // Add default lists if they don't exist
+  await addDefaultLists(userId);
+
+  const lists = await List.find({ user: userId });
+  console.log('Retrieved lists:', lists);
+  return lists;
 };
 
 const updateList = async (id, name) => {

@@ -20,6 +20,7 @@ export const createList = async (userId, name) => {
 
 export const getLists = async (userId) => {
   const response = await axios.get(`${API_URL}/user/${userId}`);
+  console.log('Fetched lists:', response.data); 
   return response.data;
 };
 

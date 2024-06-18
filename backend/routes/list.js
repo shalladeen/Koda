@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const List = require('../models/List');
 const listService = require('../services/listService');
 const { protect } = require('../middlewares/authMiddleware');
 
@@ -13,20 +12,23 @@ router.post('/', protect, async (req, res) => {
     const list = await listService.createList(userId, name);
     res.status(201).json(list);
   } catch (err) {
+    console.error('Error creating list:', err.message);
     res.status(400).json({ message: err.message });
   }
 });
 
 // Get all lists for the authenticated user
-router.get('/', async (req, res) => {
+router.get('/user/:userId', protect, async (req, res) => {
+  const userId = req.params.userId;
+
   try {
-    const lists = await List.find({});
-    res.json(lists);
+    const lists = await listService.getLists(userId);
+    res.status(200).json(lists);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('Error fetching lists:', err.message);
+    res.status(400).json({ message: err.message });
   }
 });
-
 
 // Update a list
 router.put('/:id', protect, async (req, res) => {
@@ -40,6 +42,7 @@ router.put('/:id', protect, async (req, res) => {
     }
     res.status(200).json(updatedList);
   } catch (err) {
+    console.error('Error updating list:', err.message);
     res.status(400).json({ message: err.message });
   }
 });
@@ -55,6 +58,7 @@ router.delete('/:id', protect, async (req, res) => {
     }
     res.status(200).json({ message: 'List deleted' });
   } catch (err) {
+    console.error('Error deleting list:', err.message);
     res.status(400).json({ message: err.message });
   }
 });

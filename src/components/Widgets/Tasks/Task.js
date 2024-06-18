@@ -7,13 +7,12 @@ import TaskList from './TaskList';
 import TaskModal from './TaskModal';
 import TaskListModal from './TaskListModal';
 import { createTask, getTasks, updateTask, deleteTask } from '../../../services/taskService';
-import { getLists, createList, updateList, deleteList } from '../../../services/listService'; // Added updateList import
+import { getLists, createList, updateList, deleteList } from '../../../services/listService';
 import { useTaskColors } from './TaskSettings';
-import { useAuth } from '../../context/AuthContext'; // Import useAuth
+import { useAuth } from '../../context/AuthContext';
 
 const Task = forwardRef((props, ref) => {
-  const { user } = useAuth(); // Access the user from AuthContext
-  console.log('Task component received user:', user); // Log user object
+  const { user } = useAuth();
 
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
@@ -31,11 +30,10 @@ const Task = forwardRef((props, ref) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const fetchedTasks = await getTasks(user._id); // Use user._id
-        console.log('Fetched tasks:', fetchedTasks); // Log fetched tasks
+        const fetchedTasks = await getTasks(user._id);
         setTasks(fetchedTasks);
-        const fetchedLists = await getLists(user._id); // Use user._id
-        console.log('Fetched lists:', fetchedLists); // Log fetched lists
+        const fetchedLists = await getLists(user._id);
+        console.log('Fetched lists:', fetchedLists); // Add logging to verify fetched lists
         setLists(fetchedLists);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -60,15 +58,12 @@ const Task = forwardRef((props, ref) => {
       list: selectedList ? selectedList._id || selectedList : null,
     };
 
-    console.log('Saving task with data:', taskToSave);
-
     try {
       let updatedTasks;
       if (currentTask) {
         const updatedTask = await updateTask(currentTask._id, taskTitle, taskDesc, taskToSave.completed, taskToSave.list);
         updatedTasks = tasks.map(task => task._id === currentTask._id ? updatedTask : task);
       } else {
-        console.log('Creating task with user ID:', user._id); // Log user ID
         const newTask = await createTask(user._id, taskTitle, taskDesc, taskToSave.completed, taskToSave.list);
         updatedTasks = [...tasks, newTask];
       }
@@ -109,7 +104,7 @@ const Task = forwardRef((props, ref) => {
     setCurrentTask(task);
     setTaskTitle(task.name);
     setTaskDesc(task.desc);
-    setSelectedList(task.list || null); // Ensure correct handling of list object
+    setSelectedList(task.list || null);
     onEditOpen();
   };
 
@@ -128,12 +123,13 @@ const Task = forwardRef((props, ref) => {
         const updatedList = await updateList(currentList._id, listName);
         setLists(lists.map(list => list._id === currentList._id ? updatedList : list));
       } else {
-        const newList = await createList(user._id, listName); 
+        const newList = await createList(user._id, listName);
+        console.log('Newly created list:', newList); // Add logging to verify created list
         setLists([...lists, newList]);
       }
       onListClose();
       setListName('');
-      setCurrentList(null); 
+      setCurrentList(null);
     } catch (error) {
       console.error('Error saving list:', error);
     }
