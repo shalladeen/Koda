@@ -13,13 +13,13 @@ axios.interceptors.request.use(config => {
   return Promise.reject(error);
 });
 
-export const createList = async (name) => {
-  const response = await axios.post(API_URL, { name });
+export const createList = async (userId, name) => {
+  const response = await axios.post(API_URL, { userId, name });
   return response.data;
 };
 
-export const getLists = async () => {
-  const response = await axios.get(API_URL);
+export const getLists = async (userId) => {
+  const response = await axios.get(`${API_URL}/user/${userId}`);
   return response.data;
 };
 
