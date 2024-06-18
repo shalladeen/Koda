@@ -16,6 +16,9 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  profilePicture: {
+    type: String,
+  },
   completedAchievements: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Achievement',

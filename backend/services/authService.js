@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const { sendWelcomeEmail } = require('./emailService'); // Import the email service
+const { sendWelcomeEmail } = require('./emailService');
+const multer = require('multer');
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -26,9 +27,7 @@ const register = async (username, email, password) => {
   });
 
   if (user) {
-    // Send welcome email
     await sendWelcomeEmail(email, username);
-
     return {
       _id: user._id,
       username: user.username,
@@ -60,7 +59,33 @@ const login = async (email, password) => {
   }
 };
 
+const getUserProfile = async (userId) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
+  return user;
+};
+
+const updateUserProfile = async (userId, { username, bio, profilePicture }) => {
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  user.username = username || user.username;
+  user.bio = bio || user.bio;
+  if (profilePicture) {
+    user.profilePicture = profilePicture;
+  }
+
+  await user.save();
+  return user;
+};
+
 module.exports = {
   register,
   login,
+  getUserProfile,
+  updateUserProfile,
 };
