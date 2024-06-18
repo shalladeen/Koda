@@ -69,6 +69,7 @@ const getUserProfile = async (userId) => {
 
 const updateUserProfile = async (userId, { username, bio, profilePicture }) => {
   const user = await User.findById(userId);
+
   if (!user) {
     throw new Error('User not found');
   }
@@ -80,7 +81,14 @@ const updateUserProfile = async (userId, { username, bio, profilePicture }) => {
   }
 
   await user.save();
-  return user;
+
+  return {
+    _id: user._id,
+    username: user.username,
+    email: user.email,
+    bio: user.bio,
+    profilePicture: user.profilePicture,
+  };
 };
 
 module.exports = {

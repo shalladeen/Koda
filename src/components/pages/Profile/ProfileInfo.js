@@ -1,35 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { VStack, Avatar, FormControl, FormLabel, Input, Button, Text } from '@chakra-ui/react';
-import { getUserProfile, updateUserProfile } from '../../../services/authService';
+import React, { useState } from 'react';
+import { VStack, Avatar, FormControl, FormLabel, Input, Button } from '@chakra-ui/react';
+import { useAuth } from '../../context/AuthContext';
 
 const ProfileInfo = () => {
-  const [username, setUsername] = useState('');
-  const [profilePicture, setProfilePicture] = useState(null);
-  const [bio, setBio] = useState('');
-  const [userData, setUserData] = useState(null);
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const profile = await getUserProfile();
-        setUserData(profile);
-        setUsername(profile.username);
-        setBio(profile.bio);
-        setProfilePicture(profile.profilePicture);
-      } catch (error) {
-        console.error('Error fetching profile:', error);
-      }
-    };
-
-    fetchProfile();
-  }, []);
+  const { user, updateUserProfile } = useAuth();
+  const [username, setUsername] = useState(user?.username || '');
+  const [profilePicture, setProfilePicture] = useState(user?.profilePicture || '');
+  const [bio, setBio] = useState(user?.bio || '');
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
 
   const handleProfilePictureChange = (e) => {
-    setProfilePicture(URL.createObjectURL(e.target.files[0]));
+    setProfilePicture(e.target.files[0]);
   };
 
   const handleBioChange = (e) => {
@@ -37,28 +21,21 @@ const ProfileInfo = () => {
   };
 
   const handleUpdateProfile = async () => {
-    const profileData = {
-      username,
-      bio,
-      profilePicture: document.getElementById('profile-picture').files[0], // Use file from input
-    };
-
-    try {
-      const updatedProfile = await updateUserProfile(profileData);
-      setUserData(updatedProfile);
-      console.log('Profile updated:', updatedProfile);
-    } catch (error) {
-      console.error('Error updating profile:', error);
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('bio', bio);
+    if (profilePicture) {
+      formData.append('profilePicture', profilePicture);
     }
+    await updateUserProfile(formData);
   };
 
   return (
     <VStack spacing={4} w="full">
-      <Avatar size="2xl" src={userData?.profilePicture || ''} />
-      <Text fontSize="xl" fontWeight="bold">{userData?.username}</Text>
+      <Avatar size="2xl" src={user?.profilePicture ? `http://localhost:5000/${user.profilePicture}` : undefined} />
       <FormControl id="profile-picture">
         <FormLabel>Profile Picture</FormLabel>
-        <Input type="file" onChange={handleProfilePictureChange} />
+        <Input type="file" accept="image/*" onChange={handleProfilePictureChange} />
       </FormControl>
       <FormControl id="username">
         <FormLabel>Username</FormLabel>

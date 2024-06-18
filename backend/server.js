@@ -2,8 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 const initializeAchievements = require('./scripts/initializeAchievements');
-const initializeLists = require('./scripts/initializeLists'); // Import the script to initialize lists
+const initializeLists = require('./scripts/initializeLists'); 
 
 dotenv.config();
 
@@ -15,6 +16,9 @@ app.use(cors({
   origin: 'http://localhost:3000'
 }));
 
+// Serve static files from the "uploads" directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(async () => {
@@ -22,7 +26,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
     try {
       await initializeAchievements();
       console.log('Achievements initialized');
-      await initializeLists(); // Initialize the default lists
+      await initializeLists();
       console.log('Default lists initialized');
     } catch (err) {
       console.error('Error during initialization:', err);

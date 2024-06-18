@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { getToken, logout, fetchUser, authLogin } from '../../services/authService';
+import { updateProfile } from '../../services/userService';
 
 const AuthContext = createContext();
 
@@ -43,8 +44,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUserProfile = async (updates) => {
+    const updatedUser = await updateProfile(updates);
+    setUser(updatedUser);
+  };
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, handleLogout, login, isLogoutDialogOpen, closeLogoutDialog, user }}>
+    <AuthContext.Provider value={{ isLoggedIn, handleLogout, login, isLogoutDialogOpen, closeLogoutDialog, user, updateUserProfile }}>
       {children}
     </AuthContext.Provider>
   );

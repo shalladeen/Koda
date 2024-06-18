@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Box, Flex, VStack, IconButton, useColorModeValue, Switch, useColorMode, Menu, MenuButton,
-  MenuList, MenuItem,
+  MenuList, MenuItem, Avatar,
 } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,7 +12,7 @@ import { useAuth } from '../context/AuthContext';
 function Navbar({ onProfileClick }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const location = useLocation();
-  const { handleLogout } = useAuth();
+  const { user, handleLogout } = useAuth(); // Fetch user from context
   const bg = useColorModeValue('gray.100', '#0e0e0e');
   const profileColor = useColorModeValue('black', 'white');
   const iconColor = useColorModeValue('black', 'white');
@@ -50,7 +50,11 @@ function Navbar({ onProfileClick }) {
       <Menu>
         <MenuButton 
           as={IconButton} 
-          icon={<FaUserCircle size="48px" />} 
+          icon={
+            user?.profilePicture ? 
+            <Avatar size="full" src={`http://localhost:5000/${user.profilePicture}`} /> : 
+            <FaUserCircle size="48px" />
+          } 
           alignSelf="center" 
           mb="6" 
           borderRadius="full" 
