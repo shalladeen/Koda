@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getToken } from './authService';
 
 const API_URL = 'http://localhost:5000/api/auth';
 
@@ -41,23 +42,20 @@ export const fetchUser = async () => {
   }
 };
 
-export const updateUserProfile = async (profileData) => {
+export const updateUserProfile = async (formData) => {
   const token = getToken();
-  if (!token) throw new Error("No token found");
+  if (!token) return null;
 
-  const formData = new FormData();
-  for (const key in profileData) {
-    if (profileData[key] !== null) {
-      formData.append(key, profileData[key]);
-    }
+  try {
+    const response = await axios.put(`${API_URL}/me`, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    throw error;
   }
-
-  const response = await axios.put(`${API_URL}/profile`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      Authorization: `Bearer ${token}`
-    },
-  });
-
-  return response.data;
 };

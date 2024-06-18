@@ -12,7 +12,7 @@ import { useAuth } from '../context/AuthContext';
 function Navbar({ onProfileClick }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const location = useLocation();
-  const { user, handleLogout } = useAuth(); // Fetch user from context
+  const { user, handleLogout } = useAuth();
   const bg = useColorModeValue('gray.100', '#0e0e0e');
   const profileColor = useColorModeValue('black', 'white');
   const iconColor = useColorModeValue('black', 'white');

@@ -1,19 +1,46 @@
 import React, { useState } from 'react';
-import { VStack, Avatar, FormControl, FormLabel, Input, Button } from '@chakra-ui/react';
+import { VStack, Avatar, FormControl, FormLabel, Input, Button, useToast } from '@chakra-ui/react';
 import { useAuth } from '../../context/AuthContext';
 
 const ProfileInfo = () => {
   const { user, updateUserProfile } = useAuth();
   const [username, setUsername] = useState(user?.username || '');
-  const [profilePicture, setProfilePicture] = useState(user?.profilePicture || '');
+  const [profilePicture, setProfilePicture] = useState(null);
   const [bio, setBio] = useState(user?.bio || '');
+  const toast = useToast();
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
   };
 
   const handleProfilePictureChange = (e) => {
-    setProfilePicture(e.target.files[0]);
+    const file = e.target.files[0];
+    const fileSizeLimit = 5 * 1024 * 1024; // 5 MB
+    const validFileTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+    if (file && !validFileTypes.includes(file.type)) {
+      toast({
+        title: "Invalid file type.",
+        description: "Please upload an image file (jpeg, png, gif).",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (file && file.size > fileSizeLimit) {
+      toast({
+        title: "File too large.",
+        description: "The file size limit is 5MB. Please upload a smaller file.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    setProfilePicture(file);
   };
 
   const handleBioChange = (e) => {
