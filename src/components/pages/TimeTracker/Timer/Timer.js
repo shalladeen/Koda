@@ -15,6 +15,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
   const [currentBreakTime, setCurrentBreakTime] = useState(breakTime); 
   const [isPaused, setIsPaused] = useState(false); 
   const [isPresetActive, setIsPresetActive] = useState(false); 
+  const [showNextBreakText, setShowNextBreakText] = useState(false);
 
   const breakBoxBg = useColorModeValue('gray.100', 'gray.700');
   const emptySpaceColor = useColorModeValue('white', '#1a1a1a'); 
@@ -151,6 +152,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
     setTimerStarted(false);
     setIsBreak(false); 
     setIsPresetActive(false); 
+    setShowNextBreakText(false); 
     hasSavedFocusSession.current = false; 
     console.log('Timer stopped and reset');
   };
@@ -179,6 +181,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
       setTimeInMinutes(Math.max(0, val));
       setSecondsElapsed(0);
       setIsPresetActive(false);
+      setShowNextBreakText(false); 
       console.log('Slider changed to:', val);
     }
   };
@@ -203,14 +206,27 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
 
   return (
     <Flex height="100%" direction="column" alignItems="center" justifyContent="center" width="100%">
-      <Box p={4} borderRadius="lg" position="relative" width="100%">
+      <Box p={4} borderRadius="lg" position="relative" width="100%" mb={6} flex="1">
         {isRunning && !isBreak && (
-          <Text color="red" cursor="pointer" onClick={handleStopClick} position="absolute" ml={10} top={2}>
+          <Text color="red" cursor="pointer" onClick={handleStopClick} position="absolute" left={4} top={2}>
             Reset
           </Text>
         )}
-        <Flex direction="column" justifyContent="center" alignItems="center">
-          <CircularProgress value={progress} size="230px" thickness="12px" color={progressColor} trackColor={emptySpaceColor} max={100}>
+        {isPresetActive && (
+          <>
+            {isBreak ? (
+              <Text fontSize="md" p={4} bg={breakBoxBg} borderRadius="lg" width={{ base: '90%', md: '80%' }} textAlign="center" mt={4}>
+                Timer will start again in {`${Math.max(0, Math.floor((currentBreakTime * 60 - breakSecondsElapsed) / 60))}m ${Math.max(0, Math.round((currentBreakTime * 60 - breakSecondsElapsed) % 60))}s`}. Enjoy your break!
+              </Text>
+            ) : (
+              <Text fontSize="md" position="absolute" right={4} top={2}>
+                Next Break in {nextBreakIn} minutes
+              </Text>
+            )}
+          </>
+      )}
+        <Flex direction="column" justifyContent="center" alignItems="center" gap={5} p={10}>
+          <CircularProgress value={progress} size="230px" thickness="12px" color={progressColor} trackColor={emptySpaceColor} max={100} mb={6} mt={5}>
             <CircularProgressLabel fontSize="4xl">
               {isBreak
                 ? `${Math.max(0, Math.floor((currentBreakTime * 60 - breakSecondsElapsed) / 60))}m ${Math.max(0, Math.round((currentBreakTime * 60 - breakSecondsElapsed) % 60))}s`
@@ -229,6 +245,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
               size="md"
               mt={4}
               width="80%"
+              mb={6}
             >
               <SliderTrack>
                 <SliderFilledTrack />
@@ -236,20 +253,12 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
               <SliderThumb />
             </Slider>
           )}
-          <Button onClick={isRunning ? pauseTimer : startFocusTimer} isDisabled={timeInMinutes === 0} size="lg" mt={4}>
+          <Button onClick={isRunning ? pauseTimer : startFocusTimer} isDisabled={timeInMinutes === 0} size="lg" mt={4} mb={6}>
             {isRunning ? 'Pause' : 'Start'}
           </Button>
         </Flex>
       </Box>
-      {isPresetActive && (
-        <Box p={4} bg={breakBoxBg} borderRadius="lg" width={{ base: '90%', md: '80%' }} textAlign="center" mt={4}>
-          {isBreak ? (
-            <Text fontSize="md">Timer will start again in {`${Math.max(0, Math.floor((currentBreakTime * 60 - breakSecondsElapsed) / 60))}m ${Math.max(0, Math.round((currentBreakTime * 60 - breakSecondsElapsed) % 60))}s`}. Enjoy your break!</Text>
-          ) : (
-            <Text fontSize="md">Next Break in {nextBreakIn} minutes</Text>
-          )}
-        </Box>
-      )}
+      
       <TimerDialog
         isOpen={isDialogOpen}
         onClose={handleContinueCancel}

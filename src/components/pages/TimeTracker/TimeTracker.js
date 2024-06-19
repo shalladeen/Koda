@@ -2,18 +2,16 @@ import React, { useState, useEffect } from 'react';
 import Timer from './Timer/Timer';
 import { useNavigate } from "react-router-dom";
 import Navbar from '../../nav/Navbar';
-import { Box, Flex, Center, VStack, HStack, useColorModeValue, Select, Button, Heading, Text, Switch, FormControl, FormLabel, IconButton } from '@chakra-ui/react';
+import { Box, Flex, Center, VStack, HStack, useColorModeValue, Select, Button, Heading, Text, Switch, FormControl, FormLabel } from '@chakra-ui/react';
 import { useAuth } from '../../context/AuthContext';
 import Preset from './Preset';
 import { createPreset, getPresets } from '../../../services/presetService';
 import { useTimer } from '../../context/TimerContext';
-import './Focus.css'; 
 
 function TimeTracker() {
     // Color mode values
     const sidebarWidth = { base: "60px", md: "150px" };
     const presetBorder = useColorModeValue('gray.400', 'gray.300');
-    const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
     const sidebarBgColor = useColorModeValue("gray.200", "gray.700");
     const textColor = useColorModeValue("black", "white");
     const containerBgColor = useColorModeValue('white', 'gray.800');
@@ -21,9 +19,12 @@ function TimeTracker() {
     const buttonText = useColorModeValue('black', 'white');
     const newPresetBgColor = useColorModeValue('white', 'gray.700');
     const newPresetText = useColorModeValue('black', 'white');
-    const gradientBg = useColorModeValue('linear(to-r, #EEF9FF, #EEF9FF)', 'linear(to-r, #2a2a2a, #424242)');
+    const presetGradientBg = useColorModeValue('linear-gradient(to right, #D9ECFF, #D0F6E4)', 'linear-gradient(to right, #2a2a2a, #424242)');
+    const timerGradientBg = useColorModeValue('linear-gradient(to bottom right, #D9ECFF, #FBFFF1)', 'linear-gradient(to bottom right, #1a1a1a, #2a2a2a)');
     const progressColor = useColorModeValue('lightBlue', '#A1C3C7');
     const emptySpaceColor = useColorModeValue('white', '#1a1a1a'); 
+    const presetContainerBg = useColorModeValue('gray.50', 'gray.900');
+    const presetContainerText = useColorModeValue('black', 'white');
 
     // Hooks
     const navigate = useNavigate();
@@ -103,15 +104,7 @@ function TimeTracker() {
     };
 
     return (
-        <Flex direction={{ base: "column", md: "row" }} bg={bgColor} minHeight="100vh" position="relative" overflow="hidden">
-            {/* Add blurred circles in the background */}
-            <Box className="circle circle1" />
-            <Box className="circle circle2" />
-            <Box className="circle circle3" />
-            <Box className="circle circle4" />
-            <Box className="circle circle5" />
-            <Box className="circle circle6" />
-            <Box className="circle circle7" />
+        <Flex direction={{ base: "column", md: "row" }} minHeight="100vh" position="relative" overflow="hidden" bg={showTimer ? containerBgColor : presetGradientBg}>
             
             {/* Sidebar */}
             <Box
@@ -120,16 +113,16 @@ function TimeTracker() {
                 top="0"
                 bottom="0"
                 width={sidebarWidth}
-                bg={sidebarBgColor}
                 height={{ base: "auto", md: "100vh" }}
                 color={textColor}
+                bg={sidebarBgColor}
                 zIndex="10"
             >
                 <Navbar onProfileClick={handleProfileClick} />
             </Box>
 
             {/* Main Content */}
-            <Box flex="1" ml={{ base: 0, md: sidebarWidth }} p={{ base: 2, md: 5 }} color={textColor} display="flex" flexDirection="column" mt={{ base: 4, md: 8 }}>
+            <Box flex="1" ml={{ base: 0, md: sidebarWidth }} p={{ base: 2, md: 5 }} color={textColor} display="flex" flexDirection="column" mt={{ base: 4, md: 8 }} >
                 <Box ml={4}>
                     <Heading size="lg">Focus</Heading>
                 </Box>
@@ -137,20 +130,21 @@ function TimeTracker() {
                     <Box
                         p={10}
                         borderRadius="lg"
-                        bg={containerBgColor}
-                        width={{ base: '90%', md: '80%', lg: '70%', xl: '60%' }}
+                        bg={showTimer ? "transparent" : presetContainerBg}
+                        color={showTimer ? textColor : presetContainerText}
+                        width={{ base: '90%', md: '80%', lg: showTimer ? '70%' : '90%', xl: showTimer ? '60%' : '80%' }}
                         maxWidth="1200px"
                         alignItems="start"
                         position="relative"
                         zIndex="1"
-                        bgGradient={gradientBg}
                         className="subtle-pattern"
-                        borderColor={useColorModeValue('gray.200', 'gray.700')}
+                        borderColor={('gray.200', 'gray.700')}
+                        minHeight={showTimer ? "600px" : "500px"}
                     >
-                        <Flex height="100%" direction={{ base: "column", md: "row" }} justifyContent="space-between" alignItems="start">
+                        <Flex height="100%" direction="column" justifyContent="center" alignItems="center">
                             {showTimer ? (
                                 <>
-                                    <Box flex={{ base: '1', md: '2' }} mb={{ base: 6, md: 0 }}>
+                                    <Box flex="1" mb={6} bgGradient={timerGradientBg} minHeight="600px" width="80%" borderRadius={10}>
                                         <Timer
                                             focusTime={isFreeTimer ? null : focusTime}
                                             breakTime={isFreeTimer ? null : breakTime}
@@ -159,48 +153,50 @@ function TimeTracker() {
                                             isFreeTimer={isFreeTimer}
                                             startTimerInitially={startTimerInitially}
                                             setTimerStarted={setTimerStarted}
-                                            progressColor={progressColor} // Pass progress color to the Timer component
-                                            emptySpaceColor={emptySpaceColor} // Pass empty space color to the Timer component
+                                            progressColor={progressColor} 
+                                            emptySpaceColor={emptySpaceColor}
                                         />
                                     </Box>
-                                    <VStack flex={{ base: '1', md: '1' }} spacing={4} align="stretch" p={4}>
-                                        <Box pb={4}>
-                                            <Heading size="md" textAlign="center">
-                                                Presets
-                                            </Heading>
-                                        </Box>
-                                        <HStack spacing={4} pb={2} flexWrap="wrap" justifyContent="center">
-                                            {presets.map((preset) => (
-                                                <Button
-                                                    key={preset._id}
-                                                    bg={buttonBgColor}
-                                                    color={buttonText}
-                                                    onClick={() => handlePresetClick(preset.focusTime, preset.breakTime, preset.name)}
-                                                    justifyContent="center"
-                                                    alignItems="center"
-                                                    flexBasis={{ base: '45%', md: '45%' }}
-                                                >
-                                                    <VStack spacing={0} p={3}>
-                                                        <Text fontSize={{ base: 'sm', md: 'md' }}>{preset.name}</Text>
-                                                        <Text fontSize={{ base: 'sm', md: 'md' }}>{preset.focusTime} minutes</Text>
-                                                    </VStack>
+                                    {!isRunning && (
+                                        <VStack spacing={4} align="stretch" p={4} width="80%">
+                                            <Box pb={4}>
+                                                <Heading size="md" textAlign="center" color={presetContainerText}>
+                                                    Presets
+                                                </Heading>
+                                            </Box>
+                                            <HStack spacing={4} pb={2} flexWrap="wrap" justifyContent="center">
+                                                {presets.map((preset) => (
+                                                    <Button
+                                                        key={preset._id}
+                                                        bg={buttonBgColor}
+                                                        color={buttonText}
+                                                        onClick={() => handlePresetClick(preset.focusTime, preset.breakTime, preset.name)}
+                                                        justifyContent="center"
+                                                        alignItems="center"
+                                                        flexBasis={{ base: '45%', md: '45%' }}
+                                                    >
+                                                        <VStack spacing={0} p={3}>
+                                                            <Text fontSize={{ base: 'sm', md: 'md' }}>{preset.name}</Text>
+                                                            <Text fontSize={{ base: 'sm', md: 'md' }}>{preset.focusTime} minutes</Text>
+                                                        </VStack>
+                                                    </Button>
+                                                ))}
+                                                <Button bg={newPresetBgColor} color={newPresetText} onClick={() => setIsPresetModalOpen(true)} flexBasis={{ base: '45%', md: '45%' }}>
+                                                    <Text fontSize={{ base: 'sm', md: 'md' }}>+ New Preset</Text>
                                                 </Button>
-                                            ))}
-                                            <Button bg={newPresetBgColor} color={newPresetText} onClick={() => setIsPresetModalOpen(true)} flexBasis={{ base: '45%', md: '45%' }}>
-                                                <Text fontSize={{ base: 'sm', md: 'md' }}>+ New Preset</Text>
-                                            </Button>
-                                        </HStack>
-                                    </VStack>
+                                            </HStack>
+                                        </VStack>
+                                    )}
                                 </>
                             ) : (
-                                <Flex flex="1" justifyContent="center" alignItems="center">
-                                    <VStack spacing={4} align="stretch" p={10} width="100%">
+                                <Flex flex="1" justifyContent="center" alignItems="center" width="100%">
+                                    <VStack spacing={4} align="stretch" p={10} width="100%" >
                                         <Box pb={10} borderBottomWidth={1} mb={10}>
                                             <Heading size="md" textAlign="center">
                                                 What are we focusing on today?
                                             </Heading>
                                         </Box>
-                                        <HStack spacing={6} width="100%" pb={10} flexWrap="wrap">
+                                        <HStack spacing={6} width="100%" pb={10} flexWrap="wrap" justifyContent="space-between">
                                             <VStack align="center" flex="1">
                                                 <Text>Category</Text>
                                                 <Select placeholder="Category" borderColor={presetBorder} onChange={(e) => setCategory(e.target.value)}>
@@ -242,9 +238,14 @@ function TimeTracker() {
                             <Box position="absolute" bottom={4} right={4}>
                                 <FormControl display="flex" alignItems="center">
                                     <FormLabel htmlFor="mode-toggle" mb="0">
-                                        {isFreeTimer ? 'Switch to Timer' : 'Switch to Presets'}
+                                        {isFreeTimer ? 'Switch to Presets' : 'Switch to Timer'}
                                     </FormLabel>
-                                    <Switch id="mode-toggle" isChecked={isFreeTimer} onChange={handleToggleMode} />
+                                    <Switch
+                                        id="mode-toggle"
+                                        isChecked={!isFreeTimer}
+                                        onChange={handleToggleMode}
+                                        colorScheme={isFreeTimer ? 'gray' : 'blue'}
+                                    />
                                 </FormControl>
                             </Box>
                         </Flex>
