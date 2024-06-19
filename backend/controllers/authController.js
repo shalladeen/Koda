@@ -22,7 +22,19 @@ const login = async (req, res) => {
     }
 };
 
+const checkUsernameAvailability = async (req, res) => {
+    const { username } = req.query;
+
+    try {
+        const available = await authService.isUsernameAvailable(username);
+        res.status(200).json({ available });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     register,
-    login
+    login,
+    checkUsernameAvailability
 };

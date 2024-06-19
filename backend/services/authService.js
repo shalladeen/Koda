@@ -91,9 +91,13 @@ const updateUserProfile = async (userId, { username, bio, profilePicture }) => {
   };
 };
 
+const isUsernameAvailable = async (username) => {
+  const user = await User.findOne({ username });
+  return !user;
+};
+
 module.exports = {
   register,
   login,
-  getUserProfile,
-  updateUserProfile,
+  isUsernameAvailable
 };

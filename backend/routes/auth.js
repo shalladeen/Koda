@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const authController = require('../controllers/authController');
 const authService = require('../services/authService');
 const { protect } = require('../middlewares/authMiddleware');
 const multer = require('multer');
@@ -54,5 +55,8 @@ router.put('/profile', protect, upload.single('profilePicture'), async (req, res
     res.status(400).json({ message: err.message });
   }
 });
+
+// Check username availability
+router.get('/check-username', authController.checkUsernameAvailability);
 
 module.exports = router;

@@ -5,9 +5,9 @@ import { FaCog } from 'react-icons/fa';
 import Navbar from '../../nav/Navbar';
 import MiniTimer from '../TimeTracker/Timer/MiniTimer';
 import ProfileInfo from '../Profile/ProfileInfo';
-import Achievements from './Achievements/Achivements';
+import Achievements from '../Profile/Achievements/Achivements';
 import FocusStats from '../TimeTracker/FocusStats';
-
+import { useAuth } from '../../context/AuthContext'; 
 
 const ProfilePage = () => {
   const bgColor = useColorModeValue('#f9fdff', '#1c1c1c');
@@ -15,6 +15,7 @@ const ProfilePage = () => {
   const mainContentBgColor = useColorModeValue('#f9fdff', '#1c1c1c');
   const textColor = useColorModeValue('black', 'white');
 
+  const { user } = useAuth(); 
   const [isLoggedIn] = useState(false);
   const navigate = useNavigate();
 
@@ -75,7 +76,7 @@ const ProfilePage = () => {
           </Flex>
 
           <VStack spacing={6} w="full" mt={4}>
-            <Heading as="h2" size="xl">Profile</Heading>
+            <Heading as="h2" size="xl">{user?.username}</Heading> {/* Display the username */}
             <ProfileInfo />
             <Achievements />
             <FocusStats />
