@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, ChakraProvider, useDisclosure, useColorMode, VStack, HStack, Text, IconButton } from '@chakra-ui/react';
 import { CalendarIcon } from '@chakra-ui/icons';
 import FullCalendar from '@fullcalendar/react';
@@ -7,6 +7,7 @@ import eventService from '../../../services/eventService';
 import MonthYearPickerModal from './MonthYearPickerModal';
 import CalendarEventModal from './CalendarEventModal';
 import TodaysEvents from './TodaysEvents';
+import UpcomingEventsWidget from './UpcomingEvents';
 import '../Calendar/CalendarStyle.css';
 import moment from 'moment';
 
@@ -19,7 +20,7 @@ const CalendarWidget = () => {
   const [events, setEvents] = useState([]);
   const [currentEvent, setCurrentEvent] = useState(null);
   const [eventTitle, setEventTitle] = useState('');
-  const [allDay, setAllDay] = useState(false); // Default allDay to false
+  const [allDay, setAllDay] = useState(false);
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [startTime, setStartTime] = useState('10:00');
@@ -316,6 +317,7 @@ const CalendarWidget = () => {
         />
         <Box mt={4}>
           <TodaysEvents events={todaysEvents} />
+          <UpcomingEventsWidget events={events} />
         </Box>
       </Box>
     </ChakraProvider>

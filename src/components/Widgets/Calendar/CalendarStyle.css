@@ -26,17 +26,17 @@
 .fc {
   font-size: 1em;
   background-color: var(--fc-bg-light);
-  padding: 10px;
+  padding: 20px;
   border-radius: 15px;
 }
 
 .fc .fc-day-today {
   background-color: var(--fc-today-bg-light) !important;
+  cursor: pointer;
 }
 
 .fc-event {
   cursor: pointer;
-  background-color: var(--fc-event-bg-light);
   transition: background-color 0.2s ease;
 }
 
@@ -80,6 +80,12 @@
 }
 
 /* Dark Mode */
+
+.dark-mode .fc {
+  background-color: var(--fc-border-dark);
+  border-radius: 15px
+}
+
 .dark-mode .fc .fc-day-today {
   background-color: var(--fc-today-bg-dark) !important;
   color: var(--fc-text-dark);
@@ -111,12 +117,12 @@
 
 /* Dark Mode for Toolbar */
 .dark-mode .fc-toolbar {
-  background-color: var(--fc-bg-dark);
+  background-color: var(--fc-border-dark);
   color: var(--fc-text-dark);
 }
 
 .dark-mode .fc-toolbar button {
-  background-color: var(--fc-bg-dark);
+  background-color: var(--fc-border-dark);
   color: var(--fc-text-dark);
 }
 

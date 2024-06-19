@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Flex, Stack, useColorModeValue, Text, VStack, HStack, IconButton, useDisclosure } from '@chakra-ui/react';
+import { Box, Flex, Stack, useColorModeValue, VStack, HStack, Text, IconButton, useDisclosure } from '@chakra-ui/react';
 import { CalendarIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import Recent from '../../Widgets/Recents/Recent';
@@ -99,15 +99,17 @@ function Home() {
             mt={3}
           >
             {/* Left Column: Task and Recent Notes */}
-            <Stack spacing={5} w={{ base: "full", lg: "45%" }} flexShrink={0} mt={10}>
-              <Task />
+            <Stack spacing={5} w={{ base: "full", lg: "45%" }} flexShrink={0}>
+              <Box mt={10}>
+                <Task />
+              </Box>
               <Box mt={7}>
                 <Recent />
               </Box>
             </Stack>
 
             {/* Right Column: Calendar */}
-            <Box flex={1} w={{ base: "full" }} h="auto" minH="500px">
+            <Box flex={1} w={{ base: "full" }} h="auto" minH="500px" mt={{ base: 0, lg: -10 }}>
               <MyCalendarWidget
                 events={events}
                 onAddOrUpdateEvent={handleAddOrUpdateEvent}
@@ -131,7 +133,7 @@ function Home() {
               onAddOrUpdateEvent={handleAddOrUpdateEvent}
               onDeleteEvent={handleDeleteEvent}
               onToggleComplete={handleToggleComplete}
-              style={{ height: 'auto', minHeight: '400px' }} // Ensuring minimum height
+              style={{ height: 'auto', minHeight: '400px' }}
             />
           </ModalBody>
         </ModalContent>

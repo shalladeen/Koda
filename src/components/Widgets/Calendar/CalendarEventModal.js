@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter,
   ModalBody, ModalCloseButton, FormControl, FormLabel, Input,
@@ -11,6 +11,8 @@ const CalendarEventModal = ({
   startTime, setStartTime, endTime, setEndTime,
   onSave, onDelete, isEditing,
 }) => {
+  const [isEndTimeManuallySet, setIsEndTimeManuallySet] = useState(false);
+
   const bg = useColorModeValue('white', 'gray.800');
   const textColor = useColorModeValue('black', 'gray.100');
   const saveBg = useColorModeValue('black', 'white');
@@ -21,8 +23,29 @@ const CalendarEventModal = ({
     if (allDay) {
       setStartTime('00:00');
       setEndTime('23:59');
+      setIsEndTimeManuallySet(true); // Set manually to avoid auto-adjustment
     }
   }, [allDay]);
+
+  useEffect(() => {
+    if (!isEndTimeManuallySet) {
+      const startDateTime = new Date(`1970-01-01T${startTime}:00`);
+      const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
+      const endHours = String(endDateTime.getHours()).padStart(2, '0');
+      const endMinutes = String(endDateTime.getMinutes()).padStart(2, '0');
+      setEndTime(`${endHours}:${endMinutes}`);
+    }
+  }, [startTime, isEndTimeManuallySet]);
+
+  const handleStartTimeChange = (e) => {
+    setStartTime(e.target.value);
+    setIsEndTimeManuallySet(false);
+  };
+
+  const handleEndTimeChange = (e) => {
+    setEndTime(e.target.value);
+    setIsEndTimeManuallySet(true);
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -65,7 +88,7 @@ const CalendarEventModal = ({
               <Input
                 type="time"
                 value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
+                onChange={handleStartTimeChange}
                 disabled={allDay}
               />
             </FormControl>
@@ -74,7 +97,7 @@ const CalendarEventModal = ({
               <Input
                 type="time"
                 value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
+                onChange={handleEndTimeChange}
                 disabled={allDay}
               />
             </FormControl>

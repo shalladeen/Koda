@@ -1,16 +1,25 @@
-import React from 'react';
-import { Box, Text, Button, useColorModeValue, HStack, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Stack, ModalFooter } from '@chakra-ui/react';
+import React, { useMemo } from 'react';
+import {
+  Box, Text, Button, HStack, Modal,
+  ModalOverlay, ModalContent, ModalHeader, ModalCloseButton,
+  ModalBody, Stack, ModalFooter, useColorMode
+} from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/hooks';
 import moment from 'moment';
 
 const TodaysEvents = ({ events }) => {
-  const textColor = useColorModeValue('black', 'gray.100');
-  const bgColor = useColorModeValue('#f0f0f0', 'gray.700');
-  const todayEvents = events.filter(event => {
-    const start = moment(event.start).startOf('day');
-    const end = moment(event.end).endOf('day');
-    return moment().isBetween(start, end, null, '[]');
-  });
+  const { colorMode } = useColorMode();
+  const textClass = colorMode === 'light' ? 'text-light' : 'text-dark';
+  const bgClass = colorMode === 'light' ? 'bg-light' : 'bg-dark';
+
+  const todayEvents = useMemo(() => {
+    return events.filter(event => {
+      const start = moment(event.start).startOf('day');
+      const end = moment(event.end).endOf('day');
+      return moment().isBetween(start, end, null, '[]');
+    });
+  }, [events]);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const formatEventDate = (event) => {
@@ -28,9 +37,9 @@ const TodaysEvents = ({ events }) => {
 
   return (
     <>
-      <Box borderRadius="lg" textAlign="left" bg={bgColor} p={4}>
+      <Box className={`todays-events-container ${bgClass}`} textAlign="left" mt={5}>
         <HStack justify="space-between">
-          <Text fontSize="lg" color={textColor}>
+          <Text fontSize="lg" className={textClass} fontWeight="bold">
             Today's Events
           </Text>
           <Button size="sm" onClick={onOpen}>
@@ -39,14 +48,14 @@ const TodaysEvents = ({ events }) => {
         </HStack>
         <Stack mt={2}>
           {todayEvents.length > 0 ? todayEvents.map(event => (
-            <Box key={event.id} p={2} borderRadius="md" bg={bgColor}>
-              <Text fontWeight="bold" color={textColor}>{event.title}</Text>
-              <Text color={textColor}>
+            <Box key={event.id} className={`event-item ${bgClass}`}>
+              <Text fontWeight="bold" className={textClass}>{event.title}</Text>
+              <Text className={textClass}>
                 {formatEventDate(event)}
               </Text>
             </Box>
           )) : (
-            <Text color={textColor}>No events for today.</Text>
+            <Text className={textClass}>No events for today.</Text>
           )}
         </Stack>
       </Box>
@@ -59,14 +68,14 @@ const TodaysEvents = ({ events }) => {
           <ModalBody>
             <Stack spacing={3}>
               {todayEvents.length > 0 ? todayEvents.map(event => (
-                <Box key={event.id} p={2} borderRadius="md" bg={bgColor}>
-                  <Text fontWeight="bold" color={textColor}>{event.title}</Text>
-                  <Text color={textColor}>
+                <Box key={event.id} className={`event-item ${bgClass}`}>
+                  <Text fontWeight="bold" className={textClass}>{event.title}</Text>
+                  <Text className={textClass}>
                     {formatEventDate(event)}
                   </Text>
                 </Box>
               )) : (
-                <Text color={textColor}>No events for today.</Text>
+                <Text className={textClass}>No events for today.</Text>
               )}
             </Stack>
           </ModalBody>
