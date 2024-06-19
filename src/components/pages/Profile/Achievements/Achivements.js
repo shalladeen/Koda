@@ -1,18 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Box,
-  Heading,
-  HStack,
-  IconButton,
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  Grid,
-  GridItem,
+  Box, Heading, HStack, IconButton, useDisclosure, Modal,
+  ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Grid, GridItem,
 } from '@chakra-ui/react';
 import { FaChevronRight } from 'react-icons/fa';
 import AchievementCard from './AchievmentCard';
@@ -69,6 +58,7 @@ const Achievements = () => {
             icon={achievement.icon}
             title={achievement.title}
             description={achievement.description}
+            type={achievement.type} 
             isCompleted={isAchievementCompleted(achievement._id)}
           />
         ))}
@@ -96,6 +86,7 @@ const Achievements = () => {
                     icon={achievement.icon}
                     title={achievement.title}
                     description={achievement.description}
+                    type={achievement.type} 
                     isCompleted={isAchievementCompleted(achievement._id)}
                   />
                 </GridItem>
