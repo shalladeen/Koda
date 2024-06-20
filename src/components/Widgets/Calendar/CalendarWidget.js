@@ -268,6 +268,7 @@ const CalendarWidget = () => {
           plugins={calendarPlugins}
           initialView={calendarInitialView}
           headerToolbar={calendarToolbar}
+          customButtons={customButtons}
           selectable
           editable
           selectMirror
@@ -278,7 +279,6 @@ const CalendarWidget = () => {
           eventClick={handleEventClick}
           eventDrop={handleEventDrop}
           eventResize={handleEventResize}
-          customButtons={customButtons}
         />
         <MonthYearPickerModal
           isOpen={isMonthYearPickerOpen}

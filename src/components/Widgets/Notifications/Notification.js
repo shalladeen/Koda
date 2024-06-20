@@ -18,13 +18,14 @@ const Notification = ({ notifications, hasNewNotifications, onNotificationClick 
     }
   };
 
+  // implement this too
   const handleNotificationItemClick = (notification) => {
     navigate(notification.link);
     setIsOpen(false); 
   };
 
   const handleDeleteNotification = (index) => {
-    // Implement delete notification logic later
+    // Implement delete notification logic here later
     console.log('Delete notification at index:', index);
   };
 
@@ -100,65 +101,65 @@ const Notification = ({ notifications, hasNewNotifications, onNotificationClick 
           height="8px"
         />
       )}
-      <SlideFade in={isOpen} offsetY="20px">
-        <VStack
-          spacing={2}
-          position="absolute"
-          top="40px"
-          right="0"
-          bg="white"
-          boxShadow="md"
-          borderRadius="md"
-          zIndex="10"
-          width="300px"
-          ref={notificationListRef}
-          style={{
-            userSelect: 'none', 
-          }}
-        >
-          {notifications.length === 0 ? (
-            <Text>No notifications</Text>
-          ) : (
-            notifications.map((notification, index) => (
-              <Box
-                key={index}
-                p={4}
-                borderBottomWidth={index !== notifications.length - 1 ? '1px' : '0'}
-                cursor="pointer"
-                position="relative"
-                bg="white"
-                onMouseDown={(event) => handleMouseDown(index, event)}
-                style={{
-                  transform: `translateX(${positions[index]}px)`,
-                  transition: draggedNotification === index ? 'none' : 'transform 0.3s',
-                  userSelect: 'none',
-                }}
-              >
-                <HStack justifyContent="space-between">
-                  <Text>{notification.message}</Text>
-                  <Text fontSize="xs" color="gray.500">{notification.time}</Text>
-                </HStack>
-                {positions[index] === -50 && (
-                  <Box position="absolute" top="0" bottom="0" left="100%" width="50px" display="flex" alignItems="center" justifyContent="center">
-                    <Button
-                      colorScheme="red"
-                      
-                      mr={2}
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteNotification(index);
-                      }}
-                    >
-                     ✗
-                    </Button>
-                  </Box>
-                )}
-              </Box>
-            ))
-          )}
-        </VStack>
-      </SlideFade>
+      {isOpen && (
+        <SlideFade in={isOpen} offsetY="20px">
+          <VStack
+            spacing={2}
+            position="absolute"
+            top="40px"
+            right="0"
+            bg="white"
+            boxShadow="md"
+            borderRadius="md"
+            zIndex="10"
+            width="300px"
+            ref={notificationListRef}
+            style={{
+              userSelect: 'none', 
+            }}
+          >
+            {notifications.length === 0 ? (
+              <Text>No notifications</Text>
+            ) : (
+              notifications.map((notification, index) => (
+                <Box
+                  key={index}
+                  p={4}
+                  borderBottomWidth={index !== notifications.length - 1 ? '1px' : '0'}
+                  cursor="pointer"
+                  position="relative"
+                  bg="white"
+                  onMouseDown={(event) => handleMouseDown(index, event)}
+                  style={{
+                    transform: `translateX(${positions[index]}px)`,
+                    transition: draggedNotification === index ? 'none' : 'transform 0.2s',
+                    userSelect: 'none', 
+                  }}
+                >
+                  <HStack justifyContent="space-between">
+                    <Text>{notification.message}</Text>
+                    <Text fontSize="xs" color="gray.500">{notification.time}</Text>
+                  </HStack>
+                  {positions[index] === -50 && (
+                    <Box position="absolute" top="0" bottom="0" left="100%" width="50px" display="flex" alignItems="center" justifyContent="center">
+                      <Button
+                        colorScheme="red"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteNotification(index);
+                        }}
+                      >
+                        ✗
+                      </Button>
+                    </Box>
+                  )}
+                </Box>
+              ))
+            )}
+          </VStack>
+        </SlideFade>
+      )}
     </Box>
   );
 };
