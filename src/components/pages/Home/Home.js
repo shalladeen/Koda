@@ -11,7 +11,8 @@ import moment from 'moment';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from '@chakra-ui/react';
 import MyCalendarWidget from '../../Widgets/Calendar/CalendarWidget';
 import WelcomeGreeting from '../../Widgets/Greeting/Greeting';
-import Notification from '../../Widgets/Notifications/Notification'; // Import Notification component
+import Notification from '../../Widgets/Notifications/Notification';
+import MiniTimer from '../TimeTracker/Timer/MiniTimer';
 
 function Home() {
   const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
@@ -36,7 +37,7 @@ function Home() {
 
   const [events, setEvents] = useState([]);
   const [notifications, setNotifications] = useState([]);
-  const [hasNewNotifications, setHasNewNotifications] = useState(true); // State for new notifications indicator
+  const [hasNewNotifications, setHasNewNotifications] = useState(true); 
 
   useEffect(() => {
     setEvents(loadEvents());
@@ -105,8 +106,13 @@ function Home() {
           bg={mainContentBgColor}
           color={textColor}
         >
+          {/* Mini Timer */}
+          <Box position="absolute" top="3" right="7">
+          <MiniTimer/>
+          </Box>
           {/* Notification Bell */}
           <HStack position="absolute" top="4" right="4" spacing={4} zIndex="20">
+            
             <Notification notifications={notifications} hasNewNotifications={hasNewNotifications} onNotificationClick={handleNotificationClick} />
           </HStack>
 

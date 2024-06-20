@@ -1,4 +1,3 @@
-// src/components/pages/TimeTracker/MiniTimer.js
 import React, { useState, useEffect } from 'react';
 import { Box, Text, IconButton, useColorModeValue } from '@chakra-ui/react';
 import { useTimer } from '../../../context/TimerContext';
@@ -42,8 +41,8 @@ function MiniTimer() {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         position="fixed"
-        top="20px"
-        right="20px"
+        top={2}
+        right={14}
       >
         <Text fontSize="lg" fontWeight="bold">
           {`${Math.floor(remainingTime / 60)}m ${Math.round(remainingTime % 60)}s`}
