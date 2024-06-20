@@ -11,6 +11,7 @@ import moment from 'moment';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from '@chakra-ui/react';
 import MyCalendarWidget from '../../Widgets/Calendar/CalendarWidget';
 import WelcomeGreeting from '../../Widgets/Greeting/Greeting';
+import Notification from '../../Widgets/Notifications/Notification'; // Import Notification component
 
 function Home() {
   const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
@@ -34,9 +35,19 @@ function Home() {
   const sidebarWidth = { base: "60px", md: "150px" };
 
   const [events, setEvents] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [hasNewNotifications, setHasNewNotifications] = useState(true); // State for new notifications indicator
 
   useEffect(() => {
     setEvents(loadEvents());
+
+    // Mock data for notifications, replace with actual API call
+    const notificationsData = [
+      { message: 'New friend request from John Doe', time: '2h ago', link: '/friend-requests' },
+      { message: 'Jane Doe accepted your friend request', time: '1d ago', link: '/friends' },
+      { message: 'You earned a new achievement!', time: '3d ago', link: '/achievements' },
+    ];
+    setNotifications(notificationsData);
   }, []);
 
   const handleToggleComplete = (eventId) => {
@@ -55,6 +66,14 @@ function Home() {
   const handleDeleteEvent = (eventId) => {
     const updatedEvents = deleteEvent(events, eventId);
     setEvents(updatedEvents);
+  };
+
+  const markNotificationsAsRead = () => {
+    setHasNewNotifications(false);
+  };
+
+  const handleNotificationClick = () => {
+    markNotificationsAsRead();
   };
 
   const currentDate = moment().format('MMMM Do, YYYY');
@@ -86,6 +105,11 @@ function Home() {
           bg={mainContentBgColor}
           color={textColor}
         >
+          {/* Notification Bell */}
+          <HStack position="absolute" top="4" right="4" spacing={4} zIndex="20">
+            <Notification notifications={notifications} hasNewNotifications={hasNewNotifications} onNotificationClick={handleNotificationClick} />
+          </HStack>
+
           {/* Dashboard Greeting */}
           <WelcomeGreeting isLoggedIn={isLoggedIn} compact={true} />
 
