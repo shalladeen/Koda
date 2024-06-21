@@ -7,16 +7,16 @@ import { MdMoreVert, MdDelete, MdEdit } from 'react-icons/md';
 import { useTaskColors } from './TaskSettings';
 
 const TaskList = ({
-  tasks, toggleTaskCompletion, openEditModal, deleteTask,
+  tasks, toggleTaskCompletion, openDetailModal, openEditModal, deleteTask,
 }) => {
   const {
-    secondaryColor, hoverColor, taskTextColor,
+    primaryColor, secondaryColor, hoverColor, taskTextColor,
   } = useTaskColors();
 
   return (
     <Box p={4} borderRadius="lg">
       {tasks.map((task) => (
-        <Flex key={task._id} alignItems="center" borderRadius="md">
+        <Flex key={task._id} alignItems="center" borderRadius="md" mb={2}>
           <Checkbox
             isChecked={task.completed}
             onChange={() => toggleTaskCompletion(task._id)}
@@ -25,17 +25,17 @@ const TaskList = ({
           />
           <Box
             flex="1"
-            p={2}
+            p={3}
             borderRadius="md"
             _hover={{ backgroundColor: hoverColor, cursor: 'pointer' }}
-            onClick={() => openEditModal(task)}
+            onClick={() => openDetailModal(task)}
           >
             <Text as={task.completed ? 's' : 'span'} fontWeight="bold" color={taskTextColor}>
               {task.name}
             </Text>
-            {task.list && task.list.name && ( // Ensure task.list and task.list.name are defined
+            {task.list && task.list.name && ( 
               <Text as={task.completed ? 's' : 'span'} color={secondaryColor}>
-                {' '}| {task.list.name} {/* Render list name */}
+                {' '}| {task.list.name} 
               </Text>
             )}
           </Box>
@@ -51,7 +51,7 @@ const TaskList = ({
             <MenuList>
               <MenuItem icon={<MdEdit />} onClick={() => openEditModal(task)}>Edit Task</MenuItem>
               <MenuDivider />
-              <MenuItem icon={<MdDelete />} color="red" onClick={() => deleteTask(task._id)}>
+              <MenuItem icon={<MdDelete />} color={taskTextColor} onClick={() => deleteTask(task._id)}>
                 Delete Task
               </MenuItem>
             </MenuList>

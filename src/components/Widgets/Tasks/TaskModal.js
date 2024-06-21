@@ -12,7 +12,7 @@ const TaskModal = ({
   const { modalBgColor, modalTextColor, taskTextColor, buttonColor, hoverColor } = useTaskColors();
 
   useEffect(() => {
-    console.log('Selected List:', selectedList); // Log selected list to ensure it's being set
+    console.log('Selected List:', selectedList);
   }, [selectedList]);
 
   const handleListChange = (e) => {

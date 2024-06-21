@@ -125,7 +125,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
     if (!isRunning && !isBreak) {
       setIsRunning(true);
       setTimerStarted(true);
-      setStartTime(new Date()); // Capture the start time
+      setStartTime(new Date());
       console.log('Focus timer started');
     }
   };
@@ -215,7 +215,7 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
         {isPresetActive && (
           <>
             {isBreak ? (
-              <Text fontSize="md" p={4} bg={breakBoxBg} borderRadius="lg" width={{ base: '90%', md: '80%' }} textAlign="center" mt={4}>
+              <Text fontSize="md" p={4} textAlign="center" mt={4}>
                 Timer will start again in {`${Math.max(0, Math.floor((currentBreakTime * 60 - breakSecondsElapsed) / 60))}m ${Math.max(0, Math.round((currentBreakTime * 60 - breakSecondsElapsed) % 60))}s`}. Enjoy your break!
               </Text>
             ) : (

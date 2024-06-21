@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
 import {
-  Box, Button, Heading, Text, useDisclosure, IconButton, Menu, MenuButton, MenuList, MenuItem, MenuDivider,
+  Box, Button, Heading, Text, useDisclosure, IconButton, Menu, MenuButton, MenuList, MenuItem,
 } from '@chakra-ui/react';
 import { MdMoreVert } from 'react-icons/md';
 import TaskList from './TaskList';
 import TaskModal from './TaskModal';
+import TaskDetailModal from './TaskDetailModal';
 import TaskListModal from './TaskListModal';
 import { createTask, getTasks, updateTask, deleteTask } from '../../../services/taskService';
 import { getLists, createList, updateList, deleteList } from '../../../services/listService';
@@ -17,6 +18,7 @@ const Task = forwardRef((props, ref) => {
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure();
   const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
   const { isOpen: isListOpen, onOpen: onListOpen, onClose: onListClose } = useDisclosure();
+  const { isOpen: isDetailOpen, onOpen: onDetailOpen, onClose: onDetailClose } = useDisclosure();
   const [tasks, setTasks] = useState([]);
   const [lists, setLists] = useState([]);
   const [currentTask, setCurrentTask] = useState(null);
@@ -49,7 +51,7 @@ const Task = forwardRef((props, ref) => {
     openAddTaskModal: onAddOpen,
   }));
 
-  const saveTask = async () => {
+  const saveTask = async (taskTitle, taskDesc) => {
     const taskToSave = {
       id: currentTask ? currentTask.id : undefined,
       name: taskTitle,
@@ -70,6 +72,7 @@ const Task = forwardRef((props, ref) => {
       setTasks(updatedTasks);
       onAddClose();
       onEditClose();
+      onDetailClose();
       resetTaskForm();
     } catch (error) {
       console.error('Error saving task:', error.response ? error.response.data : error.message);
@@ -82,6 +85,7 @@ const Task = forwardRef((props, ref) => {
       const updatedTasks = tasks.filter(task => task._id !== taskId);
       setTasks(updatedTasks);
       onEditClose();
+      onDetailClose();
     } catch (error) {
       console.error('Error deleting task:', error);
     }
@@ -106,6 +110,11 @@ const Task = forwardRef((props, ref) => {
     setTaskDesc(task.desc);
     setSelectedList(task.list || null);
     onEditOpen();
+  };
+
+  const openDetailModal = (task) => {
+    setCurrentTask(task);
+    onDetailOpen();
   };
 
   const openListModal = () => {
@@ -200,6 +209,7 @@ const Task = forwardRef((props, ref) => {
         toggleTaskCompletion={toggleTaskCompletion}
         openEditModal={openEditModal}
         deleteTask={deleteTaskHandler}
+        openDetailModal={openDetailModal}
       />
 
       <Button onClick={onAddOpen} size="sm" colorScheme="teal" mt={4} backgroundColor={buttonColor} _hover={{ backgroundColor: hoverColor }}>
@@ -209,7 +219,7 @@ const Task = forwardRef((props, ref) => {
       <TaskModal
         isOpen={isAddOpen || isEditOpen}
         onClose={isEditOpen ? onEditClose : onAddClose}
-        onSave={saveTask}
+        onSave={() => saveTask(taskTitle, taskDesc)}
         title={currentTask ? 'Edit Task' : 'Add a New Task'}
         taskTitle={taskTitle}
         setTaskTitle={setTaskTitle}
@@ -219,6 +229,14 @@ const Task = forwardRef((props, ref) => {
         setSelectedList={setSelectedList}
         lists={lists}
         onCreateNewList={openListModal}
+      />
+
+      <TaskDetailModal
+        isOpen={isDetailOpen}
+        onClose={onDetailClose}
+        task={currentTask}
+        onSave={(title, desc) => saveTask(title, desc)}
+        onDelete={deleteTaskHandler}
       />
 
       <TaskListModal
