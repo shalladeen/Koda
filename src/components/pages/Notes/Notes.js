@@ -10,6 +10,7 @@ import Navbar from "../../nav/Navbar";
 import CustomTagModal from "./CustomTags";
 import { useAuth } from "../../context/AuthContext";
 import { createNote, getNotes, updateNote, deleteNote } from "../../../services/noteService";
+import NoteFolder from "./NoteFolder";
 
 const defaultTags = [
   { title: "Work", color: "#aec6cf" },
@@ -20,6 +21,7 @@ const defaultTags = [
 function Notes() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isCustomTagModalOpen, onOpen: onCustomTagModalOpen, onClose: onCustomTagModalClose } = useDisclosure();
+  const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
   const [notes, setNotes] = useState([]);
   const [customTags, setCustomTags] = useState(() => {
     const storedTags = JSON.parse(localStorage.getItem("customTags"));
@@ -84,7 +86,7 @@ function Notes() {
 
     const timestamp = Date.now();
     let updatedNotes;
-    console.log('Saving note:', { editNoteId, title, content, tag }); // Log note details
+    console.log('Saving note:', { editNoteId, title, content, tag }); 
     try {
       if (editNoteId) {
         const updatedNote = await updateNote(editNoteId, title, content, tag);
@@ -159,6 +161,14 @@ function Notes() {
     return customTags.find(tag => tag.title === tagTitle)?.color || defaultTags.find(tag => tag.title === tagTitle)?.color || noneTagColor;
   };
 
+  const handleOpenFolderModal = () => {
+    setIsFolderModalOpen(true);
+  };
+
+  const handleCloseFolderModal = () => {
+    setIsFolderModalOpen(false);
+  };
+
   const sidebarWidth = { base: "60px", md: "150px" };
 
   return (
@@ -181,6 +191,7 @@ function Notes() {
         <Box>
           <HStack>
             <Button background={buttonColor} color={buttonText} my={4} onClick={openModalForNewNote} mr={6}>New Note</Button>
+            <Button background={buttonColor} color={buttonText} my={4} onClick={handleOpenFolderModal}>+New Folder</Button>
             {/* Note Listing and Filtering */}
             <Menu>
               <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>{tag === "None" ? "Filter by Tag" : tag}</MenuButton>
@@ -288,6 +299,9 @@ function Notes() {
           setCustomTags={setCustomTags}
           deleteTag={deleteTag}
         />
+
+        {/* Folder Modal */}
+        <NoteFolder isOpen={isFolderModalOpen} onClose={handleCloseFolderModal} />
       </Flex>
     </Flex>
   );
