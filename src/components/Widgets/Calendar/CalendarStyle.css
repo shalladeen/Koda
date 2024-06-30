@@ -8,7 +8,7 @@
   --fc-border-light: #dcdcdc;
   --fc-border-dark: #5c5c5c;
   
-  --fc-bg-light: #f0f0f0;
+  --fc-bg-light: #f9fdff;
   --fc-bg-dark: #1c1c1c;
   --fc-text-light: #000000;
   --fc-text-dark: #ffffff;
@@ -28,6 +28,7 @@
   background-color: var(--fc-bg-light);
   padding: 20px;
   border-radius: 15px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
 }
 
 .fc .fc-day-today {
@@ -82,8 +83,9 @@
 /* Dark Mode */
 
 .dark-mode .fc {
-  background-color: var(--fc-border-dark);
-  border-radius: 15px
+  background-color: var(--fc-bg-dark);
+  border-radius: 15px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
 
 .dark-mode .fc .fc-day-today {
@@ -117,12 +119,12 @@
 
 /* Dark Mode for Toolbar */
 .dark-mode .fc-toolbar {
-  background-color: var(--fc-border-dark);
+  background-color: var(--fc-bg-dark);
   color: var(--fc-text-dark);
 }
 
 .dark-mode .fc-toolbar button {
-  background-color: var(--fc-border-dark);
+  background-color: var(--fc-bg-dark);
   color: var(--fc-text-dark);
 }
 

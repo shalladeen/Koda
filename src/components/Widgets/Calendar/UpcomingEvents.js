@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useDisclosure, Box, Text, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Stack, useColorMode } from '@chakra-ui/react';
+import { useDisclosure, Box, Text, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Stack, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import moment from 'moment';
 
 const UpcomingEventsWidget = ({ events }) => {
   const { colorMode } = useColorMode();
   const textClass = colorMode === 'light' ? 'text-light' : 'text-dark';
   const bgClass = colorMode === 'light' ? 'bg-light' : 'bg-dark';
+  const buttonBgColor = useColorModeValue('gray.200', 'gray.700');
+  const buttonTextColor = useColorModeValue('black', 'white');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [limitedEvents, setLimitedEvents] = useState([]);
@@ -13,7 +15,7 @@ const UpcomingEventsWidget = ({ events }) => {
   useEffect(() => {
     const filteredEvents = events.filter(event => moment(event.start).isAfter(moment(), 'day'));
     setUpcomingEvents(filteredEvents);
-    setLimitedEvents(filteredEvents.slice(0, 4));
+    setLimitedEvents(filteredEvents.slice(0, 2));
   }, [events]);
 
   const formatEventDate = (event) => {
@@ -33,8 +35,8 @@ const UpcomingEventsWidget = ({ events }) => {
           <Text fontSize="lg" className={textClass} fontWeight="bold">
             Upcoming Events
           </Text>
-          {upcomingEvents.length > 0 && (
-            <Button size="sm" onClick={onOpen}>
+          {upcomingEvents.length > 2 && (
+            <Button size="sm" onClick={onOpen} className={textClass}>
               View All
             </Button>
           )}
@@ -73,7 +75,7 @@ const UpcomingEventsWidget = ({ events }) => {
             </Stack>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onClose}>Close</Button>
+            <Button onClick={onClose} bg={buttonBgColor} color={buttonTextColor}>Close</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

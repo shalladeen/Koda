@@ -3,9 +3,8 @@ import {
   Box, Flex, VStack, IconButton, useColorModeValue, Switch, useColorMode, Avatar,
 } from '@chakra-ui/react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserGroup, faStopwatch, faGripVertical, faNotesMedical } from '@fortawesome/free-solid-svg-icons';
 import { FaUserCircle, FaMoon, FaSun } from 'react-icons/fa';
+import { FiHome, FiClipboard, FiClock, FiUsers } from 'react-icons/fi'; 
 import { useAuth } from '../context/AuthContext';
 
 function Navbar({ onProfileClick, onProfileMenuClick }) {
@@ -15,14 +14,13 @@ function Navbar({ onProfileClick, onProfileMenuClick }) {
   const bg = useColorModeValue('gray.100', '#0e0e0e');
   const profileColor = useColorModeValue('black', 'white');
   const iconColor = useColorModeValue('black', 'white');
-  const textColor = useColorModeValue('black', 'white');
   const activeBg = useColorModeValue('gray.400', 'gray.600');
   const hoverBg = useColorModeValue('gray.500', 'gray.500');
   const sunColor = useColorModeValue('black', 'gray');
   const moonColor = useColorModeValue('gray', 'white');
   const profileBorderColor = useColorModeValue('black', 'white');
 
-  const NavLink = ({ to, icon, label }) => {
+  const NavLink = ({ to, icon }) => {
     const isActive = location.pathname === to;
     return (
       <Flex
@@ -37,9 +35,9 @@ function Navbar({ onProfileClick, onProfileMenuClick }) {
         borderRadius="md"
         _hover={{ bg: hoverBg }}
         width="100%"
+        justify="center"
       >
-        <FontAwesomeIcon icon={icon} size="lg" color={iconColor} />
-        <Box ml="4" color={textColor}>{label}</Box>
+        {icon}
       </Flex>
     );
   };
@@ -65,10 +63,10 @@ function Navbar({ onProfileClick, onProfileMenuClick }) {
       />
       <Box flex="1" mt={10} mb={10}>
         <VStack spacing={6} align="stretch">
-          <NavLink to="/" icon={faGripVertical} label="Dashboard" />
-          <NavLink to="/Notes" icon={faNotesMedical} label="Notes" />
-          <NavLink to="/TimeTracker" icon={faStopwatch} label="Focus" />
-          <NavLink to="/Friends" icon={faUserGroup} label="Friends" />
+          <NavLink to="/" icon={<FiHome size="30px" color={iconColor} label="Home" />} />
+          <NavLink to="/Notes" icon={<FiClipboard size="30px" color={iconColor} />} />
+          <NavLink to="/TimeTracker" icon={<FiClock size="30px" color={iconColor} />} />
+          <NavLink to="/Friends" icon={<FiUsers size="30px" color={iconColor} />} />
         </VStack>
       </Box>
       <Flex mt="auto" justifyContent="center" p="4" alignItems="center">

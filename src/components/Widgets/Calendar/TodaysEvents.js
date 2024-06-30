@@ -35,6 +35,9 @@ const TodaysEvents = ({ events }) => {
     return `${moment(event.start).format('MMM DD, h:mm A')} - ${moment(event.end).format('MMM DD, h:mm A')}`;
   };
 
+  const displayEvents = todayEvents.slice(0, 3);
+  const hasMoreEvents = todayEvents.length > 3;
+
   return (
     <>
       <Box className={`todays-events-container ${bgClass}`} textAlign="left" mt={5}>
@@ -42,12 +45,14 @@ const TodaysEvents = ({ events }) => {
           <Text fontSize="lg" className={textClass} fontWeight="bold">
             Today's Events
           </Text>
-          <Button size="sm" onClick={onOpen}>
-            View All
-          </Button>
+          {hasMoreEvents && (
+            <Button size="sm" onClick={onOpen} className={textClass}>
+              View All
+            </Button>
+          )}
         </HStack>
         <Stack mt={2}>
-          {todayEvents.length > 0 ? todayEvents.map(event => (
+          {displayEvents.length > 0 ? displayEvents.map(event => (
             <Box key={event.id} className={`event-item ${bgClass}`}>
               <Text fontWeight="bold" className={textClass}>{event.title}</Text>
               <Text className={textClass}>
