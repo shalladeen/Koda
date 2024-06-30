@@ -29,16 +29,19 @@
   padding: 20px;
   border-radius: 15px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  border: none;
 }
 
 .fc .fc-day-today {
   background-color: var(--fc-today-bg-light) !important;
   cursor: pointer;
+  border: none;
 }
 
 .fc-event {
   cursor: pointer;
   transition: background-color 0.2s ease;
+  border: none;
 }
 
 .fc-event:hover {
@@ -53,14 +56,74 @@
 .fc-timegrid-axis-cushion {
   font-size: 0.9em;
   color: var(--fc-text-light);
+  border: none;
 }
 
+.fc-dayGridMonth-view .fc-view .fc-daygrid {
+  border: none;
+}
 
-/* Customize the timeGridWeek and timeGridDay views */
-.fc-timeGridWeek-view,
-.fc-timeGridDay-view {
-  border-radius: 13px;
-  overflow: hidden;
+.fc .fc-view-harness-active > .fc-view {
+  border: none;
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+  border: none;
+}
+
+.fc .fc-col-header-cell {
+  border: none;
+}
+
+.fc .fc-daygrid-day {
+  border: none;
+}
+
+.fc .fc-scrollgrid-section {
+  border: none;
+}
+
+.fc .fc-scrollgrid {
+  border: none;
+}
+
+.fc .fc-scrollgrid-sync-inner,
+.fc .fc-daygrid-day-frame,
+.fc .fc-daygrid-day-events,
+.fc .fc-daygrid-event {
+  border: none;
+}
+
+.fc .fc-scrollgrid-section-liquid,
+.fc .fc-scrollgrid-section > td {
+  border: none !important;
+}
+
+.fc .fc-daygrid-day-top,
+.fc .fc-daygrid-day-bottom,
+.fc .fc-daygrid-day-bg {
+  border: none !important;
+}
+
+/* Specific class for Saturday cell to remove the right border */
+.fc .fc-daygrid-day.fc-day-sat {
+  border-right: none !important; /* Ensure no right border on Saturday cells */
+}
+
+.fc .fc-daygrid-body .fc-daygrid-day:last-child {
+  border-right: none !important; /* Remove right border from last child */
+}
+
+.fc .fc-scrollgrid-sync-outter {
+  border-right: none !important; /* Remove right border from sync inner elements */
+}
+
+.fc .fc-daygrid-body .fc-scrollgrid-section > td:last-child {
+  border-right: none !important; /* Ensure no right border on the last td element */
+}
+
+.fc .fc-scrollgrid {
+  border: none !important;
 }
 
 /* Toolbar Styling */
