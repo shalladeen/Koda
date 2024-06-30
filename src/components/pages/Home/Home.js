@@ -151,7 +151,7 @@ function Home() {
             alignItems="start"
             w="full"
             gap={5}
-            mt={3}
+            
           >
             {/* Left Column: Task and Recent Notes */}
             <Stack spacing={5} w={{ base: "full", lg: "45%" }} flexShrink={0}>

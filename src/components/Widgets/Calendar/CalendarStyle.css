@@ -84,8 +84,7 @@
 
 .dark-mode .fc {
   background-color: var(--fc-bg-dark);
-  border-radius: 15px;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 15px
 }
 
 .dark-mode .fc .fc-day-today {

@@ -172,11 +172,11 @@ const Task = forwardRef((props, ref) => {
   const completionPercent = filteredTasks.length ? Math.round((filteredTasks.filter(task => task.completed).length / filteredTasks.length) * 100) : 0;
 
   return (
-    <Box p={5} maxWidth="500px">
-      <Heading as="h2" size="md" my={5} color={secondaryColor}>
+    <Box p={5} maxWidth="700px">
+      <Heading as="h2" size="lg" my={5} color={secondaryColor}>
         My Tasks | {completionPercent}%
       </Heading>
-      <Text mb={4} color={secondaryColor} size="sm">
+      <Text mb={4} color={secondaryColor} size="lg">
         {['All', ...lists.map(list => list.name)].map((listName, index) => (
           <Button
             key={index}
@@ -194,7 +194,7 @@ const Task = forwardRef((props, ref) => {
             as={IconButton}
             icon={<MdMoreVert />}
             aria-label="Options"
-            size="sm"
+            size="md"
             _hover={{ backgroundColor: hoverColor }}
             ml={2}
           />
@@ -212,7 +212,7 @@ const Task = forwardRef((props, ref) => {
         openDetailModal={openDetailModal}
       />
 
-      <Button onClick={onAddOpen} size="sm" colorScheme="teal" mt={4} backgroundColor={buttonColor} _hover={{ backgroundColor: hoverColor }}>
+      <Button onClick={onAddOpen} size="md" colorScheme="teal" mt={4} backgroundColor={buttonColor} _hover={{ backgroundColor: hoverColor }}>
         Add Task
       </Button>
 
