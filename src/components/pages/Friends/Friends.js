@@ -2,19 +2,20 @@ import React, { useState, useEffect } from 'react';
 import Navbar from "../../nav/Navbar";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { Box, Flex, Text, useColorModeValue, IconButton, Icon, HStack, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from '@chakra-ui/react';
+import { Box, Flex, Text, useColorModeValue, IconButton, Icon, HStack, Button, Menu, MenuList, MenuItem,
+Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from '@chakra-ui/react';
 import { FaEnvelope } from 'react-icons/fa';
 import FriendList from './FriendList';
 import FriendRequest from './FriendRequest';
-import Notification from '../../Widgets/Notifications/Notification'; // Import Notification widget
-
+import Notification from '../../Widgets/Notifications/Notification'; 
 function Friends() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [friends, setFriends] = useState([]);
     const [notifications, setNotifications] = useState([]);
-    const [hasNewNotifications, setHasNewNotifications] = useState(true); // State for new notifications indicator
+    const [hasNewNotifications, setHasNewNotifications] = useState(true); 
     const navigate = useNavigate();
-    const { user, isLoggedIn } = useAuth();
+    const { user, isLoggedIn, handleLogout } = useAuth();
+    const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
     useEffect(() => {
         const fetchFriends = async () => {
@@ -42,10 +43,14 @@ function Friends() {
 
     const handleProfileClick = () => {
         if (isLoggedIn) {
-            navigate("/profile");
+            navigate("/ProfilePage");
         } else {
-            navigate("/signup");
+            navigate("/SignupPage");
         }
+    };
+
+    const handleProfileMenuClick = () => {
+        setIsProfileMenuOpen(!isProfileMenuOpen);
     };
 
     const handleToggleModal = () => {
@@ -53,26 +58,43 @@ function Friends() {
     };
 
     const handleNotificationClick = () => {
-        setHasNewNotifications(false); // Mark notifications as viewed
+        setHasNewNotifications(false);
     };
 
     const sidebarWidth = { base: "60px", md: "150px" };
 
     return (
-        <Flex h="100vh">
+        <Flex direction="row" height="100vh" bg={useColorModeValue("gray.100", "#0e0e0e")}>
+            {/* Sidebar */}
             <Box
                 position="fixed"
                 left="0"
                 top="0"
                 bottom="0"
                 width={sidebarWidth}
-                bg={useColorModeValue("gray.200", "gray.700")}
                 height="100vh"
-                zIndex="10"
+               
+                bg={useColorModeValue("gray.100", "#0e0e0e")}
+                _before={{
+                    content: `""`,
+                    position: 'absolute',
+                    right: '-10px',
+                    top: '0',
+                    bottom: '0',
+                    width: '10px',
+                }}
             >
-                <Navbar onProfileClick={handleProfileClick} />
+                <Navbar onProfileClick={handleProfileClick} onProfileMenuClick={handleProfileMenuClick} />
             </Box>
-            <Box flex="1" ml={sidebarWidth} p={4} position="relative">
+            <Menu isOpen={isProfileMenuOpen} onClose={() => setIsProfileMenuOpen(false)}>
+                <MenuList zIndex="4" style={{ marginTop: '110px', marginLeft: '50px' }}>
+                    <MenuItem onClick={handleProfileClick}>View Profile</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </MenuList>
+            </Menu>
+
+            {/* Main Content */}
+            <Box flex="1" ml={sidebarWidth} p={4} position="relative" borderRadius="30px 0 0 30px" overflow="hidden" bg={useColorModeValue("#f9fdff", "#1c1c1c")} color={useColorModeValue("black", "white")} boxShadow={{ base: "none", md: "md" }}>
                 <HStack position="absolute" top="4" right="4" spacing={4} zIndex="20">
                     <IconButton
                         icon={<Icon as={FaEnvelope} />}

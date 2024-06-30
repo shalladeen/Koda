@@ -1,18 +1,17 @@
 import React, { useContext } from 'react';
 import {
-  Box, Flex, VStack, IconButton, useColorModeValue, Switch, useColorMode, Menu, MenuButton,
-  MenuList, MenuItem, Avatar,
+  Box, Flex, VStack, IconButton, useColorModeValue, Switch, useColorMode, Avatar,
 } from '@chakra-ui/react';
-import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserGroup, faStopwatch, faGripVertical, faNotesMedical } from '@fortawesome/free-solid-svg-icons';
 import { FaUserCircle, FaMoon, FaSun } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 
-function Navbar({ onProfileClick }) {
+function Navbar({ onProfileClick, onProfileMenuClick }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const location = useLocation();
-  const { user, handleLogout } = useAuth();
+  const { user } = useAuth();
   const bg = useColorModeValue('gray.100', '#0e0e0e');
   const profileColor = useColorModeValue('black', 'white');
   const iconColor = useColorModeValue('black', 'white');
@@ -47,28 +46,23 @@ function Navbar({ onProfileClick }) {
 
   return (
     <Flex direction="column" bg={bg} p="4" height="100vh" alignItems="center">
-      <Menu>
-        <MenuButton 
-          as={IconButton} 
-          icon={
-            user?.profilePicture ? 
-            <Avatar size="full" src={`http://localhost:5000/${user.profilePicture}`} /> : 
-            <FaUserCircle size="48px" />
-          } 
-          alignSelf="center" 
-          mb="6" 
-          borderRadius="full" 
-          mt="6" 
-          color={profileColor}
-          _hover={{ transform: 'scale(1.1)', transition: 'transform 0.2s' }}
-          borderColor={profileBorderColor}
-          boxSize="70px"
-        />
-        <MenuList>
-          <MenuItem onClick={onProfileClick}>View Profile</MenuItem>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </MenuList>
-      </Menu>
+      <IconButton 
+        icon={
+          user?.profilePicture ? 
+          <Avatar size="full" src={`http://localhost:5000/${user.profilePicture}`} /> : 
+          <FaUserCircle size="48px" />
+        } 
+        alignSelf="center" 
+        mb="6" 
+        borderRadius="full" 
+        mt="6" 
+        color={profileColor}
+        _hover={{ transform: 'scale(1.1)', transition: 'transform 0.2s' }}
+        borderColor={profileBorderColor}
+        boxSize="70px"
+        zIndex="2"
+        onClick={onProfileMenuClick}
+      />
       <Box flex="1" mt={10} mb={10}>
         <VStack spacing={6} align="stretch">
           <NavLink to="/" icon={faGripVertical} label="Dashboard" />

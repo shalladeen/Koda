@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Timer from './Timer/Timer';
 import { useNavigate } from "react-router-dom";
 import Navbar from '../../nav/Navbar';
-import { Box, Flex, Center, VStack, HStack, useColorModeValue, Select, Button, Heading, Text, Switch, FormControl, FormLabel } from '@chakra-ui/react';
+import { Box, Flex, Center, VStack, HStack, useColorModeValue, Select, Button, Heading, Text, Switch, FormControl, FormLabel, Menu, MenuItem, MenuList } from '@chakra-ui/react';
 import { useAuth } from '../../context/AuthContext';
 import Preset from './Preset';
 import { createPreset, getPresets } from '../../../services/presetService';
@@ -12,7 +12,7 @@ function TimeTracker() {
     // Color mode values
     const sidebarWidth = { base: "60px", md: "150px" };
     const presetBorder = useColorModeValue('gray.400', 'gray.300');
-    const sidebarBgColor = useColorModeValue("gray.200", "gray.700");
+    const sidebarBgColor = useColorModeValue("gray.100", "#0e0e0e");
     const textColor = useColorModeValue("black", "white");
     const containerBgColor = useColorModeValue('white', 'gray.800');
     const buttonBgColor = useColorModeValue('lightblue', '#63A9BF');
@@ -28,7 +28,7 @@ function TimeTracker() {
 
     // Hooks
     const navigate = useNavigate();
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn, handleLogout } = useAuth();
     const { resetTimer, setTimeInMinutes, setSecondsElapsed, setTag, setIsRunning, setTimerStarted, isRunning } = useTimer();
     const [category, setCategory] = useState('');
     const [focusTime, setFocusTime] = useState(25);
@@ -40,6 +40,7 @@ function TimeTracker() {
     const [startTimerInitially, setStartTimerInitially] = useState(false);
     const [presets, setPresets] = useState([]);
     const [isPresetModalOpen, setIsPresetModalOpen] = useState(false);
+    const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
     // Fetch presets when the component mounts
     useEffect(() => {
@@ -61,6 +62,10 @@ function TimeTracker() {
         } else {
             navigate("/SignupPage");
         }
+    };
+
+    const handleProfileMenuClick = () => {
+        setIsProfileMenuOpen(!isProfileMenuOpen);
     };
 
     const handleStartTimer = () => {
@@ -104,25 +109,48 @@ function TimeTracker() {
     };
 
     return (
-        <Flex direction={{ base: "column", md: "row" }} minHeight="100vh" position="relative" overflow="hidden" bg={showTimer ? containerBgColor : presetGradientBg}>
-            
+        <Flex direction="row" height="100vh" bg={sidebarBgColor}>
             {/* Sidebar */}
             <Box
-                position={{ base: "static", md: "fixed" }}
+                position="fixed"
                 left="0"
                 top="0"
                 bottom="0"
                 width={sidebarWidth}
-                height={{ base: "auto", md: "100vh" }}
+                height="100vh"
                 color={textColor}
                 bg={sidebarBgColor}
-                zIndex="10"
+               
+                _before={{
+                    content: `""`,
+                    position: 'absolute',
+                    right: '-10px',
+                    top: '0',
+                    bottom: '0',
+                    width: '10px',
+
+                }}
             >
-                <Navbar onProfileClick={handleProfileClick} />
+                <Navbar onProfileClick={handleProfileClick} onProfileMenuClick={handleProfileMenuClick} />
             </Box>
+            <Menu isOpen={isProfileMenuOpen} onClose={() => setIsProfileMenuOpen(false)}>
+                <MenuList zIndex="4" style={{ marginTop: '110px', marginLeft: '50px' }}>
+                    <MenuItem onClick={handleProfileClick}>View Profile</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </MenuList>
+            </Menu>
 
             {/* Main Content */}
-            <Box flex="1" ml={{ base: 0, md: sidebarWidth }} p={{ base: 2, md: 5 }} color={textColor} display="flex" flexDirection="column" mt={{ base: 4, md: 8 }} >
+            <Box 
+                flex="1" ml={sidebarWidth} 
+                p={{ base: 2, md: 5 }} color={textColor} 
+                display="flex" 
+                flexDirection="column" 
+                borderRadius="30px 0 0 30px" 
+                overflow="hidden" 
+                boxShadow={{ base: "none", md: "lg" }} 
+                bg={showTimer ? containerBgColor : presetGradientBg} 
+                zIndex={1}>
                 <Box ml={4}>
                     <Heading size="lg">Focus</Heading>
                 </Box>

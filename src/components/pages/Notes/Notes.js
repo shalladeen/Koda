@@ -21,6 +21,7 @@ const defaultTags = [
 function Notes() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isOpen: isCustomTagModalOpen, onOpen: onCustomTagModalOpen, onClose: onCustomTagModalClose } = useDisclosure();
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isFolderModalOpen, setIsFolderModalOpen] = useState(false);
   const [notes, setNotes] = useState([]);
   const [customTags, setCustomTags] = useState(() => {
@@ -37,7 +38,7 @@ function Notes() {
   const [content, setContent] = useState("");
   const [tag, setTag] = useState("None");
   const [error, setError] = useState("");
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, handleLogout } = useAuth();
   const navigate = useNavigate();
 
   const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
@@ -50,6 +51,7 @@ function Notes() {
   const placeholderColor = useColorModeValue("gray.500", "gray.300");
   const noneTagColor = useColorModeValue("gray.300", "gray.300");
   const hoverBgColor = useColorModeValue("gray.200", "gray.600");
+  const sidebarBgColor = useColorModeValue("gray.100", "#0e0e0e");
 
   useEffect(() => {
     async function fetchNotes() {
@@ -76,6 +78,10 @@ function Notes() {
       navigate("/SignupPage");
     }
   };
+
+  const handleProfileMenuClick = () => {
+    setIsProfileMenuOpen(!isProfileMenuOpen);
+};
 
   const handleSaveNote = async () => {
     setError("");
@@ -172,7 +178,7 @@ function Notes() {
   const sidebarWidth = { base: "60px", md: "150px" };
 
   return (
-    <Flex direction="row" height="100vh" backgroundColor={bgColor}>
+    <Flex direction="row" height="100vh" bg={sidebarBgColor}>
       {/* Sidebar */}
       <Box
         position="fixed"
@@ -181,12 +187,25 @@ function Notes() {
         bottom="0"
         width={sidebarWidth}
         height="100vh"
-        zIndex="10"
-        bg={bgColor}
+        bg={sidebarBgColor}
+        _before={{
+          content: `""`,
+          position: 'absolute',
+          right: '-10px',
+          top: '0',
+          bottom: '0',
+        }}
       >
-        <Navbar onProfileClick={handleProfileClick}/>
+         <Navbar onProfileClick={handleProfileClick} onProfileMenuClick={handleProfileMenuClick} />
       </Box>
-      <Flex direction="column" m={5} w="full" ml={sidebarWidth} p={{ base: 2, md: 5 }}>
+      <Menu isOpen={isProfileMenuOpen} onClose={() => setIsProfileMenuOpen(false)}>
+                <MenuList zIndex="4" style={{ marginTop: '110px', marginLeft: '50px' }}>
+                    <MenuItem onClick={handleProfileClick}>View Profile</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </MenuList>
+      </Menu>
+
+      <Flex direction="column" w="full" h="full" ml={sidebarWidth} p={{ base: 2, md: 5 }} borderRadius="30px 0 0 30px" overflow="hidden" boxShadow={{ base: "none", md: "lg" }} bg={bgColor} zIndex={1} >
         <Heading mb={6}>My Notes</Heading>
         <Box>
           <HStack>

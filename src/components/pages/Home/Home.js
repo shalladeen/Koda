@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Flex, Stack, useColorModeValue, VStack, HStack, Text, IconButton, useDisclosure } from '@chakra-ui/react';
+import { Box, Flex, Stack, useColorModeValue, Menu, MenuList, MenuItem, HStack, Text, IconButton, useDisclosure } from '@chakra-ui/react';
 import { CalendarIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import Recent from '../../Widgets/Recents/Recent';
@@ -16,9 +16,11 @@ import MiniTimer from '../TimeTracker/Timer/MiniTimer';
 
 function Home() {
   const bgColor = useColorModeValue("#f9fdff", "#1c1c1c");
-  const sidebarBgColor = useColorModeValue("gray.200", "gray.700");
+  const sidebarBgColor = useColorModeValue("gray.100", "#0e0e0e");
   const mainContentBgColor = useColorModeValue("#f9fdff", "#1c1c1c");
   const textColor = useColorModeValue("black", "white");
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const { user, handleLogout } = useAuth();
 
   const navigate = useNavigate();
   const { isLoggedIn } = useAuth();
@@ -32,6 +34,10 @@ function Home() {
       navigate("/SignupPage");
     }
   };
+
+  const handleProfileMenuClick = () => {
+    setIsProfileMenuOpen(!isProfileMenuOpen);
+};
 
   const sidebarWidth = { base: "60px", md: "150px" };
 
@@ -80,7 +86,7 @@ function Home() {
   const currentDate = moment().format('MMMM Do, YYYY');
 
   return (
-    <Flex direction="row" bg={bgColor} height="100vh">
+    <Flex direction="row" bg={sidebarBgColor} height="100vh">
       {/* Sidebar */}
       <Box
         position="fixed"
@@ -88,31 +94,50 @@ function Home() {
         top="0"
         bottom="0"
         width={sidebarWidth}
-        bg={sidebarBgColor}
         height="100vh"
-        color={textColor}
+       
+        bg={sidebarBgColor}
+        _before={{
+          content: `""`,
+          position: 'absolute',
+          right: '-10px',
+          top: '0',
+          bottom: '0',
+        }}
       >
-        <Navbar onProfileClick={handleProfileClick} />
+        <Navbar onProfileClick={handleProfileClick} onProfileMenuClick={handleProfileMenuClick} />
       </Box>
+      <Menu isOpen={isProfileMenuOpen} onClose={() => setIsProfileMenuOpen(false)}>
+                <MenuList zIndex="4" style={{ marginTop: '110px', marginLeft: '50px' }}>
+                    <MenuItem onClick={handleProfileClick}>View Profile</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </MenuList>
+            </Menu>
 
       {/* Main Content Container */}
-      <Box flex="1" ml={sidebarWidth}>
+      <Box
+        flex="1"
+        ml={sidebarWidth}
+        borderRadius="30px 0 0 30px"
+        overflow="hidden"
+        position="relative"
+        bg={mainContentBgColor}
+        color={textColor}
+        boxShadow={{ base: "none", md: "md" }}
+      >
         <Flex
           direction="column"
           alignItems="flex-start"
           p={{ base: 2, md: 5 }}
           w="full"
           h="full"
-          bg={mainContentBgColor}
-          color={textColor}
         >
           {/* Mini Timer */}
           <Box position="absolute" top="3" right="7">
-          <MiniTimer/>
+            <MiniTimer />
           </Box>
           {/* Notification Bell */}
           <HStack position="absolute" top="4" right="4" spacing={4} zIndex="20">
-            
             <Notification notifications={notifications} hasNewNotifications={hasNewNotifications} onNotificationClick={handleNotificationClick} />
           </HStack>
 

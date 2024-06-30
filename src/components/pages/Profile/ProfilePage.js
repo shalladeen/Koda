@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Flex, useColorModeValue, VStack, Heading, IconButton } from '@chakra-ui/react';
+import { Box, Flex, useColorModeValue, VStack, Heading, IconButton, Menu, MenuItem, MenuList } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { FaCog } from 'react-icons/fa';
 import Navbar from '../../nav/Navbar';
@@ -14,22 +14,27 @@ const ProfilePage = () => {
   const sidebarBgColor = useColorModeValue('gray.200', 'gray.700');
   const mainContentBgColor = useColorModeValue('#f9fdff', '#1c1c1c');
   const textColor = useColorModeValue('black', 'white');
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
-  const { user } = useAuth(); 
+  const { user, handleLogout } = useAuth(); 
   const [isLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   const handleProfileClick = () => {
     if (isLoggedIn) {
-      navigate('/profile');
+      navigate('/ProfilePage');
     } else {
-      navigate('/signup');
+      navigate('/ProfilePage');
     }
   };
 
   const handleSettingsClick = () => {
     navigate('/settings');
   };
+
+  const handleProfileMenuClick = () => {
+    setIsProfileMenuOpen(!isProfileMenuOpen);
+};
 
   const sidebarWidth = { base: '60px', md: '150px' };
 
@@ -45,7 +50,7 @@ const ProfilePage = () => {
         height="100vh"
         color={textColor}
       >
-        <Navbar onProfileClick={handleProfileClick} />
+        <Navbar onProfileClick={handleProfileClick} onProfileMenuClick={handleProfileMenuClick} />
       </Box>
 
       <Box flex="1" ml={sidebarWidth}>
@@ -58,6 +63,12 @@ const ProfilePage = () => {
           bg={mainContentBgColor}
           color={textColor}
         >
+          <Menu isOpen={isProfileMenuOpen} onClose={() => setIsProfileMenuOpen(false)}>
+                <MenuList zIndex="4" style={{ marginTop: '110px', marginLeft: '50px' }}>
+                    <MenuItem onClick={handleProfileClick}>View Profile</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </MenuList>
+            </Menu>
           <Flex
             width="full"
             direction="row"
