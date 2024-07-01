@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Text, IconButton, useColorModeValue } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Box, Text, useColorModeValue } from '@chakra-ui/react';
 import { useTimer } from '../../../context/TimerContext';
-import { FaPause, FaPlay } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import TimerDialog from '../../../Dialogs/TimerDialog';
 
 function MiniTimer() {
-  const { timeInMinutes, secondsElapsed, isRunning, setIsRunning, tag, isDialogOpen, closeDialog } = useTimer();
+  const { timeInMinutes, secondsElapsed, isRunning, isBreak, tag, isDialogOpen, closeDialog } = useTimer();
   const [remainingTime, setRemainingTime] = useState(timeInMinutes * 60 - secondsElapsed);
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setRemainingTime(timeInMinutes * 60 - secondsElapsed);
@@ -16,13 +17,8 @@ function MiniTimer() {
   const bgColor = useColorModeValue("white", "gray.800");
   const hoverBgColor = useColorModeValue("gray.200", "gray.600");
   const textColor = useColorModeValue("black", "white");
-  const buttonHoverBgColor = useColorModeValue("blackAlpha.800", "whiteAlpha.800");
 
-  const handlePauseResume = () => {
-    setIsRunning(!isRunning);
-  };
-
-  if (!isRunning) return null;
+  if (remainingTime <= 0) return null;
 
   return (
     <>
@@ -40,27 +36,15 @@ function MiniTimer() {
         alignItems="center"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() => navigate('/TimeTracker')}
         position="fixed"
         top={2}
         right={14}
+        cursor="pointer"
       >
         <Text fontSize="lg" fontWeight="bold">
-          {`${Math.floor(remainingTime / 60)}m ${Math.round(remainingTime % 60)}s`}
+          {isBreak ? "Break Time" : `${Math.floor(remainingTime / 60)}m ${Math.round(remainingTime % 60)}s`}
         </Text>
-        {isHovered && (
-          <IconButton
-            aria-label={isRunning ? 'Pause timer' : 'Resume timer'}
-            icon={isRunning ? <FaPause /> : <FaPlay />}
-            onClick={handlePauseResume}
-            position="absolute"
-            top="50%"
-            left="50%"
-            transform="translate(-50%, -50%)"
-            bg={textColor}
-            color={bgColor}
-            _hover={{ bg: buttonHoverBgColor }}
-          />
-        )}
       </Box>
       <TimerDialog isOpen={isDialogOpen} onClose={closeDialog} tag={tag} />
     </>

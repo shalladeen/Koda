@@ -172,7 +172,8 @@ function TimeTracker() {
                         <Flex height="100%" direction="column" justifyContent="center" alignItems="center">
                             {showTimer ? (
                                 <>
-                                    <Box flex="1" mb={6} bgGradient={timerGradientBg} minHeight="600px" width="80%" borderRadius={10}>
+                                <Flex direction={{ base: 'column', lg: 'row' }} width="100%" justifyContent="center" alignItems="flex-start">
+                                    <Box flex="1" mb={6} bgGradient={timerGradientBg} minHeight="600px" width={{ base: '100%', lg: '70%' }} borderRadius={10}>
                                         <Timer
                                             focusTime={isFreeTimer ? null : focusTime}
                                             breakTime={isFreeTimer ? null : breakTime}
@@ -186,13 +187,11 @@ function TimeTracker() {
                                         />
                                     </Box>
                                     {!isRunning && (
-                                        <VStack spacing={4} align="stretch" p={4} width="80%">
-                                            <Box pb={4}>
-                                                <Heading size="md" textAlign="center" color={presetContainerText}>
-                                                    Presets
-                                                </Heading>
-                                            </Box>
-                                            <HStack spacing={4} pb={2} flexWrap="wrap" justifyContent="center">
+                                        <Box flex="1" p={2} ml={{ base: 0, lg: 4 }} mt={{ base: 4, lg: 0 }} maxWidth={{ base: '100%', lg: '30%' }}>
+                                            <Heading size="md" textAlign="center" color={presetContainerText} mb={4}>
+                                                Presets
+                                            </Heading>
+                                            <VStack spacing={4} align="stretch" overflowY="auto">
                                                 {presets.map((preset) => (
                                                     <Button
                                                         key={preset._id}
@@ -201,7 +200,8 @@ function TimeTracker() {
                                                         onClick={() => handlePresetClick(preset.focusTime, preset.breakTime, preset.name)}
                                                         justifyContent="center"
                                                         alignItems="center"
-                                                        flexBasis={{ base: '45%', md: '45%' }}
+                                                        width="70%"
+                                                        mx="auto"
                                                     >
                                                         <VStack spacing={0} p={3}>
                                                             <Text fontSize={{ base: 'sm', md: 'md' }}>{preset.name}</Text>
@@ -209,13 +209,15 @@ function TimeTracker() {
                                                         </VStack>
                                                     </Button>
                                                 ))}
-                                                <Button bg={newPresetBgColor} color={newPresetText} onClick={() => setIsPresetModalOpen(true)} flexBasis={{ base: '45%', md: '45%' }}>
+                                                <Button bg={newPresetBgColor} color={newPresetText} onClick={() => setIsPresetModalOpen(true)} width="100%">
                                                     <Text fontSize={{ base: 'sm', md: 'md' }}>+ New Preset</Text>
                                                 </Button>
-                                            </HStack>
-                                        </VStack>
+                                            </VStack>
+                                        </Box>
                                     )}
-                                </>
+                                </Flex>
+                            </>
+                            
                             ) : (
                                 <Flex flex="1" justifyContent="center" alignItems="center" width="100%">
                                     <VStack spacing={4} align="stretch" p={10} width="100%" >

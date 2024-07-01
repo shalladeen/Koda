@@ -26,6 +26,8 @@ const CalendarWidget = () => {
   const [startTime, setStartTime] = useState('10:00');
   const [endTime, setEndTime] = useState('11:00');
 
+  const iconButtonBgColor = colorMode === 'light' ? 'black' : 'white';
+
   useEffect(() => {
     const fetchEvents = async () => {
       const events = await eventService.getEvents();
@@ -256,8 +258,9 @@ const CalendarWidget = () => {
         <HStack mb={4} justifyContent="flex-end">
           <Text fontSize="md">{moment().format('ddd, MMM DD, YYYY')}</Text>
           <IconButton
-            icon={<CalendarIcon />}
+            icon={<CalendarIcon/>}
             aria-label="Open Calendar"
+            color = {iconButtonBgColor}
             onClick={onMonthYearPickerOpen}
             variant="ghost"
             size="md"
@@ -279,6 +282,13 @@ const CalendarWidget = () => {
           eventClick={handleEventClick}
           eventDrop={handleEventDrop}
           eventResize={handleEventResize}
+          eventTimeFormat={{ 
+            hour: 'numeric',
+            minute: '2-digit',
+            omitZeroMinute: true,
+            meridiem: 'short'
+          }}
+          displayEventTime={false}
         />
         <MonthYearPickerModal
           isOpen={isMonthYearPickerOpen}
