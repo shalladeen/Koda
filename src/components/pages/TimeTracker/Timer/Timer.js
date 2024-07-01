@@ -27,51 +27,6 @@ function Timer({ focusTime, breakTime, presetFocusTime, presetBreakTime, isFreeT
   // Ref to track if the focus session has been saved
   const hasSavedFocusSession = useRef(false);
 
-  // Save timer state to localStorage
-  const saveTimerState = () => {
-    const timerState = {
-      timeInMinutes,
-      secondsElapsed,
-      isRunning,
-      isBreak,
-      breakSecondsElapsed,
-      currentBreakTime,
-      isPaused,
-      isPresetActive,
-      showNextBreakText,
-      startTime: startTime ? startTime.toISOString() : null,
-    };
-    localStorage.setItem('timerState', JSON.stringify(timerState));
-  };
-
-  // Load timer state from localStorage
-  const loadTimerState = () => {
-    const savedState = localStorage.getItem('timerState');
-    if (savedState) {
-      const timerState = JSON.parse(savedState);
-      setTimeInMinutes(timerState.timeInMinutes);
-      setSecondsElapsed(timerState.secondsElapsed);
-      setIsRunning(timerState.isRunning);
-      setIsBreak(timerState.isBreak);
-      setBreakSecondsElapsed(timerState.breakSecondsElapsed);
-      setCurrentBreakTime(timerState.currentBreakTime);
-      setIsPaused(timerState.isPaused);
-      setIsPresetActive(timerState.isPresetActive);
-      setShowNextBreakText(timerState.showNextBreakText);
-      setStartTime(timerState.startTime ? new Date(timerState.startTime) : null);
-    }
-  };
-
-  // Use effect for loading the timer state on mount
-  useEffect(() => {
-    loadTimerState();
-  }, []);
-
-  // Use effect for saving the timer state when it changes
-  useEffect(() => {
-    saveTimerState();
-  }, [timeInMinutes, secondsElapsed, isRunning, isBreak, breakSecondsElapsed, currentBreakTime, isPaused, isPresetActive, showNextBreakText, startTime]);
-
   // Use effect for resetting the timer
   useEffect(() => {
     const effectiveFocusTime = presetFocusTime || focusTime || 0; 
